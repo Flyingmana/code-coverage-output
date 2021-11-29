@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - phar/stub.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">phar</a> - stub.h<span style="font-size: 80%;"> (source / <a href="stub.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>            :   +----------------------------------------------------------------------+</a>
+<a name="3"><span class="lineNum">       3 </span>            :   | phar php single-file executable PHP extension generated stub         |</a>
+<a name="4"><span class="lineNum">       4 </span>            :   +----------------------------------------------------------------------+</a>
+<a name="5"><span class="lineNum">       5 </span>            :   | Copyright (c) The PHP Group                                          |</a>
+<a name="6"><span class="lineNum">       6 </span>            :   +----------------------------------------------------------------------+</a>
+<a name="7"><span class="lineNum">       7 </span>            :   | This source file is subject to version 3.01 of the PHP license,      |</a>
+<a name="8"><span class="lineNum">       8 </span>            :   | that is bundled with this package in the file LICENSE, and is        |</a>
+<a name="9"><span class="lineNum">       9 </span>            :   | available through the world-wide-web at the following url:           |</a>
+<a name="10"><span class="lineNum">      10 </span>            :   | https://www.php.net/license/3_01.txt                                 |</a>
+<a name="11"><span class="lineNum">      11 </span>            :   | If you did not receive a copy of the PHP license and are unable to   |</a>
+<a name="12"><span class="lineNum">      12 </span>            :   | obtain it through the world-wide-web, please send a note to          |</a>
+<a name="13"><span class="lineNum">      13 </span>            :   | license@php.net so we can mail you a copy immediately.               |</a>
+<a name="14"><span class="lineNum">      14 </span>            :   +----------------------------------------------------------------------+</a>
+<a name="15"><span class="lineNum">      15 </span>            :   | Authors: Gregory Beaver &lt;cellog@php.net&gt;                             |</a>
+<a name="16"><span class="lineNum">      16 </span>            :   +----------------------------------------------------------------------+</a>
+<a name="17"><span class="lineNum">      17 </span>            : */</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">        279 : static inline zend_string* phar_get_stub(const char *index_php, const char *web, const int name_len, const int web_len)</span></a>
+<a name="20"><span class="lineNum">      20 </span>            : {</a>
+<a name="21"><span class="lineNum">      21 </span>            :         static const char newstub0[] = &quot;&lt;?php\n\n$web = '&quot;;</a>
+<a name="22"><span class="lineNum">      22 </span>            :         static const char newstub1_0[] = &quot;';\n\nif (in_array('phar', stream_get_wrappers()) &amp;&amp; class_exists('Phar', 0)) {\nPhar::interceptFileFuncs();\nset_include_path('phar://' . __FILE__ . PATH_SEPARATOR . get_include_path());\nPhar::webPhar(null, $web);\ninclude 'phar://' . __FILE__ . '/' . Extract_Phar::START;\nreturn;\n}\n\nif (@(isset($_SERVER['REQUEST_URI']) &amp;&amp; isset($_SERVER['REQUEST_METHOD']) &amp;&amp; ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'))) {\nExtract_Phar::go(true);\n$mimes = array(\n'phps' =&gt; 2,\n'c' =&gt; 'text/plain',\n'cc' =&gt; 'text/plain',\n'cpp' =&gt; 'text/plain',\n'c++' =&gt; 'text/plain',\n'dtd' =&gt; 'text/plain',\n'h' =&gt; 'text/plain',\n'log' =&gt; 'text/plain',\n'rng' =&gt; 'text/plain',\n'txt' =&gt; 'text/plain',\n'xsd' =&gt; 'text/plain',\n'php' =&gt; 1,\n'inc' =&gt; 1,\n'avi' =&gt; 'video/avi',\n'bmp' =&gt; 'image/bmp',\n'css' =&gt; 'text/css',\n'gif' =&gt; 'image/gif',\n'htm' =&gt; 'text/html',\n'html' =&gt; 'text/html',\n'htmls' =&gt; 'text/html',\n'ico' =&gt; 'image/x-ico',\n'jpe' =&gt; 'image/jpeg',\n'jpg' =&gt; 'image/jpeg',\n'jpeg' =&gt; 'image/jpeg',\n'js' =&gt; 'application/x-javascript',\n'midi' =&gt; 'audio/midi',\n'mid' =&gt; 'audio/midi',\n'mod' =&gt; 'audio/mod',\n'mov' =&gt; 'movie/quicktime',\n'mp3' =&gt; 'audio/mp3',\n'mpg' =&gt; 'video/mpeg',\n'mpeg' =&gt; 'video/mpeg',\n'pdf' =&gt; 'application/pdf',\n'png' =&gt; 'image/png',\n'swf' =&gt; 'application/shockwave-flash',\n'tif' =&gt; 'image/tiff',\n'tiff' =&gt; 'image/tiff',\n'wav' =&gt; 'audio/wav',\n'xbm' =&gt; 'image/xbm',\n'xml' =&gt; 'text/xml',\n);\n\nheader(\&quot;Cache-Control: no-cache, must-revalidate\&quot;);\nheader(\&quot;Pragma: no-cache\&quot;);\n\n$basename = basename(__FILE__);\nif (!strpos($_SERVER['REQUEST_URI'], $basename)) {\nchdir(Extract_Phar::$temp);\ninclude $web;\nreturn;\n}\n$pt = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], $basename) + strlen($basename));\nif (!$pt || $pt == '/') {\n$pt = $web;\nheader('HTTP/1.1 301 Moved Permanently');\nheader('Location: ' . $_SERVER['REQUEST_URI'] . '/' . $pt);\nexit;\n}\n$a = realpath(Extract_Phar::$temp . DIRECTORY_SEPARATOR . $pt);\nif (!$a || strlen(dirname($a)) &lt; strlen(&quot;;</a>
+<a name="23"><span class="lineNum">      23 </span>            :         static const char newstub1_1[] = &quot;Extract_Phar::$temp)) {\nheader('HTTP/1.0 404 Not Found');\necho \&quot;&lt;html&gt;\\n &lt;head&gt;\\n  &lt;title&gt;File Not Found&lt;title&gt;\\n &lt;/head&gt;\\n &lt;body&gt;\\n  &lt;h1&gt;404 - File Not Found&lt;/h1&gt;\\n &lt;/body&gt;\\n&lt;/html&gt;\&quot;;\nexit;\n}\n$b = pathinfo($a);\nif (!isset($b['extension'])) {\nheader('Content-Type: text/plain');\nheader('Content-Length: ' . filesize($a));\nreadfile($a);\nexit;\n}\nif (isset($mimes[$b['extension']])) {\nif ($mimes[$b['extension']] === 1) {\ninclude $a;\nexit;\n}\nif ($mimes[$b['extension']] === 2) {\nhighlight_file($a);\nexit;\n}\nheader('Content-Type: ' .$mimes[$b['extension']]);\nheader('Content-Length: ' . filesize($a));\nreadfile($a);\nexit;\n}\n}\n\nclass Extract_Phar\n{\nstatic $temp;\nstatic $origdir;\nconst GZ = 0x1000;\nconst BZ2 = 0x2000;\nconst MASK = 0x3000;\nconst START = '&quot;;</a>
+<a name="24"><span class="lineNum">      24 </span>            :         static const char newstub2[] = &quot;';\nconst LEN = &quot;;</a>
+<a name="25"><span class="lineNum">      25 </span>            :         static const char newstub3_0[] = &quot;;\n\nstatic function go($return = false)\n{\n$fp = fopen(__FILE__, 'rb');\nfseek($fp, self::LEN);\n$L = unpack('V', $a = fread($fp, 4));\n$m = '';\n\ndo {\n$read = 8192;\nif ($L[1] - strlen($m) &lt; 8192) {\n$read = $L[1] - strlen($m);\n}\n$last = fread($fp, $read);\n$m .= $last;\n} while (strlen($last) &amp;&amp; strlen($m) &lt; $L[1]);\n\nif (strlen($m) &lt; $L[1]) {\ndie('ERROR: manifest length read was \&quot;' .\nstrlen($m) .'\&quot; should be \&quot;' .\n$L[1] . '\&quot;');\n}\n\n$info = self::_unpack($m);\n$f = $info['c'];\n\nif ($f &amp; self::GZ) {\nif (!function_exists('gzinflate')) {\ndie('Error: zlib extension is not enabled -' .\n' gzinflate() function needed for zlib-compressed .phars');\n}\n}\n\nif ($f &amp; self::BZ2) {\nif (!function_exists('bzdecompress')) {\ndie('Error: bzip2 extension is not enabled -' .\n' bzdecompress() function needed for bz2-compressed .phars');\n}\n}\n\n$temp = self::tmpdir();\n\nif (!$temp || !is_writable($temp)) {\n$sessionpath = session_save_path();\nif (strpos ($sessionpath, \&quot;;\&quot;) !== false)\n$sessionpath = substr ($sessionpath, strpos ($sessionpath, \&quot;;\&quot;)+1);\nif (!file_exists($sessionpath) || !is_dir($sessionpath)) {\ndie('Could not locate temporary directory to extract phar');\n}\n$temp = $sessionpath;\n}\n\n$temp .= '/pharextract/'.basename(__FILE__, '.phar');\nself::$temp = $temp;\nself::$origdir = getcwd();\n@mkdir($temp, 0777, true);\n$temp = realpath($temp);\n\nif (!file_exists($temp . DIRECTORY_SEPARATOR . md5_file(__FILE__))) {\nself::_removeTmpFiles($temp, getcwd());\n@mkdir($temp, 0777, true);\n@file_put_contents($temp . '/' . md5_file(__FILE__), '');\n\nforeach ($info['m'] as $path =&gt; $file) {\n$a = !file_exists(dirname($temp . '/' . $path));\n@mkdir(dirname($temp . '/' . $path), 0777, true);\nclearstatcache();\n\nif ($path[strlen($path) - 1] == '/') {\n@mkdir($temp . '/' . $path, 0777);\n} else {\nfile_put_contents($temp . '/' . $path, self::extractFile($path, $file, $fp));\n@chmod($temp . '/' . $path, 0666);\n}\n}\n}\n\nchdir($temp);\n\nif (!$return) {\ninclude self::START;\n}\n}\n\nstatic fun&quot;;</a>
+<a name="26"><span class="lineNum">      26 </span>            :         static const char newstub3_1[] = &quot;ction tmpdir()\n{\nif (strpos(PHP_OS, 'WIN') !== false) {\nif ($var = getenv('TMP') ? getenv('TMP') : getenv('TEMP')) {\nreturn $var;\n}\nif (is_dir('/temp') || mkdir('/temp')) {\nreturn realpath('/temp');\n}\nreturn false;\n}\nif ($var = getenv('TMPDIR')) {\nreturn $var;\n}\nreturn realpath('/tmp');\n}\n\nstatic function _unpack($m)\n{\n$info = unpack('V', substr($m, 0, 4));\n $l = unpack('V', substr($m, 10, 4));\n$m = substr($m, 14 + $l[1]);\n$s = unpack('V', substr($m, 0, 4));\n$o = 0;\n$start = 4 + $s[1];\n$ret['c'] = 0;\n\nfor ($i = 0; $i &lt; $info[1]; $i++) {\n $len = unpack('V', substr($m, $start, 4));\n$start += 4;\n $savepath = substr($m, $start, $len[1]);\n$start += $len[1];\n   $ret['m'][$savepath] = array_values(unpack('Va/Vb/Vc/Vd/Ve/Vf', substr($m, $start, 24)));\n$ret['m'][$savepath][3] = sprintf('%u', $ret['m'][$savepath][3]\n&amp; 0xffffffff);\n$ret['m'][$savepath][7] = $o;\n$o += $ret['m'][$savepath][2];\n$start += 24 + $ret['m'][$savepath][5];\n$ret['c'] |= $ret['m'][$savepath][4] &amp; self::MASK;\n}\nreturn $ret;\n}\n\nstatic function extractFile($path, $entry, $fp)\n{\n$data = '';\n$c = $entry[2];\n\nwhile ($c) {\nif ($c &lt; 8192) {\n$data .= @fread($fp, $c);\n$c = 0;\n} else {\n$c -= 8192;\n$data .= @fread($fp, 8192);\n}\n}\n\nif ($entry[4] &amp; self::GZ) {\n$data = gzinflate($data);\n} elseif ($entry[4] &amp; self::BZ2) {\n$data = bzdecompress($data);\n}\n\nif (strlen($data) != $entry[0]) {\ndie(\&quot;Invalid internal .phar file (size error \&quot; . strlen($data) . \&quot; != \&quot; .\n$stat[7] . \&quot;)\&quot;);\n}\n\nif ($entry[3] != sprintf(\&quot;%u\&quot;, crc32($data) &amp; 0xffffffff)) {\ndie(\&quot;Invalid internal .phar file (checksum error)\&quot;);\n}\n\nreturn $data;\n}\n\nstatic function _removeTmpFiles($temp, $origdir)\n{\nchdir($temp);\n\nforeach (glob('*') as $f) {\nif (file_exists($f)) {\nis_dir($f) ? @rmdir($f) : @unlink($f);\nif (file_exists($f) &amp;&amp; is_dir($f)) {\nself::_removeTmpFiles($f, getcwd());\n}\n}\n}\n\n@rmdir($temp);\nclearstatcache();\nchdir($origdir);\n}\n}\n\nExtract_Phar::go();\n__HALT_COMPILER(); ?&gt;&quot;;</a>
+<a name="27"><span class="lineNum">      27 </span>            : </a>
+<a name="28"><span class="lineNum">      28 </span>            :         static const int newstub_len = 6623;</a>
+<a name="29"><span class="lineNum">      29 </span>            : </a>
+<a name="30"><span class="lineNum">      30 </span><span class="lineCov">        279 :         return strpprintf(name_len + web_len + newstub_len, &quot;%s%s%s%s%s%s%d%s%s&quot;, newstub0, web, newstub1_0, newstub1_1, index_php, newstub2, name_len + web_len + newstub_len, newstub3_0, newstub3_1);</span></a>
+<a name="31"><span class="lineNum">      31 </span>            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

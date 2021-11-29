@@ -1,0 +1,736 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - /work/php-src/Zend/Optimizer/dce.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">work/php-src/Zend/Optimizer</a> - dce.c<span style="font-size: 80%;"> (source / <a href="dce.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">291</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="3"><span class="lineNum">       3 </span>            :    | Zend Engine, DCE - Dead Code Elimination                             |</a>
+<a name="4"><span class="lineNum">       4 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="5"><span class="lineNum">       5 </span>            :    | Copyright (c) The PHP Group                                          |</a>
+<a name="6"><span class="lineNum">       6 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="7"><span class="lineNum">       7 </span>            :    | This source file is subject to version 3.01 of the PHP license,      |</a>
+<a name="8"><span class="lineNum">       8 </span>            :    | that is bundled with this package in the file LICENSE, and is        |</a>
+<a name="9"><span class="lineNum">       9 </span>            :    | available through the world-wide-web at the following url:           |</a>
+<a name="10"><span class="lineNum">      10 </span>            :    | https://www.php.net/license/3_01.txt                                 |</a>
+<a name="11"><span class="lineNum">      11 </span>            :    | If you did not receive a copy of the PHP license and are unable to   |</a>
+<a name="12"><span class="lineNum">      12 </span>            :    | obtain it through the world-wide-web, please send a note to          |</a>
+<a name="13"><span class="lineNum">      13 </span>            :    | license@php.net so we can mail you a copy immediately.               |</a>
+<a name="14"><span class="lineNum">      14 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="15"><span class="lineNum">      15 </span>            :    | Authors: Nikita Popov &lt;nikic@php.net&gt;                                |</a>
+<a name="16"><span class="lineNum">      16 </span>            :    |          Dmitry Stogov &lt;dmitry@php.net&gt;                              |</a>
+<a name="17"><span class="lineNum">      17 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="18"><span class="lineNum">      18 </span>            : */</a>
+<a name="19"><span class="lineNum">      19 </span>            : </a>
+<a name="20"><span class="lineNum">      20 </span>            : #include &quot;Optimizer/zend_optimizer_internal.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>            : #include &quot;Optimizer/zend_inference.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>            : #include &quot;Optimizer/zend_ssa.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>            : #include &quot;Optimizer/zend_func_info.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &quot;Optimizer/zend_call_graph.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &quot;zend_bitset.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<a name="27"><span class="lineNum">      27 </span>            : /* This pass implements a form of dead code elimination (DCE). The algorithm optimistically assumes</a>
+<a name="28"><span class="lineNum">      28 </span>            :  * that all instructions and phis are dead. Instructions with immediate side-effects are then marked</a>
+<a name="29"><span class="lineNum">      29 </span>            :  * as live. We then recursively (using a worklist) propagate liveness to the instructions that def</a>
+<a name="30"><span class="lineNum">      30 </span>            :  * the used operands.</a>
+<a name="31"><span class="lineNum">      31 </span>            :  *</a>
+<a name="32"><span class="lineNum">      32 </span>            :  * Notes:</a>
+<a name="33"><span class="lineNum">      33 </span>            :  *  * This pass does not perform unreachable code elimination. This happens as part of the SCCP</a>
+<a name="34"><span class="lineNum">      34 </span>            :  *    pass.</a>
+<a name="35"><span class="lineNum">      35 </span>            :  *  * The DCE is performed without taking control-dependence into account, i.e. all conditional</a>
+<a name="36"><span class="lineNum">      36 </span>            :  *    branches are assumed to be live. It's possible to take control-dependence into account using</a>
+<a name="37"><span class="lineNum">      37 </span>            :  *    the DCE algorithm described by Cytron et al., however it requires the construction of a</a>
+<a name="38"><span class="lineNum">      38 </span>            :  *    postdominator tree and of postdominance frontiers, which does not seem worthwhile at this</a>
+<a name="39"><span class="lineNum">      39 </span>            :  *    point.</a>
+<a name="40"><span class="lineNum">      40 </span>            :  *  * We separate intrinsic side-effects from potential side-effects in the form of notices thrown</a>
+<a name="41"><span class="lineNum">      41 </span>            :  *    by the instruction (in case we want to make this configurable). See may_have_side_effects() and</a>
+<a name="42"><span class="lineNum">      42 </span>            :  *    zend_may_throw().</a>
+<a name="43"><span class="lineNum">      43 </span>            :  *  * We often cannot DCE assignments and unsets while guaranteeing that dtors run in the same</a>
+<a name="44"><span class="lineNum">      44 </span>            :  *    order. There is an optimization option to allow reordering of dtor effects.</a>
+<a name="45"><span class="lineNum">      45 </span>            :  *  * The algorithm is able to eliminate dead modifications of non-escaping arrays</a>
+<a name="46"><span class="lineNum">      46 </span>            :  *    and objects as well as dead arrays and objects allocations.</a>
+<a name="47"><span class="lineNum">      47 </span>            :  */</a>
+<a name="48"><span class="lineNum">      48 </span>            : </a>
+<a name="49"><span class="lineNum">      49 </span>            : typedef struct {</a>
+<a name="50"><span class="lineNum">      50 </span>            :         zend_ssa *ssa;</a>
+<a name="51"><span class="lineNum">      51 </span>            :         zend_op_array *op_array;</a>
+<a name="52"><span class="lineNum">      52 </span>            :         zend_bitset instr_dead;</a>
+<a name="53"><span class="lineNum">      53 </span>            :         zend_bitset phi_dead;</a>
+<a name="54"><span class="lineNum">      54 </span>            :         zend_bitset instr_worklist;</a>
+<a name="55"><span class="lineNum">      55 </span>            :         zend_bitset phi_worklist;</a>
+<a name="56"><span class="lineNum">      56 </span>            :         zend_bitset phi_worklist_no_val;</a>
+<a name="57"><span class="lineNum">      57 </span>            :         uint32_t instr_worklist_len;</a>
+<a name="58"><span class="lineNum">      58 </span>            :         uint32_t phi_worklist_len;</a>
+<a name="59"><span class="lineNum">      59 </span>            :         unsigned reorder_dtor_effects : 1;</a>
+<a name="60"><span class="lineNum">      60 </span>            : } context;</a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineNoCov">          0 : static inline bool is_bad_mod(const zend_ssa *ssa, int use, int def) {</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :         if (def &lt; 0) {</span></a>
+<a name="64"><span class="lineNum">      64 </span>            :                 /* This modification is not tracked by SSA, assume the worst */</a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 :                 return 1;</span></a>
+<a name="66"><span class="lineNum">      66 </span>            :         }</a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :         if (ssa-&gt;var_info[use].type &amp; MAY_BE_REF) {</span></a>
+<a name="68"><span class="lineNum">      68 </span>            :                 /* Modification of reference may have side-effect */</a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :                 return 1;</span></a>
+<a name="70"><span class="lineNum">      70 </span>            :         }</a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :         return 0;</span></a>
+<a name="72"><span class="lineNum">      72 </span>            : }</a>
+<a name="73"><span class="lineNum">      73 </span>            : </a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 : static inline bool may_have_side_effects(</span></a>
+<a name="75"><span class="lineNum">      75 </span>            :                 zend_op_array *op_array, zend_ssa *ssa,</a>
+<a name="76"><span class="lineNum">      76 </span>            :                 const zend_op *opline, const zend_ssa_op *ssa_op,</a>
+<a name="77"><span class="lineNum">      77 </span>            :                 bool reorder_dtor_effects) {</a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineNoCov">          0 :         switch (opline-&gt;opcode) {</span></a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :                 case ZEND_NOP:</span></a>
+<a name="80"><span class="lineNum">      80 </span>            :                 case ZEND_IS_IDENTICAL:</a>
+<a name="81"><span class="lineNum">      81 </span>            :                 case ZEND_IS_NOT_IDENTICAL:</a>
+<a name="82"><span class="lineNum">      82 </span>            :                 case ZEND_QM_ASSIGN:</a>
+<a name="83"><span class="lineNum">      83 </span>            :                 case ZEND_FREE:</a>
+<a name="84"><span class="lineNum">      84 </span>            :                 case ZEND_FE_FREE:</a>
+<a name="85"><span class="lineNum">      85 </span>            :                 case ZEND_TYPE_CHECK:</a>
+<a name="86"><span class="lineNum">      86 </span>            :                 case ZEND_DEFINED:</a>
+<a name="87"><span class="lineNum">      87 </span>            :                 case ZEND_ADD:</a>
+<a name="88"><span class="lineNum">      88 </span>            :                 case ZEND_SUB:</a>
+<a name="89"><span class="lineNum">      89 </span>            :                 case ZEND_MUL:</a>
+<a name="90"><span class="lineNum">      90 </span>            :                 case ZEND_POW:</a>
+<a name="91"><span class="lineNum">      91 </span>            :                 case ZEND_BW_OR:</a>
+<a name="92"><span class="lineNum">      92 </span>            :                 case ZEND_BW_AND:</a>
+<a name="93"><span class="lineNum">      93 </span>            :                 case ZEND_BW_XOR:</a>
+<a name="94"><span class="lineNum">      94 </span>            :                 case ZEND_CONCAT:</a>
+<a name="95"><span class="lineNum">      95 </span>            :                 case ZEND_FAST_CONCAT:</a>
+<a name="96"><span class="lineNum">      96 </span>            :                 case ZEND_DIV:</a>
+<a name="97"><span class="lineNum">      97 </span>            :                 case ZEND_MOD:</a>
+<a name="98"><span class="lineNum">      98 </span>            :                 case ZEND_BOOL_XOR:</a>
+<a name="99"><span class="lineNum">      99 </span>            :                 case ZEND_BOOL:</a>
+<a name="100"><span class="lineNum">     100 </span>            :                 case ZEND_BOOL_NOT:</a>
+<a name="101"><span class="lineNum">     101 </span>            :                 case ZEND_BW_NOT:</a>
+<a name="102"><span class="lineNum">     102 </span>            :                 case ZEND_SL:</a>
+<a name="103"><span class="lineNum">     103 </span>            :                 case ZEND_SR:</a>
+<a name="104"><span class="lineNum">     104 </span>            :                 case ZEND_IS_EQUAL:</a>
+<a name="105"><span class="lineNum">     105 </span>            :                 case ZEND_IS_NOT_EQUAL:</a>
+<a name="106"><span class="lineNum">     106 </span>            :                 case ZEND_IS_SMALLER:</a>
+<a name="107"><span class="lineNum">     107 </span>            :                 case ZEND_IS_SMALLER_OR_EQUAL:</a>
+<a name="108"><span class="lineNum">     108 </span>            :                 case ZEND_CASE:</a>
+<a name="109"><span class="lineNum">     109 </span>            :                 case ZEND_CASE_STRICT:</a>
+<a name="110"><span class="lineNum">     110 </span>            :                 case ZEND_CAST:</a>
+<a name="111"><span class="lineNum">     111 </span>            :                 case ZEND_ROPE_INIT:</a>
+<a name="112"><span class="lineNum">     112 </span>            :                 case ZEND_ROPE_ADD:</a>
+<a name="113"><span class="lineNum">     113 </span>            :                 case ZEND_INIT_ARRAY:</a>
+<a name="114"><span class="lineNum">     114 </span>            :                 case ZEND_SPACESHIP:</a>
+<a name="115"><span class="lineNum">     115 </span>            :                 case ZEND_STRLEN:</a>
+<a name="116"><span class="lineNum">     116 </span>            :                 case ZEND_COUNT:</a>
+<a name="117"><span class="lineNum">     117 </span>            :                 case ZEND_GET_TYPE:</a>
+<a name="118"><span class="lineNum">     118 </span>            :                 case ZEND_ISSET_ISEMPTY_THIS:</a>
+<a name="119"><span class="lineNum">     119 </span>            :                 case ZEND_ISSET_ISEMPTY_DIM_OBJ:</a>
+<a name="120"><span class="lineNum">     120 </span>            :                 case ZEND_FETCH_DIM_IS:</a>
+<a name="121"><span class="lineNum">     121 </span>            :                 case ZEND_ISSET_ISEMPTY_CV:</a>
+<a name="122"><span class="lineNum">     122 </span>            :                 case ZEND_ISSET_ISEMPTY_VAR:</a>
+<a name="123"><span class="lineNum">     123 </span>            :                 case ZEND_FETCH_IS:</a>
+<a name="124"><span class="lineNum">     124 </span>            :                 case ZEND_IN_ARRAY:</a>
+<a name="125"><span class="lineNum">     125 </span>            :                 case ZEND_FUNC_NUM_ARGS:</a>
+<a name="126"><span class="lineNum">     126 </span>            :                 case ZEND_FUNC_GET_ARGS:</a>
+<a name="127"><span class="lineNum">     127 </span>            :                 case ZEND_ARRAY_KEY_EXISTS:</a>
+<a name="128"><span class="lineNum">     128 </span>            :                         /* No side effects */</a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineNoCov">          0 :                 case ZEND_ADD_ARRAY_ELEMENT:</span></a>
+<a name="131"><span class="lineNum">     131 </span>            :                         /* TODO: We can't free two vars. Keep instruction alive. &lt;?php [0, &quot;$a&quot; =&gt; &quot;$b&quot;]; */</a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineNoCov">          0 :                         if ((opline-&gt;op1_type &amp; (IS_VAR|IS_TMP_VAR)) &amp;&amp; (opline-&gt;op2_type &amp; (IS_VAR|IS_TMP_VAR))) {</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineNoCov">          0 :                                 return 1;</span></a>
+<a name="134"><span class="lineNum">     134 </span>            :                         }</a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 :                 case ZEND_ROPE_END:</span></a>
+<a name="137"><span class="lineNum">     137 </span>            :                         /* TODO: Rope dce optimization, see #76446 */</a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                 case ZEND_JMP:</span></a>
+<a name="140"><span class="lineNum">     140 </span>            :                 case ZEND_JMPZ:</a>
+<a name="141"><span class="lineNum">     141 </span>            :                 case ZEND_JMPNZ:</a>
+<a name="142"><span class="lineNum">     142 </span>            :                 case ZEND_JMPZNZ:</a>
+<a name="143"><span class="lineNum">     143 </span>            :                 case ZEND_JMPZ_EX:</a>
+<a name="144"><span class="lineNum">     144 </span>            :                 case ZEND_JMPNZ_EX:</a>
+<a name="145"><span class="lineNum">     145 </span>            :                 case ZEND_JMP_SET:</a>
+<a name="146"><span class="lineNum">     146 </span>            :                 case ZEND_COALESCE:</a>
+<a name="147"><span class="lineNum">     147 </span>            :                 case ZEND_ASSERT_CHECK:</a>
+<a name="148"><span class="lineNum">     148 </span>            :                 case ZEND_JMP_NULL:</a>
+<a name="149"><span class="lineNum">     149 </span>            :                         /* For our purposes a jumps and branches are side effects. */</a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="151"><span class="lineNum">     151 </span><span class="lineNoCov">          0 :                 case ZEND_BEGIN_SILENCE:</span></a>
+<a name="152"><span class="lineNum">     152 </span>            :                 case ZEND_END_SILENCE:</a>
+<a name="153"><span class="lineNum">     153 </span>            :                 case ZEND_ECHO:</a>
+<a name="154"><span class="lineNum">     154 </span>            :                 case ZEND_INCLUDE_OR_EVAL:</a>
+<a name="155"><span class="lineNum">     155 </span>            :                 case ZEND_THROW:</a>
+<a name="156"><span class="lineNum">     156 </span>            :                 case ZEND_MATCH_ERROR:</a>
+<a name="157"><span class="lineNum">     157 </span>            :                 case ZEND_EXT_STMT:</a>
+<a name="158"><span class="lineNum">     158 </span>            :                 case ZEND_EXT_FCALL_BEGIN:</a>
+<a name="159"><span class="lineNum">     159 </span>            :                 case ZEND_EXT_FCALL_END:</a>
+<a name="160"><span class="lineNum">     160 </span>            :                 case ZEND_TICKS:</a>
+<a name="161"><span class="lineNum">     161 </span>            :                 case ZEND_YIELD:</a>
+<a name="162"><span class="lineNum">     162 </span>            :                 case ZEND_YIELD_FROM:</a>
+<a name="163"><span class="lineNum">     163 </span>            :                 case ZEND_VERIFY_NEVER_TYPE:</a>
+<a name="164"><span class="lineNum">     164 </span>            :                         /* Intrinsic side effects */</a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineNoCov">          0 :                 case ZEND_DO_FCALL:</span></a>
+<a name="167"><span class="lineNum">     167 </span>            :                 case ZEND_DO_FCALL_BY_NAME:</a>
+<a name="168"><span class="lineNum">     168 </span>            :                 case ZEND_DO_ICALL:</a>
+<a name="169"><span class="lineNum">     169 </span>            :                 case ZEND_DO_UCALL:</a>
+<a name="170"><span class="lineNum">     170 </span>            :                         /* For now assume all calls have side effects */</a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 case ZEND_RECV:</span></a>
+<a name="173"><span class="lineNum">     173 </span>            :                 case ZEND_RECV_INIT:</a>
+<a name="174"><span class="lineNum">     174 </span>            :                         /* Even though RECV_INIT can be side-effect free, these cannot be simply dropped</a>
+<a name="175"><span class="lineNum">     175 </span>            :                          * due to the prologue skipping code. */</a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 case ZEND_ASSIGN_REF:</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :                 case ZEND_ASSIGN:</span></a>
+<a name="180"><span class="lineNum">     180 </span>            :                 {</a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :                         if (is_bad_mod(ssa, ssa_op-&gt;op1_use, ssa_op-&gt;op1_def)) {</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :                                 return 1;</span></a>
+<a name="183"><span class="lineNum">     183 </span>            :                         }</a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :                         if (!reorder_dtor_effects) {</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :                                 if (opline-&gt;op2_type != IS_CONST</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 :                                         &amp;&amp; (OP2_INFO() &amp; MAY_HAVE_DTOR)</span></a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineNoCov">          0 :                                         &amp;&amp; ssa-&gt;vars[ssa_op-&gt;op2_use].escape_state != ESCAPE_STATE_NO_ESCAPE) {</span></a>
+<a name="188"><span class="lineNum">     188 </span>            :                                         /* DCE might shorten lifetime */</a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineNoCov">          0 :                                         return 1;</span></a>
+<a name="190"><span class="lineNum">     190 </span>            :                                 }</a>
+<a name="191"><span class="lineNum">     191 </span>            :                         }</a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="193"><span class="lineNum">     193 </span>            :                 }</a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 case ZEND_UNSET_VAR:</span></a>
+<a name="195"><span class="lineNum">     195 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 case ZEND_UNSET_CV:</span></a>
+<a name="197"><span class="lineNum">     197 </span>            :                 {</a>
+<a name="198"><span class="lineNum">     198 </span><span class="lineNoCov">          0 :                         uint32_t t1 = OP1_INFO();</span></a>
+<a name="199"><span class="lineNum">     199 </span><span class="lineNoCov">          0 :                         if (t1 &amp; MAY_BE_REF) {</span></a>
+<a name="200"><span class="lineNum">     200 </span>            :                                 /* We don't consider uses as the LHS of an assignment as real uses during DCE, so</a>
+<a name="201"><span class="lineNum">     201 </span>            :                                  * an unset may be considered dead even if there is a later assignment to the</a>
+<a name="202"><span class="lineNum">     202 </span>            :                                  * variable. Removing the unset in this case would not be correct if the variable</a>
+<a name="203"><span class="lineNum">     203 </span>            :                                  * is a reference, because unset breaks references. */</a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :                                 return 1;</span></a>
+<a name="205"><span class="lineNum">     205 </span>            :                         }</a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="207"><span class="lineNum">     207 </span>            :                 }</a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :                 case ZEND_PRE_INC:</span></a>
+<a name="209"><span class="lineNum">     209 </span>            :                 case ZEND_POST_INC:</a>
+<a name="210"><span class="lineNum">     210 </span>            :                 case ZEND_PRE_DEC:</a>
+<a name="211"><span class="lineNum">     211 </span>            :                 case ZEND_POST_DEC:</a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :                         return is_bad_mod(ssa, ssa_op-&gt;op1_use, ssa_op-&gt;op1_def);</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 case ZEND_ASSIGN_OP:</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 :                         return is_bad_mod(ssa, ssa_op-&gt;op1_use, ssa_op-&gt;op1_def)</span></a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineNoCov">          0 :                                 || ssa-&gt;vars[ssa_op-&gt;op1_def].escape_state != ESCAPE_STATE_NO_ESCAPE;</span></a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineNoCov">          0 :                 case ZEND_ASSIGN_DIM:</span></a>
+<a name="217"><span class="lineNum">     217 </span>            :                 case ZEND_ASSIGN_OBJ:</a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :                         if (is_bad_mod(ssa, ssa_op-&gt;op1_use, ssa_op-&gt;op1_def)</span></a>
+<a name="219"><span class="lineNum">     219 </span><span class="lineNoCov">          0 :                                 || ssa-&gt;vars[ssa_op-&gt;op1_def].escape_state != ESCAPE_STATE_NO_ESCAPE) {</span></a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 :                                 return 1;</span></a>
+<a name="221"><span class="lineNum">     221 </span>            :                         }</a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineNoCov">          0 :                         if (!reorder_dtor_effects) {</span></a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineNoCov">          0 :                                 opline++;</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineNoCov">          0 :                                 ssa_op++;</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineNoCov">          0 :                                 if (opline-&gt;op1_type != IS_CONST</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineNoCov">          0 :                                         &amp;&amp; (OP1_INFO() &amp; MAY_HAVE_DTOR)) {</span></a>
+<a name="227"><span class="lineNum">     227 </span>            :                                         /* DCE might shorten lifetime */</a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :                                         return 1;</span></a>
+<a name="229"><span class="lineNum">     229 </span>            :                                 }</a>
+<a name="230"><span class="lineNum">     230 </span>            :                         }</a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineNoCov">          0 :                 case ZEND_PRE_INC_OBJ:</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :                 case ZEND_PRE_DEC_OBJ:</a>
+<a name="234"><span class="lineNum">     234 </span>            :                 case ZEND_POST_INC_OBJ:</a>
+<a name="235"><span class="lineNum">     235 </span>            :                 case ZEND_POST_DEC_OBJ:</a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineNoCov">          0 :                         if (is_bad_mod(ssa, ssa_op-&gt;op1_use, ssa_op-&gt;op1_def)</span></a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineNoCov">          0 :                                 || ssa-&gt;vars[ssa_op-&gt;op1_def].escape_state != ESCAPE_STATE_NO_ESCAPE) {</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineNoCov">          0 :                                 return 1;</span></a>
+<a name="239"><span class="lineNum">     239 </span>            :                         }</a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 :                 case ZEND_BIND_STATIC:</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineNoCov">          0 :                         if (op_array-&gt;static_variables) {</span></a>
+<a name="243"><span class="lineNum">     243 </span>            :                                 /* Implicit and Explicit bind static is effectively prologue of closure so</a>
+<a name="244"><span class="lineNum">     244 </span>            :                                    report it has side effects like RECV, RECV_INIT; This allows us to</a>
+<a name="245"><span class="lineNum">     245 </span>            :                                    reflect on the closure and discover used variable at runtime */</a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineNoCov">          0 :                                 if ((opline-&gt;extended_value &amp; (ZEND_BIND_IMPLICIT|ZEND_BIND_EXPLICIT))) {</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineNoCov">          0 :                                         return 1;</span></a>
+<a name="248"><span class="lineNum">     248 </span>            :                                 }</a>
+<a name="249"><span class="lineNum">     249 </span>            : </a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineNoCov">          0 :                                 if ((opline-&gt;extended_value &amp; ZEND_BIND_REF) != 0) {</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineNoCov">          0 :                                         zval *value =</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineNoCov">          0 :                                                 (zval*)((char*)op_array-&gt;static_variables-&gt;arData +</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineNoCov">          0 :                                                         (opline-&gt;extended_value &amp; ~ZEND_BIND_REF));</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineNoCov">          0 :                                         if (Z_TYPE_P(value) == IS_CONSTANT_AST) {</span></a>
+<a name="255"><span class="lineNum">     255 </span>            :                                                 /* AST may contain undefined constants */</a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineNoCov">          0 :                                                 return 1;</span></a>
+<a name="257"><span class="lineNum">     257 </span>            :                                         }</a>
+<a name="258"><span class="lineNum">     258 </span>            :                                 }</a>
+<a name="259"><span class="lineNum">     259 </span>            :                         }</a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 case ZEND_CHECK_VAR:</span></a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineNoCov">          0 :                         return (OP1_INFO() &amp; MAY_BE_UNDEF) != 0;</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineNoCov">          0 :                 case ZEND_FE_RESET_R:</span></a>
+<a name="264"><span class="lineNum">     264 </span>            :                 case ZEND_FE_RESET_RW:</a>
+<a name="265"><span class="lineNum">     265 </span>            :                         /* Model as not having side-effects -- let the side-effect be introduced by</a>
+<a name="266"><span class="lineNum">     266 </span>            :                          * FE_FETCH if the array is not known to be non-empty. */</a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 :                         return (OP1_INFO() &amp; MAY_BE_ANY) != MAY_BE_ARRAY;</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineNoCov">          0 :                 default:</span></a>
+<a name="269"><span class="lineNum">     269 </span>            :                         /* For everything we didn't handle, assume a side-effect */</a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :                         return 1;</span></a>
+<a name="271"><span class="lineNum">     271 </span>            :         }</a>
+<a name="272"><span class="lineNum">     272 </span>            : }</a>
+<a name="273"><span class="lineNum">     273 </span>            : </a>
+<a name="274"><span class="lineNum">     274 </span>            : static zend_always_inline void add_to_worklists(context *ctx, int var_num, int check) {</a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineNoCov">          0 :         zend_ssa_var *var = &amp;ctx-&gt;ssa-&gt;vars[var_num];</span></a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineNoCov">          0 :         if (var-&gt;definition &gt;= 0) {</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineNoCov">          0 :                 if (!check || zend_bitset_in(ctx-&gt;instr_dead, var-&gt;definition)) {</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineNoCov">          0 :                         zend_bitset_incl(ctx-&gt;instr_worklist, var-&gt;definition);</span></a>
+<a name="279"><span class="lineNum">     279 </span>            :                 }</a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineNoCov">          0 :         } else if (var-&gt;definition_phi) {</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineNoCov">          0 :                 if (!check || zend_bitset_in(ctx-&gt;phi_dead, var_num)) {</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineNoCov">          0 :                         zend_bitset_incl(ctx-&gt;phi_worklist, var_num);</span></a>
+<a name="283"><span class="lineNum">     283 </span>            :                 }</a>
+<a name="284"><span class="lineNum">     284 </span>            :         }</a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="286"><span class="lineNum">     286 </span>            : </a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 : static inline void add_to_phi_worklist_no_val(context *ctx, int var_num) {</span></a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineNoCov">          0 :         zend_ssa_var *var = &amp;ctx-&gt;ssa-&gt;vars[var_num];</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineNoCov">          0 :         if (var-&gt;definition_phi &amp;&amp; zend_bitset_in(ctx-&gt;phi_dead, var_num)) {</span></a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineNoCov">          0 :                 zend_bitset_incl(ctx-&gt;phi_worklist_no_val, var_num);</span></a>
+<a name="291"><span class="lineNum">     291 </span>            :         }</a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="293"><span class="lineNum">     293 </span>            : </a>
+<a name="294"><span class="lineNum">     294 </span>            : static zend_always_inline void add_operands_to_worklists(context *ctx, zend_op *opline, zend_ssa_op *ssa_op, zend_ssa *ssa, int check) {</a>
+<a name="295"><span class="lineNum">     295 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;result_use &gt;= 0) {</span></a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineNoCov">          0 :                 add_to_worklists(ctx, ssa_op-&gt;result_use, check);</span></a>
+<a name="297"><span class="lineNum">     297 </span>            :         }</a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;op1_use &gt;= 0) {</span></a>
+<a name="299"><span class="lineNum">     299 </span><span class="lineNoCov">          0 :                 if (!zend_ssa_is_no_val_use(opline, ssa_op, ssa_op-&gt;op1_use)</span></a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineNoCov">          0 :                  || (opline-&gt;opcode == ZEND_ASSIGN</span></a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineNoCov">          0 :                   &amp;&amp; (ssa-&gt;var_info[ssa_op-&gt;op1_use].type &amp; MAY_BE_REF) != 0)) {</span></a>
+<a name="302"><span class="lineNum">     302 </span><span class="lineNoCov">          0 :                         add_to_worklists(ctx, ssa_op-&gt;op1_use, check);</span></a>
+<a name="303"><span class="lineNum">     303 </span>            :                 } else {</a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 :                         add_to_phi_worklist_no_val(ctx, ssa_op-&gt;op1_use);</span></a>
+<a name="305"><span class="lineNum">     305 </span>            :                 }</a>
+<a name="306"><span class="lineNum">     306 </span>            :         }</a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;op2_use &gt;= 0) {</span></a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineNoCov">          0 :                 if (!zend_ssa_is_no_val_use(opline, ssa_op, ssa_op-&gt;op2_use)</span></a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineNoCov">          0 :                  || (opline-&gt;opcode == ZEND_FE_FETCH_R</span></a>
+<a name="310"><span class="lineNum">     310 </span><span class="lineNoCov">          0 :                   &amp;&amp; (ssa-&gt;var_info[ssa_op-&gt;op2_use].type &amp; MAY_BE_REF) != 0)) {</span></a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 :                         add_to_worklists(ctx, ssa_op-&gt;op2_use, check);</span></a>
+<a name="312"><span class="lineNum">     312 </span>            :                 } else {</a>
+<a name="313"><span class="lineNum">     313 </span><span class="lineNoCov">          0 :                         add_to_phi_worklist_no_val(ctx, ssa_op-&gt;op2_use);</span></a>
+<a name="314"><span class="lineNum">     314 </span>            :                 }</a>
+<a name="315"><span class="lineNum">     315 </span>            :         }</a>
+<a name="316"><span class="lineNum">     316 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="317"><span class="lineNum">     317 </span>            : </a>
+<a name="318"><span class="lineNum">     318 </span>            : static zend_always_inline void add_phi_sources_to_worklists(context *ctx, zend_ssa_phi *phi, int check) {</a>
+<a name="319"><span class="lineNum">     319 </span><span class="lineNoCov">          0 :         zend_ssa *ssa = ctx-&gt;ssa;</span></a>
+<a name="320"><span class="lineNum">     320 </span>            :         int source;</a>
+<a name="321"><span class="lineNum">     321 </span><span class="lineNoCov">          0 :         FOREACH_PHI_SOURCE(phi, source) {</span></a>
+<a name="322"><span class="lineNum">     322 </span>            :                 add_to_worklists(ctx, source, check);</a>
+<a name="323"><span class="lineNum">     323 </span>            :         } FOREACH_PHI_SOURCE_END();</a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="325"><span class="lineNum">     325 </span>            : </a>
+<a name="326"><span class="lineNum">     326 </span><span class="lineNoCov">          0 : static inline bool is_var_dead(context *ctx, int var_num) {</span></a>
+<a name="327"><span class="lineNum">     327 </span><span class="lineNoCov">          0 :         zend_ssa_var *var = &amp;ctx-&gt;ssa-&gt;vars[var_num];</span></a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineNoCov">          0 :         if (var-&gt;definition_phi) {</span></a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineNoCov">          0 :                 return zend_bitset_in(ctx-&gt;phi_dead, var_num);</span></a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineNoCov">          0 :         } else if (var-&gt;definition &gt;= 0) {</span></a>
+<a name="331"><span class="lineNum">     331 </span><span class="lineNoCov">          0 :                 return zend_bitset_in(ctx-&gt;instr_dead, var-&gt;definition);</span></a>
+<a name="332"><span class="lineNum">     332 </span>            :         } else {</a>
+<a name="333"><span class="lineNum">     333 </span>            :                 /* Variable has no definition, so either the definition has already been removed (var is</a>
+<a name="334"><span class="lineNum">     334 </span>            :                  * dead) or this is one of the implicit variables at the start of the function (for our</a>
+<a name="335"><span class="lineNum">     335 </span>            :                  * purposes live) */</a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineNoCov">          0 :                 return var_num &gt;= ctx-&gt;op_array-&gt;last_var;</span></a>
+<a name="337"><span class="lineNum">     337 </span>            :         }</a>
+<a name="338"><span class="lineNum">     338 </span>            : }</a>
+<a name="339"><span class="lineNum">     339 </span>            : </a>
+<a name="340"><span class="lineNum">     340 </span>            : // Sometimes we can mark the var as EXT_UNUSED</a>
+<a name="341"><span class="lineNum">     341 </span><span class="lineNoCov">          0 : static bool try_remove_var_def(context *ctx, int free_var, int use_chain, zend_op *opline) {</span></a>
+<a name="342"><span class="lineNum">     342 </span><span class="lineNoCov">          0 :         if (use_chain &gt;= 0) {</span></a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineNoCov">          0 :                 return 0;</span></a>
+<a name="344"><span class="lineNum">     344 </span>            :         }</a>
+<a name="345"><span class="lineNum">     345 </span><span class="lineNoCov">          0 :         zend_ssa_var *var = &amp;ctx-&gt;ssa-&gt;vars[free_var];</span></a>
+<a name="346"><span class="lineNum">     346 </span><span class="lineNoCov">          0 :         int def = var-&gt;definition;</span></a>
+<a name="347"><span class="lineNum">     347 </span>            : </a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineNoCov">          0 :         if (def &gt;= 0) {</span></a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineNoCov">          0 :                 zend_ssa_op *def_op = &amp;ctx-&gt;ssa-&gt;ops[def];</span></a>
+<a name="350"><span class="lineNum">     350 </span>            : </a>
+<a name="351"><span class="lineNum">     351 </span><span class="lineNoCov">          0 :                 if (def_op-&gt;result_def == free_var</span></a>
+<a name="352"><span class="lineNum">     352 </span><span class="lineNoCov">          0 :                                 &amp;&amp; var-&gt;phi_use_chain == NULL</span></a>
+<a name="353"><span class="lineNum">     353 </span><span class="lineNoCov">          0 :                                 &amp;&amp; var-&gt;use_chain == (opline - ctx-&gt;op_array-&gt;opcodes)) {</span></a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineNoCov">          0 :                         zend_op *def_opline = &amp;ctx-&gt;op_array-&gt;opcodes[def];</span></a>
+<a name="355"><span class="lineNum">     355 </span>            : </a>
+<a name="356"><span class="lineNum">     356 </span><span class="lineNoCov">          0 :                         switch (def_opline-&gt;opcode) {</span></a>
+<a name="357"><span class="lineNum">     357 </span><span class="lineNoCov">          0 :                                 case ZEND_ASSIGN:</span></a>
+<a name="358"><span class="lineNum">     358 </span>            :                                 case ZEND_ASSIGN_REF:</a>
+<a name="359"><span class="lineNum">     359 </span>            :                                 case ZEND_ASSIGN_DIM:</a>
+<a name="360"><span class="lineNum">     360 </span>            :                                 case ZEND_ASSIGN_OBJ:</a>
+<a name="361"><span class="lineNum">     361 </span>            :                                 case ZEND_ASSIGN_OBJ_REF:</a>
+<a name="362"><span class="lineNum">     362 </span>            :                                 case ZEND_ASSIGN_STATIC_PROP:</a>
+<a name="363"><span class="lineNum">     363 </span>            :                                 case ZEND_ASSIGN_STATIC_PROP_REF:</a>
+<a name="364"><span class="lineNum">     364 </span>            :                                 case ZEND_ASSIGN_OP:</a>
+<a name="365"><span class="lineNum">     365 </span>            :                                 case ZEND_ASSIGN_DIM_OP:</a>
+<a name="366"><span class="lineNum">     366 </span>            :                                 case ZEND_ASSIGN_OBJ_OP:</a>
+<a name="367"><span class="lineNum">     367 </span>            :                                 case ZEND_ASSIGN_STATIC_PROP_OP:</a>
+<a name="368"><span class="lineNum">     368 </span>            :                                 case ZEND_PRE_INC:</a>
+<a name="369"><span class="lineNum">     369 </span>            :                                 case ZEND_PRE_DEC:</a>
+<a name="370"><span class="lineNum">     370 </span>            :                                 case ZEND_PRE_INC_OBJ:</a>
+<a name="371"><span class="lineNum">     371 </span>            :                                 case ZEND_PRE_DEC_OBJ:</a>
+<a name="372"><span class="lineNum">     372 </span>            :                                 case ZEND_DO_ICALL:</a>
+<a name="373"><span class="lineNum">     373 </span>            :                                 case ZEND_DO_UCALL:</a>
+<a name="374"><span class="lineNum">     374 </span>            :                                 case ZEND_DO_FCALL_BY_NAME:</a>
+<a name="375"><span class="lineNum">     375 </span>            :                                 case ZEND_DO_FCALL:</a>
+<a name="376"><span class="lineNum">     376 </span>            :                                 case ZEND_INCLUDE_OR_EVAL:</a>
+<a name="377"><span class="lineNum">     377 </span>            :                                 case ZEND_YIELD:</a>
+<a name="378"><span class="lineNum">     378 </span>            :                                 case ZEND_YIELD_FROM:</a>
+<a name="379"><span class="lineNum">     379 </span>            :                                 case ZEND_ASSERT_CHECK:</a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineNoCov">          0 :                                         def_opline-&gt;result_type = IS_UNUSED;</span></a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineNoCov">          0 :                                         def_opline-&gt;result.var = 0;</span></a>
+<a name="382"><span class="lineNum">     382 </span><span class="lineNoCov">          0 :                                         def_op-&gt;result_def = -1;</span></a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineNoCov">          0 :                                         var-&gt;definition = -1;</span></a>
+<a name="384"><span class="lineNum">     384 </span><span class="lineNoCov">          0 :                                         return 1;</span></a>
+<a name="385"><span class="lineNum">     385 </span><span class="lineNoCov">          0 :                                 default:</span></a>
+<a name="386"><span class="lineNum">     386 </span><span class="lineNoCov">          0 :                                         break;</span></a>
+<a name="387"><span class="lineNum">     387 </span>            :                         }</a>
+<a name="388"><span class="lineNum">     388 </span><span class="lineNoCov">          0 :                 }</span></a>
+<a name="389"><span class="lineNum">     389 </span>            :         }</a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineNoCov">          0 :         return 0;</span></a>
+<a name="391"><span class="lineNum">     391 </span>            : }</a>
+<a name="392"><span class="lineNum">     392 </span>            : </a>
+<a name="393"><span class="lineNum">     393 </span>            : static zend_always_inline bool may_be_refcounted(uint32_t type) {</a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineNoCov">          0 :         return (type &amp; (MAY_BE_STRING|MAY_BE_ARRAY|MAY_BE_OBJECT|MAY_BE_RESOURCE|MAY_BE_REF)) != 0;</span></a>
+<a name="395"><span class="lineNum">     395 </span>            : }</a>
+<a name="396"><span class="lineNum">     396 </span>            : </a>
+<a name="397"><span class="lineNum">     397 </span><span class="lineNoCov">          0 : static inline bool is_free_of_live_var(context *ctx, zend_op *opline, zend_ssa_op *ssa_op) {</span></a>
+<a name="398"><span class="lineNum">     398 </span><span class="lineNoCov">          0 :         switch (opline-&gt;opcode) {</span></a>
+<a name="399"><span class="lineNum">     399 </span><span class="lineNoCov">          0 :                 case ZEND_FREE:</span></a>
+<a name="400"><span class="lineNum">     400 </span>            :                         /* It is always safe to remove FREEs of non-refcounted values, even if they are live. */</a>
+<a name="401"><span class="lineNum">     401 </span><span class="lineNoCov">          0 :                         if (!may_be_refcounted(ctx-&gt;ssa-&gt;var_info[ssa_op-&gt;op1_use].type)) {</span></a>
+<a name="402"><span class="lineNum">     402 </span><span class="lineNoCov">          0 :                                 return 0;</span></a>
+<a name="403"><span class="lineNum">     403 </span>            :                         }</a>
+<a name="404"><span class="lineNum">     404 </span>            :                         ZEND_FALLTHROUGH;</a>
+<a name="405"><span class="lineNum">     405 </span>            :                 case ZEND_FE_FREE:</a>
+<a name="406"><span class="lineNum">     406 </span><span class="lineNoCov">          0 :                         return !is_var_dead(ctx, ssa_op-&gt;op1_use);</span></a>
+<a name="407"><span class="lineNum">     407 </span><span class="lineNoCov">          0 :                 default:</span></a>
+<a name="408"><span class="lineNum">     408 </span><span class="lineNoCov">          0 :                         return 0;</span></a>
+<a name="409"><span class="lineNum">     409 </span>            :         }</a>
+<a name="410"><span class="lineNum">     410 </span>            : }</a>
+<a name="411"><span class="lineNum">     411 </span>            : </a>
+<a name="412"><span class="lineNum">     412 </span>            : /* Returns whether the instruction has been DCEd */</a>
+<a name="413"><span class="lineNum">     413 </span><span class="lineNoCov">          0 : static bool dce_instr(context *ctx, zend_op *opline, zend_ssa_op *ssa_op) {</span></a>
+<a name="414"><span class="lineNum">     414 </span><span class="lineNoCov">          0 :         zend_ssa *ssa = ctx-&gt;ssa;</span></a>
+<a name="415"><span class="lineNum">     415 </span><span class="lineNoCov">          0 :         int free_var = -1;</span></a>
+<a name="416"><span class="lineNum">     416 </span>            :         zend_uchar free_var_type;</a>
+<a name="417"><span class="lineNum">     417 </span>            : </a>
+<a name="418"><span class="lineNum">     418 </span><span class="lineNoCov">          0 :         if (opline-&gt;opcode == ZEND_NOP) {</span></a>
+<a name="419"><span class="lineNum">     419 </span><span class="lineNoCov">          0 :                 return 0;</span></a>
+<a name="420"><span class="lineNum">     420 </span>            :         }</a>
+<a name="421"><span class="lineNum">     421 </span>            : </a>
+<a name="422"><span class="lineNum">     422 </span>            :         /* We mark FREEs as dead, but they're only really dead if the destroyed var is dead */</a>
+<a name="423"><span class="lineNum">     423 </span><span class="lineNoCov">          0 :         if (is_free_of_live_var(ctx, opline, ssa_op)) {</span></a>
+<a name="424"><span class="lineNum">     424 </span><span class="lineNoCov">          0 :                 return 0;</span></a>
+<a name="425"><span class="lineNum">     425 </span>            :         }</a>
+<a name="426"><span class="lineNum">     426 </span>            : </a>
+<a name="427"><span class="lineNum">     427 </span><span class="lineNoCov">          0 :         if ((opline-&gt;op1_type &amp; (IS_VAR|IS_TMP_VAR))&amp;&amp; !is_var_dead(ctx, ssa_op-&gt;op1_use)) {</span></a>
+<a name="428"><span class="lineNum">     428 </span><span class="lineNoCov">          0 :                 if (!try_remove_var_def(ctx, ssa_op-&gt;op1_use, ssa_op-&gt;op1_use_chain, opline)) {</span></a>
+<a name="429"><span class="lineNum">     429 </span><span class="lineNoCov">          0 :                         if (may_be_refcounted(ssa-&gt;var_info[ssa_op-&gt;op1_use].type)</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineNoCov">          0 :                                         &amp;&amp; opline-&gt;opcode != ZEND_CASE &amp;&amp; opline-&gt;opcode != ZEND_CASE_STRICT) {</span></a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineNoCov">          0 :                                 free_var = ssa_op-&gt;op1_use;</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineNoCov">          0 :                                 free_var_type = opline-&gt;op1_type;</span></a>
+<a name="433"><span class="lineNum">     433 </span>            :                         }</a>
+<a name="434"><span class="lineNum">     434 </span>            :                 }</a>
+<a name="435"><span class="lineNum">     435 </span>            :         }</a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineNoCov">          0 :         if ((opline-&gt;op2_type &amp; (IS_VAR|IS_TMP_VAR)) &amp;&amp; !is_var_dead(ctx, ssa_op-&gt;op2_use)) {</span></a>
+<a name="437"><span class="lineNum">     437 </span><span class="lineNoCov">          0 :                 if (!try_remove_var_def(ctx, ssa_op-&gt;op2_use, ssa_op-&gt;op2_use_chain, opline)) {</span></a>
+<a name="438"><span class="lineNum">     438 </span><span class="lineNoCov">          0 :                         if (may_be_refcounted(ssa-&gt;var_info[ssa_op-&gt;op2_use].type)) {</span></a>
+<a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 :                                 if (free_var &gt;= 0) {</span></a>
+<a name="440"><span class="lineNum">     440 </span>            :                                         // TODO: We can't free two vars. Keep instruction alive.</a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :                                         zend_bitset_excl(ctx-&gt;instr_dead, opline - ctx-&gt;op_array-&gt;opcodes);</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 :                                         return 0;</span></a>
+<a name="443"><span class="lineNum">     443 </span>            :                                 }</a>
+<a name="444"><span class="lineNum">     444 </span><span class="lineNoCov">          0 :                                 free_var = ssa_op-&gt;op2_use;</span></a>
+<a name="445"><span class="lineNum">     445 </span><span class="lineNoCov">          0 :                                 free_var_type = opline-&gt;op2_type;</span></a>
+<a name="446"><span class="lineNum">     446 </span>            :                         }</a>
+<a name="447"><span class="lineNum">     447 </span>            :                 }</a>
+<a name="448"><span class="lineNum">     448 </span>            :         }</a>
+<a name="449"><span class="lineNum">     449 </span>            : </a>
+<a name="450"><span class="lineNum">     450 </span><span class="lineNoCov">          0 :         zend_ssa_rename_defs_of_instr(ctx-&gt;ssa, ssa_op);</span></a>
+<a name="451"><span class="lineNum">     451 </span><span class="lineNoCov">          0 :         zend_ssa_remove_instr(ctx-&gt;ssa, opline, ssa_op);</span></a>
+<a name="452"><span class="lineNum">     452 </span>            : </a>
+<a name="453"><span class="lineNum">     453 </span><span class="lineNoCov">          0 :         if (free_var &gt;= 0) {</span></a>
+<a name="454"><span class="lineNum">     454 </span><span class="lineNoCov">          0 :                 opline-&gt;opcode = ZEND_FREE;</span></a>
+<a name="455"><span class="lineNum">     455 </span><span class="lineNoCov">          0 :                 opline-&gt;op1.var = EX_NUM_TO_VAR(ssa-&gt;vars[free_var].var);</span></a>
+<a name="456"><span class="lineNum">     456 </span><span class="lineNoCov">          0 :                 opline-&gt;op1_type = free_var_type;</span></a>
+<a name="457"><span class="lineNum">     457 </span>            : </a>
+<a name="458"><span class="lineNum">     458 </span><span class="lineNoCov">          0 :                 ssa_op-&gt;op1_use = free_var;</span></a>
+<a name="459"><span class="lineNum">     459 </span><span class="lineNoCov">          0 :                 ssa_op-&gt;op1_use_chain = ssa-&gt;vars[free_var].use_chain;</span></a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineNoCov">          0 :                 ssa-&gt;vars[free_var].use_chain = ssa_op - ssa-&gt;ops;</span></a>
+<a name="461"><span class="lineNum">     461 </span><span class="lineNoCov">          0 :                 return 0;</span></a>
+<a name="462"><span class="lineNum">     462 </span>            :         }</a>
+<a name="463"><span class="lineNum">     463 </span><span class="lineNoCov">          0 :         return 1;</span></a>
+<a name="464"><span class="lineNum">     464 </span>            : }</a>
+<a name="465"><span class="lineNum">     465 </span>            : </a>
+<a name="466"><span class="lineNum">     466 </span><span class="lineNoCov">          0 : static inline int get_common_phi_source(zend_ssa *ssa, zend_ssa_phi *phi) {</span></a>
+<a name="467"><span class="lineNum">     467 </span><span class="lineNoCov">          0 :         int common_source = -1;</span></a>
+<a name="468"><span class="lineNum">     468 </span>            :         int source;</a>
+<a name="469"><span class="lineNum">     469 </span><span class="lineNoCov">          0 :         FOREACH_PHI_SOURCE(phi, source) {</span></a>
+<a name="470"><span class="lineNum">     470 </span><span class="lineNoCov">          0 :                 if (source == phi-&gt;ssa_var) {</span></a>
+<a name="471"><span class="lineNum">     471 </span><span class="lineNoCov">          0 :                         continue;</span></a>
+<a name="472"><span class="lineNum">     472 </span>            :                 }</a>
+<a name="473"><span class="lineNum">     473 </span><span class="lineNoCov">          0 :                 if (common_source == -1) {</span></a>
+<a name="474"><span class="lineNum">     474 </span><span class="lineNoCov">          0 :                         common_source = source;</span></a>
+<a name="475"><span class="lineNum">     475 </span><span class="lineNoCov">          0 :                 } else if (common_source != source) {</span></a>
+<a name="476"><span class="lineNum">     476 </span><span class="lineNoCov">          0 :                         return -1;</span></a>
+<a name="477"><span class="lineNum">     477 </span>            :                 }</a>
+<a name="478"><span class="lineNum">     478 </span>            :         } FOREACH_PHI_SOURCE_END();</a>
+<a name="479"><span class="lineNum">     479 </span>            : </a>
+<a name="480"><span class="lineNum">     480 </span>            :         /* If all sources are phi-&gt;ssa_var this phi must be in an unreachable cycle.</a>
+<a name="481"><span class="lineNum">     481 </span>            :          * We can't easily drop the phi in that case, as we don't have something to replace it with.</a>
+<a name="482"><span class="lineNum">     482 </span>            :          * Ideally SCCP would eliminate the whole cycle. */</a>
+<a name="483"><span class="lineNum">     483 </span><span class="lineNoCov">          0 :         return common_source;</span></a>
+<a name="484"><span class="lineNum">     484 </span>            : }</a>
+<a name="485"><span class="lineNum">     485 </span>            : </a>
+<a name="486"><span class="lineNum">     486 </span><span class="lineNoCov">          0 : static void try_remove_trivial_phi(context *ctx, zend_ssa_phi *phi) {</span></a>
+<a name="487"><span class="lineNum">     487 </span><span class="lineNoCov">          0 :         zend_ssa *ssa = ctx-&gt;ssa;</span></a>
+<a name="488"><span class="lineNum">     488 </span><span class="lineNoCov">          0 :         if (phi-&gt;pi &lt; 0) {</span></a>
+<a name="489"><span class="lineNum">     489 </span>            :                 /* Phi assignment with identical source operands */</a>
+<a name="490"><span class="lineNum">     490 </span><span class="lineNoCov">          0 :                 int common_source = get_common_phi_source(ssa, phi);</span></a>
+<a name="491"><span class="lineNum">     491 </span><span class="lineNoCov">          0 :                 if (common_source &gt;= 0) {</span></a>
+<a name="492"><span class="lineNum">     492 </span><span class="lineNoCov">          0 :                         zend_ssa_rename_var_uses(ssa, phi-&gt;ssa_var, common_source, 1);</span></a>
+<a name="493"><span class="lineNum">     493 </span><span class="lineNoCov">          0 :                         zend_ssa_remove_phi(ssa, phi);</span></a>
+<a name="494"><span class="lineNum">     494 </span>            :                 }</a>
+<a name="495"><span class="lineNum">     495 </span>            :         } else {</a>
+<a name="496"><span class="lineNum">     496 </span>            :                 /* Pi assignment that is only used in Phi/Pi assignments */</a>
+<a name="497"><span class="lineNum">     497 </span>            :                 // TODO What if we want to rerun type inference after DCE? Maybe separate this?</a>
+<a name="498"><span class="lineNum">     498 </span>            :                 /*ZEND_ASSERT(phi-&gt;sources[0] != -1);</a>
+<a name="499"><span class="lineNum">     499 </span>            :                 if (ssa-&gt;vars[phi-&gt;ssa_var].use_chain &lt; 0) {</a>
+<a name="500"><span class="lineNum">     500 </span>            :                         zend_ssa_rename_var_uses_keep_types(ssa, phi-&gt;ssa_var, phi-&gt;sources[0], 1);</a>
+<a name="501"><span class="lineNum">     501 </span>            :                         zend_ssa_remove_phi(ssa, phi);</a>
+<a name="502"><span class="lineNum">     502 </span>            :                 }*/</a>
+<a name="503"><span class="lineNum">     503 </span>            :         }</a>
+<a name="504"><span class="lineNum">     504 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="505"><span class="lineNum">     505 </span>            : </a>
+<a name="506"><span class="lineNum">     506 </span><span class="lineNoCov">          0 : static inline bool may_break_varargs(const zend_op_array *op_array, const zend_ssa *ssa, const zend_ssa_op *ssa_op) {</span></a>
+<a name="507"><span class="lineNum">     507 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;op1_def &gt;= 0</span></a>
+<a name="508"><span class="lineNum">     508 </span><span class="lineNoCov">          0 :                         &amp;&amp; ssa-&gt;vars[ssa_op-&gt;op1_def].var &lt; op_array-&gt;num_args) {</span></a>
+<a name="509"><span class="lineNum">     509 </span><span class="lineNoCov">          0 :                 return 1;</span></a>
+<a name="510"><span class="lineNum">     510 </span>            :         }</a>
+<a name="511"><span class="lineNum">     511 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;op2_def &gt;= 0</span></a>
+<a name="512"><span class="lineNum">     512 </span><span class="lineNoCov">          0 :                         &amp;&amp; ssa-&gt;vars[ssa_op-&gt;op2_def].var &lt; op_array-&gt;num_args) {</span></a>
+<a name="513"><span class="lineNum">     513 </span><span class="lineNoCov">          0 :                 return 1;</span></a>
+<a name="514"><span class="lineNum">     514 </span>            :         }</a>
+<a name="515"><span class="lineNum">     515 </span><span class="lineNoCov">          0 :         if (ssa_op-&gt;result_def &gt;= 0</span></a>
+<a name="516"><span class="lineNum">     516 </span><span class="lineNoCov">          0 :                         &amp;&amp; ssa-&gt;vars[ssa_op-&gt;result_def].var &lt; op_array-&gt;num_args) {</span></a>
+<a name="517"><span class="lineNum">     517 </span><span class="lineNoCov">          0 :                 return 1;</span></a>
+<a name="518"><span class="lineNum">     518 </span>            :         }</a>
+<a name="519"><span class="lineNum">     519 </span><span class="lineNoCov">          0 :         return 0;</span></a>
+<a name="520"><span class="lineNum">     520 </span>            : }</a>
+<a name="521"><span class="lineNum">     521 </span>            : </a>
+<a name="522"><span class="lineNum">     522 </span><span class="lineNoCov">          0 : int dce_optimize_op_array(zend_op_array *op_array, zend_ssa *ssa, bool reorder_dtor_effects) {</span></a>
+<a name="523"><span class="lineNum">     523 </span>            :         int i;</a>
+<a name="524"><span class="lineNum">     524 </span>            :         zend_ssa_phi *phi;</a>
+<a name="525"><span class="lineNum">     525 </span><span class="lineNoCov">          0 :         int removed_ops = 0;</span></a>
+<a name="526"><span class="lineNum">     526 </span>            : </a>
+<a name="527"><span class="lineNum">     527 </span>            :         /* DCE of CV operations that changes arguments may affect vararg functions. */</a>
+<a name="528"><span class="lineNum">     528 </span><span class="lineNoCov">          0 :         bool has_varargs = (ssa-&gt;cfg.flags &amp; ZEND_FUNC_VARARG) != 0;</span></a>
+<a name="529"><span class="lineNum">     529 </span>            : </a>
+<a name="530"><span class="lineNum">     530 </span>            :         context ctx;</a>
+<a name="531"><span class="lineNum">     531 </span><span class="lineNoCov">          0 :         ctx.ssa = ssa;</span></a>
+<a name="532"><span class="lineNum">     532 </span><span class="lineNoCov">          0 :         ctx.op_array = op_array;</span></a>
+<a name="533"><span class="lineNum">     533 </span><span class="lineNoCov">          0 :         ctx.reorder_dtor_effects = reorder_dtor_effects;</span></a>
+<a name="534"><span class="lineNum">     534 </span>            : </a>
+<a name="535"><span class="lineNum">     535 </span>            :         /* We have no dedicated phi vector, so we use the whole ssa var vector instead */</a>
+<a name="536"><span class="lineNum">     536 </span><span class="lineNoCov">          0 :         ctx.instr_worklist_len = zend_bitset_len(op_array-&gt;last);</span></a>
+<a name="537"><span class="lineNum">     537 </span><span class="lineNoCov">          0 :         ctx.instr_worklist = alloca(sizeof(zend_ulong) * ctx.instr_worklist_len);</span></a>
+<a name="538"><span class="lineNum">     538 </span><span class="lineNoCov">          0 :         memset(ctx.instr_worklist, 0, sizeof(zend_ulong) * ctx.instr_worklist_len);</span></a>
+<a name="539"><span class="lineNum">     539 </span><span class="lineNoCov">          0 :         ctx.phi_worklist_len = zend_bitset_len(ssa-&gt;vars_count);</span></a>
+<a name="540"><span class="lineNum">     540 </span><span class="lineNoCov">          0 :         ctx.phi_worklist = alloca(sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="541"><span class="lineNum">     541 </span><span class="lineNoCov">          0 :         memset(ctx.phi_worklist, 0, sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="542"><span class="lineNum">     542 </span><span class="lineNoCov">          0 :         ctx.phi_worklist_no_val = alloca(sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="543"><span class="lineNum">     543 </span><span class="lineNoCov">          0 :         memset(ctx.phi_worklist_no_val, 0, sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="544"><span class="lineNum">     544 </span>            : </a>
+<a name="545"><span class="lineNum">     545 </span>            :         /* Optimistically assume all instructions and phis to be dead */</a>
+<a name="546"><span class="lineNum">     546 </span><span class="lineNoCov">          0 :         ctx.instr_dead = alloca(sizeof(zend_ulong) * ctx.instr_worklist_len);</span></a>
+<a name="547"><span class="lineNum">     547 </span><span class="lineNoCov">          0 :         memset(ctx.instr_dead, 0, sizeof(zend_ulong) * ctx.instr_worklist_len);</span></a>
+<a name="548"><span class="lineNum">     548 </span><span class="lineNoCov">          0 :         ctx.phi_dead = alloca(sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="549"><span class="lineNum">     549 </span><span class="lineNoCov">          0 :         memset(ctx.phi_dead, 0xff, sizeof(zend_ulong) * ctx.phi_worklist_len);</span></a>
+<a name="550"><span class="lineNum">     550 </span>            : </a>
+<a name="551"><span class="lineNum">     551 </span>            :         /* Mark non-CV phis as live. Even if the result is unused, we generally cannot remove one</a>
+<a name="552"><span class="lineNum">     552 </span>            :          * of the producing instructions, as it combines producing the result with control flow.</a>
+<a name="553"><span class="lineNum">     553 </span>            :          * This can be made more precise if there are any cases where this is not the case. */</a>
+<a name="554"><span class="lineNum">     554 </span><span class="lineNoCov">          0 :         FOREACH_PHI(phi) {</span></a>
+<a name="555"><span class="lineNum">     555 </span><span class="lineNoCov">          0 :                 if (phi-&gt;var &gt;= op_array-&gt;last_var</span></a>
+<a name="556"><span class="lineNum">     556 </span><span class="lineNoCov">          0 :                                 &amp;&amp; may_be_refcounted(ssa-&gt;var_info[phi-&gt;ssa_var].type)) {</span></a>
+<a name="557"><span class="lineNum">     557 </span><span class="lineNoCov">          0 :                         zend_bitset_excl(ctx.phi_dead, phi-&gt;ssa_var);</span></a>
+<a name="558"><span class="lineNum">     558 </span>            :                         add_phi_sources_to_worklists(&amp;ctx, phi, 0);</a>
+<a name="559"><span class="lineNum">     559 </span>            :                 }</a>
+<a name="560"><span class="lineNum">     560 </span>            :         } FOREACH_PHI_END();</a>
+<a name="561"><span class="lineNum">     561 </span>            : </a>
+<a name="562"><span class="lineNum">     562 </span>            :         /* Mark reachable instruction without side effects as dead */</a>
+<a name="563"><span class="lineNum">     563 </span><span class="lineNoCov">          0 :         int b = ssa-&gt;cfg.blocks_count;</span></a>
+<a name="564"><span class="lineNum">     564 </span><span class="lineNoCov">          0 :         while (b &gt; 0) {</span></a>
+<a name="565"><span class="lineNum">     565 </span><span class="lineNoCov">          0 :                 int     op_data = -1;</span></a>
+<a name="566"><span class="lineNum">     566 </span>            : </a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineNoCov">          0 :                 b--;</span></a>
+<a name="568"><span class="lineNum">     568 </span><span class="lineNoCov">          0 :                 zend_basic_block *block = &amp;ssa-&gt;cfg.blocks[b];</span></a>
+<a name="569"><span class="lineNum">     569 </span><span class="lineNoCov">          0 :                 if (!(block-&gt;flags &amp; ZEND_BB_REACHABLE)) {</span></a>
+<a name="570"><span class="lineNum">     570 </span><span class="lineNoCov">          0 :                         continue;</span></a>
+<a name="571"><span class="lineNum">     571 </span>            :                 }</a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 i = block-&gt;start + block-&gt;len;</span></a>
+<a name="573"><span class="lineNum">     573 </span><span class="lineNoCov">          0 :                 while (i &gt; block-&gt;start) {</span></a>
+<a name="574"><span class="lineNum">     574 </span><span class="lineNoCov">          0 :                         i--;</span></a>
+<a name="575"><span class="lineNum">     575 </span>            : </a>
+<a name="576"><span class="lineNum">     576 </span><span class="lineNoCov">          0 :                         if (op_array-&gt;opcodes[i].opcode == ZEND_OP_DATA) {</span></a>
+<a name="577"><span class="lineNum">     577 </span><span class="lineNoCov">          0 :                                 op_data = i;</span></a>
+<a name="578"><span class="lineNum">     578 </span><span class="lineNoCov">          0 :                                 continue;</span></a>
+<a name="579"><span class="lineNum">     579 </span>            :                         }</a>
+<a name="580"><span class="lineNum">     580 </span>            : </a>
+<a name="581"><span class="lineNum">     581 </span><span class="lineNoCov">          0 :                         if (zend_bitset_in(ctx.instr_worklist, i)) {</span></a>
+<a name="582"><span class="lineNum">     582 </span><span class="lineNoCov">          0 :                                 zend_bitset_excl(ctx.instr_worklist, i);</span></a>
+<a name="583"><span class="lineNum">     583 </span><span class="lineNoCov">          0 :                                 add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i], ssa, 0);</span></a>
+<a name="584"><span class="lineNum">     584 </span><span class="lineNoCov">          0 :                                 if (op_data &gt;= 0) {</span></a>
+<a name="585"><span class="lineNum">     585 </span><span class="lineNoCov">          0 :                                         add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[op_data], &amp;ssa-&gt;ops[op_data], ssa, 0);</span></a>
+<a name="586"><span class="lineNum">     586 </span>            :                                 }</a>
+<a name="587"><span class="lineNum">     587 </span><span class="lineNoCov">          0 :                         } else if (may_have_side_effects(op_array, ssa, &amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i], ctx.reorder_dtor_effects)</span></a>
+<a name="588"><span class="lineNum">     588 </span><span class="lineNoCov">          0 :                                         || zend_may_throw(&amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i], op_array, ssa)</span></a>
+<a name="589"><span class="lineNum">     589 </span><span class="lineNoCov">          0 :                                         || (has_varargs &amp;&amp; may_break_varargs(op_array, ssa, &amp;ssa-&gt;ops[i]))) {</span></a>
+<a name="590"><span class="lineNum">     590 </span><span class="lineNoCov">          0 :                                 if (op_array-&gt;opcodes[i].opcode == ZEND_NEW</span></a>
+<a name="591"><span class="lineNum">     591 </span><span class="lineNoCov">          0 :                                                 &amp;&amp; op_array-&gt;opcodes[i+1].opcode == ZEND_DO_FCALL</span></a>
+<a name="592"><span class="lineNum">     592 </span><span class="lineNoCov">          0 :                                                 &amp;&amp; ssa-&gt;ops[i].result_def &gt;= 0</span></a>
+<a name="593"><span class="lineNum">     593 </span><span class="lineNoCov">          0 :                                                 &amp;&amp; ssa-&gt;vars[ssa-&gt;ops[i].result_def].escape_state == ESCAPE_STATE_NO_ESCAPE) {</span></a>
+<a name="594"><span class="lineNum">     594 </span><span class="lineNoCov">          0 :                                         zend_bitset_incl(ctx.instr_dead, i);</span></a>
+<a name="595"><span class="lineNum">     595 </span><span class="lineNoCov">          0 :                                         zend_bitset_incl(ctx.instr_dead, i+1);</span></a>
+<a name="596"><span class="lineNum">     596 </span>            :                                 } else {</a>
+<a name="597"><span class="lineNum">     597 </span><span class="lineNoCov">          0 :                                         add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i], ssa, 0);</span></a>
+<a name="598"><span class="lineNum">     598 </span><span class="lineNoCov">          0 :                                         if (op_data &gt;= 0) {</span></a>
+<a name="599"><span class="lineNum">     599 </span><span class="lineNoCov">          0 :                                                 add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[op_data], &amp;ssa-&gt;ops[op_data], ssa, 0);</span></a>
+<a name="600"><span class="lineNum">     600 </span>            :                                         }</a>
+<a name="601"><span class="lineNum">     601 </span>            :                                 }</a>
+<a name="602"><span class="lineNum">     602 </span>            :                         } else {</a>
+<a name="603"><span class="lineNum">     603 </span><span class="lineNoCov">          0 :                                 zend_bitset_incl(ctx.instr_dead, i);</span></a>
+<a name="604"><span class="lineNum">     604 </span><span class="lineNoCov">          0 :                                 if (op_data &gt;= 0) {</span></a>
+<a name="605"><span class="lineNum">     605 </span><span class="lineNoCov">          0 :                                         zend_bitset_incl(ctx.instr_dead, op_data);</span></a>
+<a name="606"><span class="lineNum">     606 </span>            :                                 }</a>
+<a name="607"><span class="lineNum">     607 </span>            :                         }</a>
+<a name="608"><span class="lineNum">     608 </span><span class="lineNoCov">          0 :                         op_data = -1;</span></a>
+<a name="609"><span class="lineNum">     609 </span>            :                 }</a>
+<a name="610"><span class="lineNum">     610 </span>            :         }</a>
+<a name="611"><span class="lineNum">     611 </span>            : </a>
+<a name="612"><span class="lineNum">     612 </span>            :         /* Propagate liveness backwards to all definitions of used vars */</a>
+<a name="613"><span class="lineNum">     613 </span><span class="lineNoCov">          0 :         while (!zend_bitset_empty(ctx.instr_worklist, ctx.instr_worklist_len)</span></a>
+<a name="614"><span class="lineNum">     614 </span><span class="lineNoCov">          0 :                         || !zend_bitset_empty(ctx.phi_worklist, ctx.phi_worklist_len)) {</span></a>
+<a name="615"><span class="lineNum">     615 </span><span class="lineNoCov">          0 :                 while ((i = zend_bitset_pop_first(ctx.instr_worklist, ctx.instr_worklist_len)) &gt;= 0) {</span></a>
+<a name="616"><span class="lineNum">     616 </span><span class="lineNoCov">          0 :                         zend_bitset_excl(ctx.instr_dead, i);</span></a>
+<a name="617"><span class="lineNum">     617 </span><span class="lineNoCov">          0 :                         add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i], ssa, 1);</span></a>
+<a name="618"><span class="lineNum">     618 </span><span class="lineNoCov">          0 :                         if (i &lt; op_array-&gt;last &amp;&amp; op_array-&gt;opcodes[i+1].opcode == ZEND_OP_DATA) {</span></a>
+<a name="619"><span class="lineNum">     619 </span><span class="lineNoCov">          0 :                                 zend_bitset_excl(ctx.instr_dead, i+1);</span></a>
+<a name="620"><span class="lineNum">     620 </span><span class="lineNoCov">          0 :                                 add_operands_to_worklists(&amp;ctx, &amp;op_array-&gt;opcodes[i+1], &amp;ssa-&gt;ops[i+1], ssa, 1);</span></a>
+<a name="621"><span class="lineNum">     621 </span>            :                         }</a>
+<a name="622"><span class="lineNum">     622 </span>            :                 }</a>
+<a name="623"><span class="lineNum">     623 </span><span class="lineNoCov">          0 :                 while ((i = zend_bitset_pop_first(ctx.phi_worklist, ctx.phi_worklist_len)) &gt;= 0) {</span></a>
+<a name="624"><span class="lineNum">     624 </span><span class="lineNoCov">          0 :                         zend_bitset_excl(ctx.phi_dead, i);</span></a>
+<a name="625"><span class="lineNum">     625 </span><span class="lineNoCov">          0 :                         zend_bitset_excl(ctx.phi_worklist_no_val, i);</span></a>
+<a name="626"><span class="lineNum">     626 </span><span class="lineNoCov">          0 :                         add_phi_sources_to_worklists(&amp;ctx, ssa-&gt;vars[i].definition_phi, 1);</span></a>
+<a name="627"><span class="lineNum">     627 </span>            :                 }</a>
+<a name="628"><span class="lineNum">     628 </span>            :         }</a>
+<a name="629"><span class="lineNum">     629 </span>            : </a>
+<a name="630"><span class="lineNum">     630 </span>            :         /* Eliminate dead instructions */</a>
+<a name="631"><span class="lineNum">     631 </span><span class="lineNoCov">          0 :         ZEND_BITSET_FOREACH(ctx.instr_dead, ctx.instr_worklist_len, i) {</span></a>
+<a name="632"><span class="lineNum">     632 </span><span class="lineNoCov">          0 :                 removed_ops += dce_instr(&amp;ctx, &amp;op_array-&gt;opcodes[i], &amp;ssa-&gt;ops[i]);</span></a>
+<a name="633"><span class="lineNum">     633 </span>            :         } ZEND_BITSET_FOREACH_END();</a>
+<a name="634"><span class="lineNum">     634 </span>            : </a>
+<a name="635"><span class="lineNum">     635 </span>            :         /* Improper uses don't count as &quot;uses&quot; for the purpose of instruction elimination,</a>
+<a name="636"><span class="lineNum">     636 </span>            :          * but we have to retain phis defining them.</a>
+<a name="637"><span class="lineNum">     637 </span>            :          * Propagate this information backwards, marking any phi with an improperly used</a>
+<a name="638"><span class="lineNum">     638 </span>            :          * target as non-dead. */</a>
+<a name="639"><span class="lineNum">     639 </span><span class="lineNoCov">          0 :         while ((i = zend_bitset_pop_first(ctx.phi_worklist_no_val, ctx.phi_worklist_len)) &gt;= 0) {</span></a>
+<a name="640"><span class="lineNum">     640 </span><span class="lineNoCov">          0 :                 zend_ssa_phi *phi = ssa-&gt;vars[i].definition_phi;</span></a>
+<a name="641"><span class="lineNum">     641 </span>            :                 int source;</a>
+<a name="642"><span class="lineNum">     642 </span><span class="lineNoCov">          0 :                 zend_bitset_excl(ctx.phi_dead, i);</span></a>
+<a name="643"><span class="lineNum">     643 </span><span class="lineNoCov">          0 :                 FOREACH_PHI_SOURCE(phi, source) {</span></a>
+<a name="644"><span class="lineNum">     644 </span><span class="lineNoCov">          0 :                         add_to_phi_worklist_no_val(&amp;ctx, source);</span></a>
+<a name="645"><span class="lineNum">     645 </span>            :                 } FOREACH_PHI_SOURCE_END();</a>
+<a name="646"><span class="lineNum">     646 </span>            :         }</a>
+<a name="647"><span class="lineNum">     647 </span>            : </a>
+<a name="648"><span class="lineNum">     648 </span>            :         /* Now collect the actually dead phis */</a>
+<a name="649"><span class="lineNum">     649 </span><span class="lineNoCov">          0 :         FOREACH_PHI(phi) {</span></a>
+<a name="650"><span class="lineNum">     650 </span><span class="lineNoCov">          0 :                 if (zend_bitset_in(ctx.phi_dead, phi-&gt;ssa_var)) {</span></a>
+<a name="651"><span class="lineNum">     651 </span><span class="lineNoCov">          0 :                         zend_ssa_remove_uses_of_var(ssa, phi-&gt;ssa_var);</span></a>
+<a name="652"><span class="lineNum">     652 </span><span class="lineNoCov">          0 :                         zend_ssa_remove_phi(ssa, phi);</span></a>
+<a name="653"><span class="lineNum">     653 </span>            :                 } else {</a>
+<a name="654"><span class="lineNum">     654 </span>            :                         /* Remove trivial phis (phis with identical source operands) */</a>
+<a name="655"><span class="lineNum">     655 </span><span class="lineNoCov">          0 :                         try_remove_trivial_phi(&amp;ctx, phi);</span></a>
+<a name="656"><span class="lineNum">     656 </span>            :                 }</a>
+<a name="657"><span class="lineNum">     657 </span>            :         } FOREACH_PHI_END();</a>
+<a name="658"><span class="lineNum">     658 </span>            : </a>
+<a name="659"><span class="lineNum">     659 </span><span class="lineNoCov">          0 :         return removed_ops;</span></a>
+<a name="660"><span class="lineNum">     660 </span>            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

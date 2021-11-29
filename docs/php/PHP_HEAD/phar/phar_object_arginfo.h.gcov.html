@@ -1,0 +1,723 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - phar/phar_object_arginfo.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">phar</a> - phar_object_arginfo.h<span style="font-size: 80%;"> (source / <a href="phar_object_arginfo.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* This is a generated file, edit the .stub.php file instead.</a>
+<a name="2"><span class="lineNum">       2 </span>            :  * Stub hash: cce88c2e27bd0b0fc7f68defdb0556b053e7dc81 */</a>
+<a name="3"><span class="lineNum">       3 </span>            : </a>
+<a name="4"><span class="lineNum">       4 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Phar___construct, 0, 0, 1)</a>
+<a name="5"><span class="lineNum">       5 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="6"><span class="lineNum">       6 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, &quot;FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS&quot;)</a>
+<a name="7"><span class="lineNum">       7 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, alias, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="8"><span class="lineNum">       8 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="9"><span class="lineNum">       9 </span>            : </a>
+<a name="10"><span class="lineNum">      10 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Phar___destruct, 0, 0, 0)</a>
+<a name="11"><span class="lineNum">      11 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="12"><span class="lineNum">      12 </span>            : </a>
+<a name="13"><span class="lineNum">      13 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_addEmptyDir, 0, 1, IS_VOID, 0)</a>
+<a name="14"><span class="lineNum">      14 </span>            :         ZEND_ARG_TYPE_INFO(0, directory, IS_STRING, 0)</a>
+<a name="15"><span class="lineNum">      15 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="16"><span class="lineNum">      16 </span>            : </a>
+<a name="17"><span class="lineNum">      17 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_addFile, 0, 1, IS_VOID, 0)</a>
+<a name="18"><span class="lineNum">      18 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="19"><span class="lineNum">      19 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, localName, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="20"><span class="lineNum">      20 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="21"><span class="lineNum">      21 </span>            : </a>
+<a name="22"><span class="lineNum">      22 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_addFromString, 0, 2, IS_VOID, 0)</a>
+<a name="23"><span class="lineNum">      23 </span>            :         ZEND_ARG_TYPE_INFO(0, localName, IS_STRING, 0)</a>
+<a name="24"><span class="lineNum">      24 </span>            :         ZEND_ARG_TYPE_INFO(0, contents, IS_STRING, 0)</a>
+<a name="25"><span class="lineNum">      25 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<a name="27"><span class="lineNum">      27 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_buildFromDirectory, 0, 1, IS_ARRAY, 0)</a>
+<a name="28"><span class="lineNum">      28 </span>            :         ZEND_ARG_TYPE_INFO(0, directory, IS_STRING, 0)</a>
+<a name="29"><span class="lineNum">      29 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, pattern, IS_STRING, 0, &quot;\&quot;\&quot;&quot;)</a>
+<a name="30"><span class="lineNum">      30 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="31"><span class="lineNum">      31 </span>            : </a>
+<a name="32"><span class="lineNum">      32 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_buildFromIterator, 0, 1, IS_ARRAY, 0)</a>
+<a name="33"><span class="lineNum">      33 </span>            :         ZEND_ARG_OBJ_INFO(0, iterator, Traversable, 0)</a>
+<a name="34"><span class="lineNum">      34 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, baseDirectory, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="35"><span class="lineNum">      35 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="36"><span class="lineNum">      36 </span>            : </a>
+<a name="37"><span class="lineNum">      37 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_compressFiles, 0, 1, IS_VOID, 0)</a>
+<a name="38"><span class="lineNum">      38 </span>            :         ZEND_ARG_TYPE_INFO(0, compression, IS_LONG, 0)</a>
+<a name="39"><span class="lineNum">      39 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="40"><span class="lineNum">      40 </span>            : </a>
+<a name="41"><span class="lineNum">      41 </span>            : #define arginfo_class_Phar_decompressFiles arginfo_class_Phar___destruct</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_Phar_compress, 0, 1, Phar, 1)</a>
+<a name="44"><span class="lineNum">      44 </span>            :         ZEND_ARG_TYPE_INFO(0, compression, IS_LONG, 0)</a>
+<a name="45"><span class="lineNum">      45 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="46"><span class="lineNum">      46 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="47"><span class="lineNum">      47 </span>            : </a>
+<a name="48"><span class="lineNum">      48 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_Phar_decompress, 0, 0, Phar, 1)</a>
+<a name="49"><span class="lineNum">      49 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="50"><span class="lineNum">      50 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="51"><span class="lineNum">      51 </span>            : </a>
+<a name="52"><span class="lineNum">      52 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_Phar_convertToExecutable, 0, 0, Phar, 1)</a>
+<a name="53"><span class="lineNum">      53 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, format, IS_LONG, 1, &quot;null&quot;)</a>
+<a name="54"><span class="lineNum">      54 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, compression, IS_LONG, 1, &quot;null&quot;)</a>
+<a name="55"><span class="lineNum">      55 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="56"><span class="lineNum">      56 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="57"><span class="lineNum">      57 </span>            : </a>
+<a name="58"><span class="lineNum">      58 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_Phar_convertToData, 0, 0, PharData, 1)</a>
+<a name="59"><span class="lineNum">      59 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, format, IS_LONG, 1, &quot;null&quot;)</a>
+<a name="60"><span class="lineNum">      60 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, compression, IS_LONG, 1, &quot;null&quot;)</a>
+<a name="61"><span class="lineNum">      61 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="62"><span class="lineNum">      62 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="63"><span class="lineNum">      63 </span>            : </a>
+<a name="64"><span class="lineNum">      64 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Phar_copy, 0, 0, 2)</a>
+<a name="65"><span class="lineNum">      65 </span>            :         ZEND_ARG_TYPE_INFO(0, from, IS_STRING, 0)</a>
+<a name="66"><span class="lineNum">      66 </span>            :         ZEND_ARG_TYPE_INFO(0, to, IS_STRING, 0)</a>
+<a name="67"><span class="lineNum">      67 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_count, 0, 0, IS_LONG, 0)</a>
+<a name="70"><span class="lineNum">      70 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, mode, IS_LONG, 0, &quot;COUNT_NORMAL&quot;)</a>
+<a name="71"><span class="lineNum">      71 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="72"><span class="lineNum">      72 </span>            : </a>
+<a name="73"><span class="lineNum">      73 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Phar_delete, 0, 0, 1)</a>
+<a name="74"><span class="lineNum">      74 </span>            :         ZEND_ARG_TYPE_INFO(0, localName, IS_STRING, 0)</a>
+<a name="75"><span class="lineNum">      75 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<a name="77"><span class="lineNum">      77 </span>            : #define arginfo_class_Phar_delMetadata arginfo_class_Phar___destruct</a>
+<a name="78"><span class="lineNum">      78 </span>            : </a>
+<a name="79"><span class="lineNum">      79 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_extractTo, 0, 1, _IS_BOOL, 0)</a>
+<a name="80"><span class="lineNum">      80 </span>            :         ZEND_ARG_TYPE_INFO(0, directory, IS_STRING, 0)</a>
+<a name="81"><span class="lineNum">      81 </span>            :         ZEND_ARG_TYPE_MASK(0, files, MAY_BE_ARRAY|MAY_BE_STRING|MAY_BE_NULL, &quot;null&quot;)</a>
+<a name="82"><span class="lineNum">      82 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, overwrite, _IS_BOOL, 0, &quot;false&quot;)</a>
+<a name="83"><span class="lineNum">      83 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<a name="85"><span class="lineNum">      85 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_getAlias, 0, 0, IS_STRING, 1)</a>
+<a name="86"><span class="lineNum">      86 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="87"><span class="lineNum">      87 </span>            : </a>
+<a name="88"><span class="lineNum">      88 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_getPath, 0, 0, IS_STRING, 0)</a>
+<a name="89"><span class="lineNum">      89 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="90"><span class="lineNum">      90 </span>            : </a>
+<a name="91"><span class="lineNum">      91 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_getMetadata, 0, 0, IS_MIXED, 0)</a>
+<a name="92"><span class="lineNum">      92 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, unserializeOptions, IS_ARRAY, 0, &quot;[]&quot;)</a>
+<a name="93"><span class="lineNum">      93 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="94"><span class="lineNum">      94 </span>            : </a>
+<a name="95"><span class="lineNum">      95 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_getModified, 0, 0, _IS_BOOL, 0)</a>
+<a name="96"><span class="lineNum">      96 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_MASK_EX(arginfo_class_Phar_getSignature, 0, 0, MAY_BE_ARRAY|MAY_BE_FALSE)</a>
+<a name="99"><span class="lineNum">      99 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="100"><span class="lineNum">     100 </span>            : </a>
+<a name="101"><span class="lineNum">     101 </span>            : #define arginfo_class_Phar_getStub arginfo_class_Phar_getPath</a>
+<a name="102"><span class="lineNum">     102 </span>            : </a>
+<a name="103"><span class="lineNum">     103 </span>            : #define arginfo_class_Phar_getVersion arginfo_class_Phar_getPath</a>
+<a name="104"><span class="lineNum">     104 </span>            : </a>
+<a name="105"><span class="lineNum">     105 </span>            : #define arginfo_class_Phar_hasMetadata arginfo_class_Phar_getModified</a>
+<a name="106"><span class="lineNum">     106 </span>            : </a>
+<a name="107"><span class="lineNum">     107 </span>            : #define arginfo_class_Phar_isBuffering arginfo_class_Phar_getModified</a>
+<a name="108"><span class="lineNum">     108 </span>            : </a>
+<a name="109"><span class="lineNum">     109 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_MASK_EX(arginfo_class_Phar_isCompressed, 0, 0, MAY_BE_LONG|MAY_BE_FALSE)</a>
+<a name="110"><span class="lineNum">     110 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="111"><span class="lineNum">     111 </span>            : </a>
+<a name="112"><span class="lineNum">     112 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_isFileFormat, 0, 1, _IS_BOOL, 0)</a>
+<a name="113"><span class="lineNum">     113 </span>            :         ZEND_ARG_TYPE_INFO(0, format, IS_LONG, 0)</a>
+<a name="114"><span class="lineNum">     114 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="115"><span class="lineNum">     115 </span>            : </a>
+<a name="116"><span class="lineNum">     116 </span>            : #define arginfo_class_Phar_isWritable arginfo_class_Phar_getModified</a>
+<a name="117"><span class="lineNum">     117 </span>            : </a>
+<a name="118"><span class="lineNum">     118 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_offsetExists, 0, 1, _IS_BOOL, 0)</a>
+<a name="119"><span class="lineNum">     119 </span>            :         ZEND_ARG_INFO(0, localName)</a>
+<a name="120"><span class="lineNum">     120 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="121"><span class="lineNum">     121 </span>            : </a>
+<a name="122"><span class="lineNum">     122 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_Phar_offsetGet, 0, 1, SplFileInfo, 0)</a>
+<a name="123"><span class="lineNum">     123 </span>            :         ZEND_ARG_INFO(0, localName)</a>
+<a name="124"><span class="lineNum">     124 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="125"><span class="lineNum">     125 </span>            : </a>
+<a name="126"><span class="lineNum">     126 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_offsetSet, 0, 2, IS_VOID, 0)</a>
+<a name="127"><span class="lineNum">     127 </span>            :         ZEND_ARG_INFO(0, localName)</a>
+<a name="128"><span class="lineNum">     128 </span>            :         ZEND_ARG_INFO(0, value)</a>
+<a name="129"><span class="lineNum">     129 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="130"><span class="lineNum">     130 </span>            : </a>
+<a name="131"><span class="lineNum">     131 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_offsetUnset, 0, 1, IS_VOID, 0)</a>
+<a name="132"><span class="lineNum">     132 </span>            :         ZEND_ARG_INFO(0, localName)</a>
+<a name="133"><span class="lineNum">     133 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="134"><span class="lineNum">     134 </span>            : </a>
+<a name="135"><span class="lineNum">     135 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_setAlias, 0, 1, _IS_BOOL, 0)</a>
+<a name="136"><span class="lineNum">     136 </span>            :         ZEND_ARG_TYPE_INFO(0, alias, IS_STRING, 0)</a>
+<a name="137"><span class="lineNum">     137 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="138"><span class="lineNum">     138 </span>            : </a>
+<a name="139"><span class="lineNum">     139 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_setDefaultStub, 0, 0, _IS_BOOL, 0)</a>
+<a name="140"><span class="lineNum">     140 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, index, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="141"><span class="lineNum">     141 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, webIndex, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="142"><span class="lineNum">     142 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="143"><span class="lineNum">     143 </span>            : </a>
+<a name="144"><span class="lineNum">     144 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_setMetadata, 0, 1, IS_VOID, 0)</a>
+<a name="145"><span class="lineNum">     145 </span>            :         ZEND_ARG_TYPE_INFO(0, metadata, IS_MIXED, 0)</a>
+<a name="146"><span class="lineNum">     146 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="147"><span class="lineNum">     147 </span>            : </a>
+<a name="148"><span class="lineNum">     148 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_setSignatureAlgorithm, 0, 1, IS_VOID, 0)</a>
+<a name="149"><span class="lineNum">     149 </span>            :         ZEND_ARG_TYPE_INFO(0, algo, IS_LONG, 0)</a>
+<a name="150"><span class="lineNum">     150 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, privateKey, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="151"><span class="lineNum">     151 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="152"><span class="lineNum">     152 </span>            : </a>
+<a name="153"><span class="lineNum">     153 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Phar_setStub, 0, 0, 1)</a>
+<a name="154"><span class="lineNum">     154 </span>            :         ZEND_ARG_INFO(0, stub)</a>
+<a name="155"><span class="lineNum">     155 </span>            :         ZEND_ARG_TYPE_INFO(0, length, IS_LONG, 0)</a>
+<a name="156"><span class="lineNum">     156 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_Phar_startBuffering, 0, 0, IS_VOID, 0)</a>
+<a name="159"><span class="lineNum">     159 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="160"><span class="lineNum">     160 </span>            : </a>
+<a name="161"><span class="lineNum">     161 </span>            : #define arginfo_class_Phar_stopBuffering arginfo_class_Phar_startBuffering</a>
+<a name="162"><span class="lineNum">     162 </span>            : </a>
+<a name="163"><span class="lineNum">     163 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_apiVersion, 0, 0, IS_STRING, 0)</a>
+<a name="164"><span class="lineNum">     164 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="165"><span class="lineNum">     165 </span>            : </a>
+<a name="166"><span class="lineNum">     166 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_canCompress, 0, 0, _IS_BOOL, 0)</a>
+<a name="167"><span class="lineNum">     167 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, compression, IS_LONG, 0, &quot;0&quot;)</a>
+<a name="168"><span class="lineNum">     168 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="169"><span class="lineNum">     169 </span>            : </a>
+<a name="170"><span class="lineNum">     170 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_canWrite, 0, 0, _IS_BOOL, 0)</a>
+<a name="171"><span class="lineNum">     171 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="172"><span class="lineNum">     172 </span>            : </a>
+<a name="173"><span class="lineNum">     173 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_createDefaultStub, 0, 0, IS_STRING, 0)</a>
+<a name="174"><span class="lineNum">     174 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, index, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="175"><span class="lineNum">     175 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, webIndex, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="176"><span class="lineNum">     176 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="177"><span class="lineNum">     177 </span>            : </a>
+<a name="178"><span class="lineNum">     178 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_getSupportedCompression, 0, 0, IS_ARRAY, 0)</a>
+<a name="179"><span class="lineNum">     179 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="180"><span class="lineNum">     180 </span>            : </a>
+<a name="181"><span class="lineNum">     181 </span>            : #define arginfo_class_Phar_getSupportedSignatures arginfo_class_Phar_getSupportedCompression</a>
+<a name="182"><span class="lineNum">     182 </span>            : </a>
+<a name="183"><span class="lineNum">     183 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_interceptFileFuncs, 0, 0, IS_VOID, 0)</a>
+<a name="184"><span class="lineNum">     184 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="185"><span class="lineNum">     185 </span>            : </a>
+<a name="186"><span class="lineNum">     186 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_isValidPharFilename, 0, 1, _IS_BOOL, 0)</a>
+<a name="187"><span class="lineNum">     187 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="188"><span class="lineNum">     188 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, executable, _IS_BOOL, 0, &quot;true&quot;)</a>
+<a name="189"><span class="lineNum">     189 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="190"><span class="lineNum">     190 </span>            : </a>
+<a name="191"><span class="lineNum">     191 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_loadPhar, 0, 1, _IS_BOOL, 0)</a>
+<a name="192"><span class="lineNum">     192 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="193"><span class="lineNum">     193 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, alias, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="194"><span class="lineNum">     194 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="195"><span class="lineNum">     195 </span>            : </a>
+<a name="196"><span class="lineNum">     196 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_mapPhar, 0, 0, _IS_BOOL, 0)</a>
+<a name="197"><span class="lineNum">     197 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, alias, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="198"><span class="lineNum">     198 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, offset, IS_LONG, 0, &quot;0&quot;)</a>
+<a name="199"><span class="lineNum">     199 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="200"><span class="lineNum">     200 </span>            : </a>
+<a name="201"><span class="lineNum">     201 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_running, 0, 0, IS_STRING, 0)</a>
+<a name="202"><span class="lineNum">     202 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, returnPhar, _IS_BOOL, 0, &quot;true&quot;)</a>
+<a name="203"><span class="lineNum">     203 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="204"><span class="lineNum">     204 </span>            : </a>
+<a name="205"><span class="lineNum">     205 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_mount, 0, 2, IS_VOID, 0)</a>
+<a name="206"><span class="lineNum">     206 </span>            :         ZEND_ARG_TYPE_INFO(0, pharPath, IS_STRING, 0)</a>
+<a name="207"><span class="lineNum">     207 </span>            :         ZEND_ARG_TYPE_INFO(0, externalPath, IS_STRING, 0)</a>
+<a name="208"><span class="lineNum">     208 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="209"><span class="lineNum">     209 </span>            : </a>
+<a name="210"><span class="lineNum">     210 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_mungServer, 0, 1, IS_VOID, 0)</a>
+<a name="211"><span class="lineNum">     211 </span>            :         ZEND_ARG_TYPE_INFO(0, variables, IS_ARRAY, 0)</a>
+<a name="212"><span class="lineNum">     212 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="213"><span class="lineNum">     213 </span>            : </a>
+<a name="214"><span class="lineNum">     214 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_unlinkArchive, 0, 1, _IS_BOOL, 0)</a>
+<a name="215"><span class="lineNum">     215 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="216"><span class="lineNum">     216 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="217"><span class="lineNum">     217 </span>            : </a>
+<a name="218"><span class="lineNum">     218 </span>            : ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Phar_webPhar, 0, 0, IS_VOID, 0)</a>
+<a name="219"><span class="lineNum">     219 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, alias, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="220"><span class="lineNum">     220 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, index, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="221"><span class="lineNum">     221 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, fileNotFoundScript, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="222"><span class="lineNum">     222 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, mimeTypes, IS_ARRAY, 0, &quot;[]&quot;)</a>
+<a name="223"><span class="lineNum">     223 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, rewrite, IS_CALLABLE, 1, &quot;null&quot;)</a>
+<a name="224"><span class="lineNum">     224 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="225"><span class="lineNum">     225 </span>            : </a>
+<a name="226"><span class="lineNum">     226 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PharData___construct, 0, 0, 1)</a>
+<a name="227"><span class="lineNum">     227 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="228"><span class="lineNum">     228 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, &quot;FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS&quot;)</a>
+<a name="229"><span class="lineNum">     229 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, alias, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="230"><span class="lineNum">     230 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, format, IS_LONG, 0, &quot;0&quot;)</a>
+<a name="231"><span class="lineNum">     231 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="232"><span class="lineNum">     232 </span>            : </a>
+<a name="233"><span class="lineNum">     233 </span>            : #define arginfo_class_PharData___destruct arginfo_class_Phar___destruct</a>
+<a name="234"><span class="lineNum">     234 </span>            : </a>
+<a name="235"><span class="lineNum">     235 </span>            : #define arginfo_class_PharData_addEmptyDir arginfo_class_Phar_addEmptyDir</a>
+<a name="236"><span class="lineNum">     236 </span>            : </a>
+<a name="237"><span class="lineNum">     237 </span>            : #define arginfo_class_PharData_addFile arginfo_class_Phar_addFile</a>
+<a name="238"><span class="lineNum">     238 </span>            : </a>
+<a name="239"><span class="lineNum">     239 </span>            : #define arginfo_class_PharData_addFromString arginfo_class_Phar_addFromString</a>
+<a name="240"><span class="lineNum">     240 </span>            : </a>
+<a name="241"><span class="lineNum">     241 </span>            : #define arginfo_class_PharData_buildFromDirectory arginfo_class_Phar_buildFromDirectory</a>
+<a name="242"><span class="lineNum">     242 </span>            : </a>
+<a name="243"><span class="lineNum">     243 </span>            : #define arginfo_class_PharData_buildFromIterator arginfo_class_Phar_buildFromIterator</a>
+<a name="244"><span class="lineNum">     244 </span>            : </a>
+<a name="245"><span class="lineNum">     245 </span>            : #define arginfo_class_PharData_compressFiles arginfo_class_Phar_compressFiles</a>
+<a name="246"><span class="lineNum">     246 </span>            : </a>
+<a name="247"><span class="lineNum">     247 </span>            : #define arginfo_class_PharData_decompressFiles arginfo_class_Phar___destruct</a>
+<a name="248"><span class="lineNum">     248 </span>            : </a>
+<a name="249"><span class="lineNum">     249 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_PharData_compress, 0, 1, PharData, 1)</a>
+<a name="250"><span class="lineNum">     250 </span>            :         ZEND_ARG_TYPE_INFO(0, compression, IS_LONG, 0)</a>
+<a name="251"><span class="lineNum">     251 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="252"><span class="lineNum">     252 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="253"><span class="lineNum">     253 </span>            : </a>
+<a name="254"><span class="lineNum">     254 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_PharData_decompress, 0, 0, PharData, 1)</a>
+<a name="255"><span class="lineNum">     255 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, extension, IS_STRING, 1, &quot;null&quot;)</a>
+<a name="256"><span class="lineNum">     256 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="257"><span class="lineNum">     257 </span>            : </a>
+<a name="258"><span class="lineNum">     258 </span>            : #define arginfo_class_PharData_convertToExecutable arginfo_class_Phar_convertToExecutable</a>
+<a name="259"><span class="lineNum">     259 </span>            : </a>
+<a name="260"><span class="lineNum">     260 </span>            : #define arginfo_class_PharData_convertToData arginfo_class_Phar_convertToData</a>
+<a name="261"><span class="lineNum">     261 </span>            : </a>
+<a name="262"><span class="lineNum">     262 </span>            : #define arginfo_class_PharData_copy arginfo_class_Phar_copy</a>
+<a name="263"><span class="lineNum">     263 </span>            : </a>
+<a name="264"><span class="lineNum">     264 </span>            : #define arginfo_class_PharData_count arginfo_class_Phar_count</a>
+<a name="265"><span class="lineNum">     265 </span>            : </a>
+<a name="266"><span class="lineNum">     266 </span>            : #define arginfo_class_PharData_delete arginfo_class_Phar_delete</a>
+<a name="267"><span class="lineNum">     267 </span>            : </a>
+<a name="268"><span class="lineNum">     268 </span>            : #define arginfo_class_PharData_delMetadata arginfo_class_Phar___destruct</a>
+<a name="269"><span class="lineNum">     269 </span>            : </a>
+<a name="270"><span class="lineNum">     270 </span>            : #define arginfo_class_PharData_extractTo arginfo_class_Phar_extractTo</a>
+<a name="271"><span class="lineNum">     271 </span>            : </a>
+<a name="272"><span class="lineNum">     272 </span>            : #define arginfo_class_PharData_getAlias arginfo_class_Phar_getAlias</a>
+<a name="273"><span class="lineNum">     273 </span>            : </a>
+<a name="274"><span class="lineNum">     274 </span>            : #define arginfo_class_PharData_getPath arginfo_class_Phar_getPath</a>
+<a name="275"><span class="lineNum">     275 </span>            : </a>
+<a name="276"><span class="lineNum">     276 </span>            : #define arginfo_class_PharData_getMetadata arginfo_class_Phar_getMetadata</a>
+<a name="277"><span class="lineNum">     277 </span>            : </a>
+<a name="278"><span class="lineNum">     278 </span>            : #define arginfo_class_PharData_getModified arginfo_class_Phar_getModified</a>
+<a name="279"><span class="lineNum">     279 </span>            : </a>
+<a name="280"><span class="lineNum">     280 </span>            : #define arginfo_class_PharData_getSignature arginfo_class_Phar_getSignature</a>
+<a name="281"><span class="lineNum">     281 </span>            : </a>
+<a name="282"><span class="lineNum">     282 </span>            : #define arginfo_class_PharData_getStub arginfo_class_Phar_getPath</a>
+<a name="283"><span class="lineNum">     283 </span>            : </a>
+<a name="284"><span class="lineNum">     284 </span>            : #define arginfo_class_PharData_getVersion arginfo_class_Phar_getPath</a>
+<a name="285"><span class="lineNum">     285 </span>            : </a>
+<a name="286"><span class="lineNum">     286 </span>            : #define arginfo_class_PharData_hasMetadata arginfo_class_Phar_getModified</a>
+<a name="287"><span class="lineNum">     287 </span>            : </a>
+<a name="288"><span class="lineNum">     288 </span>            : #define arginfo_class_PharData_isBuffering arginfo_class_Phar_getModified</a>
+<a name="289"><span class="lineNum">     289 </span>            : </a>
+<a name="290"><span class="lineNum">     290 </span>            : #define arginfo_class_PharData_isCompressed arginfo_class_Phar_isCompressed</a>
+<a name="291"><span class="lineNum">     291 </span>            : </a>
+<a name="292"><span class="lineNum">     292 </span>            : #define arginfo_class_PharData_isFileFormat arginfo_class_Phar_isFileFormat</a>
+<a name="293"><span class="lineNum">     293 </span>            : </a>
+<a name="294"><span class="lineNum">     294 </span>            : #define arginfo_class_PharData_isWritable arginfo_class_Phar_getModified</a>
+<a name="295"><span class="lineNum">     295 </span>            : </a>
+<a name="296"><span class="lineNum">     296 </span>            : #define arginfo_class_PharData_offsetExists arginfo_class_Phar_offsetExists</a>
+<a name="297"><span class="lineNum">     297 </span>            : </a>
+<a name="298"><span class="lineNum">     298 </span>            : #define arginfo_class_PharData_offsetGet arginfo_class_Phar_offsetGet</a>
+<a name="299"><span class="lineNum">     299 </span>            : </a>
+<a name="300"><span class="lineNum">     300 </span>            : #define arginfo_class_PharData_offsetSet arginfo_class_Phar_offsetSet</a>
+<a name="301"><span class="lineNum">     301 </span>            : </a>
+<a name="302"><span class="lineNum">     302 </span>            : #define arginfo_class_PharData_offsetUnset arginfo_class_Phar_offsetUnset</a>
+<a name="303"><span class="lineNum">     303 </span>            : </a>
+<a name="304"><span class="lineNum">     304 </span>            : #define arginfo_class_PharData_setAlias arginfo_class_Phar_setAlias</a>
+<a name="305"><span class="lineNum">     305 </span>            : </a>
+<a name="306"><span class="lineNum">     306 </span>            : #define arginfo_class_PharData_setDefaultStub arginfo_class_Phar_setDefaultStub</a>
+<a name="307"><span class="lineNum">     307 </span>            : </a>
+<a name="308"><span class="lineNum">     308 </span>            : #define arginfo_class_PharData_setMetadata arginfo_class_Phar_setMetadata</a>
+<a name="309"><span class="lineNum">     309 </span>            : </a>
+<a name="310"><span class="lineNum">     310 </span>            : #define arginfo_class_PharData_setSignatureAlgorithm arginfo_class_Phar_setSignatureAlgorithm</a>
+<a name="311"><span class="lineNum">     311 </span>            : </a>
+<a name="312"><span class="lineNum">     312 </span>            : #define arginfo_class_PharData_setStub arginfo_class_Phar_setStub</a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span>            : #define arginfo_class_PharData_startBuffering arginfo_class_Phar_startBuffering</a>
+<a name="315"><span class="lineNum">     315 </span>            : </a>
+<a name="316"><span class="lineNum">     316 </span>            : #define arginfo_class_PharData_stopBuffering arginfo_class_Phar_startBuffering</a>
+<a name="317"><span class="lineNum">     317 </span>            : </a>
+<a name="318"><span class="lineNum">     318 </span>            : #define arginfo_class_PharData_apiVersion arginfo_class_Phar_apiVersion</a>
+<a name="319"><span class="lineNum">     319 </span>            : </a>
+<a name="320"><span class="lineNum">     320 </span>            : #define arginfo_class_PharData_canCompress arginfo_class_Phar_canCompress</a>
+<a name="321"><span class="lineNum">     321 </span>            : </a>
+<a name="322"><span class="lineNum">     322 </span>            : #define arginfo_class_PharData_canWrite arginfo_class_Phar_canWrite</a>
+<a name="323"><span class="lineNum">     323 </span>            : </a>
+<a name="324"><span class="lineNum">     324 </span>            : #define arginfo_class_PharData_createDefaultStub arginfo_class_Phar_createDefaultStub</a>
+<a name="325"><span class="lineNum">     325 </span>            : </a>
+<a name="326"><span class="lineNum">     326 </span>            : #define arginfo_class_PharData_getSupportedCompression arginfo_class_Phar_getSupportedCompression</a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span>            : #define arginfo_class_PharData_getSupportedSignatures arginfo_class_Phar_getSupportedCompression</a>
+<a name="329"><span class="lineNum">     329 </span>            : </a>
+<a name="330"><span class="lineNum">     330 </span>            : #define arginfo_class_PharData_interceptFileFuncs arginfo_class_Phar_interceptFileFuncs</a>
+<a name="331"><span class="lineNum">     331 </span>            : </a>
+<a name="332"><span class="lineNum">     332 </span>            : #define arginfo_class_PharData_isValidPharFilename arginfo_class_Phar_isValidPharFilename</a>
+<a name="333"><span class="lineNum">     333 </span>            : </a>
+<a name="334"><span class="lineNum">     334 </span>            : #define arginfo_class_PharData_loadPhar arginfo_class_Phar_loadPhar</a>
+<a name="335"><span class="lineNum">     335 </span>            : </a>
+<a name="336"><span class="lineNum">     336 </span>            : #define arginfo_class_PharData_mapPhar arginfo_class_Phar_mapPhar</a>
+<a name="337"><span class="lineNum">     337 </span>            : </a>
+<a name="338"><span class="lineNum">     338 </span>            : #define arginfo_class_PharData_running arginfo_class_Phar_running</a>
+<a name="339"><span class="lineNum">     339 </span>            : </a>
+<a name="340"><span class="lineNum">     340 </span>            : #define arginfo_class_PharData_mount arginfo_class_Phar_mount</a>
+<a name="341"><span class="lineNum">     341 </span>            : </a>
+<a name="342"><span class="lineNum">     342 </span>            : #define arginfo_class_PharData_mungServer arginfo_class_Phar_mungServer</a>
+<a name="343"><span class="lineNum">     343 </span>            : </a>
+<a name="344"><span class="lineNum">     344 </span>            : #define arginfo_class_PharData_unlinkArchive arginfo_class_Phar_unlinkArchive</a>
+<a name="345"><span class="lineNum">     345 </span>            : </a>
+<a name="346"><span class="lineNum">     346 </span>            : #define arginfo_class_PharData_webPhar arginfo_class_Phar_webPhar</a>
+<a name="347"><span class="lineNum">     347 </span>            : </a>
+<a name="348"><span class="lineNum">     348 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PharFileInfo___construct, 0, 0, 1)</a>
+<a name="349"><span class="lineNum">     349 </span>            :         ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)</a>
+<a name="350"><span class="lineNum">     350 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="351"><span class="lineNum">     351 </span>            : </a>
+<a name="352"><span class="lineNum">     352 </span>            : #define arginfo_class_PharFileInfo___destruct arginfo_class_Phar___destruct</a>
+<a name="353"><span class="lineNum">     353 </span>            : </a>
+<a name="354"><span class="lineNum">     354 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_PharFileInfo_chmod, 0, 1, IS_VOID, 0)</a>
+<a name="355"><span class="lineNum">     355 </span>            :         ZEND_ARG_TYPE_INFO(0, perms, IS_LONG, 0)</a>
+<a name="356"><span class="lineNum">     356 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="357"><span class="lineNum">     357 </span>            : </a>
+<a name="358"><span class="lineNum">     358 </span>            : ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PharFileInfo_compress, 0, 0, 1)</a>
+<a name="359"><span class="lineNum">     359 </span>            :         ZEND_ARG_TYPE_INFO(0, compression, IS_LONG, 0)</a>
+<a name="360"><span class="lineNum">     360 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="361"><span class="lineNum">     361 </span>            : </a>
+<a name="362"><span class="lineNum">     362 </span>            : #define arginfo_class_PharFileInfo_decompress arginfo_class_Phar___destruct</a>
+<a name="363"><span class="lineNum">     363 </span>            : </a>
+<a name="364"><span class="lineNum">     364 </span>            : #define arginfo_class_PharFileInfo_delMetadata arginfo_class_Phar___destruct</a>
+<a name="365"><span class="lineNum">     365 </span>            : </a>
+<a name="366"><span class="lineNum">     366 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_PharFileInfo_getCompressedSize, 0, 0, IS_LONG, 0)</a>
+<a name="367"><span class="lineNum">     367 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="368"><span class="lineNum">     368 </span>            : </a>
+<a name="369"><span class="lineNum">     369 </span>            : #define arginfo_class_PharFileInfo_getCRC32 arginfo_class_PharFileInfo_getCompressedSize</a>
+<a name="370"><span class="lineNum">     370 </span>            : </a>
+<a name="371"><span class="lineNum">     371 </span>            : #define arginfo_class_PharFileInfo_getContent arginfo_class_Phar_getPath</a>
+<a name="372"><span class="lineNum">     372 </span>            : </a>
+<a name="373"><span class="lineNum">     373 </span>            : #define arginfo_class_PharFileInfo_getMetadata arginfo_class_Phar_getMetadata</a>
+<a name="374"><span class="lineNum">     374 </span>            : </a>
+<a name="375"><span class="lineNum">     375 </span>            : #define arginfo_class_PharFileInfo_getPharFlags arginfo_class_PharFileInfo_getCompressedSize</a>
+<a name="376"><span class="lineNum">     376 </span>            : </a>
+<a name="377"><span class="lineNum">     377 </span>            : #define arginfo_class_PharFileInfo_hasMetadata arginfo_class_Phar_getModified</a>
+<a name="378"><span class="lineNum">     378 </span>            : </a>
+<a name="379"><span class="lineNum">     379 </span>            : ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_PharFileInfo_isCompressed, 0, 0, _IS_BOOL, 0)</a>
+<a name="380"><span class="lineNum">     380 </span>            :         ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, compression, IS_LONG, 1, &quot;null&quot;)</a>
+<a name="381"><span class="lineNum">     381 </span>            : ZEND_END_ARG_INFO()</a>
+<a name="382"><span class="lineNum">     382 </span>            : </a>
+<a name="383"><span class="lineNum">     383 </span>            : #define arginfo_class_PharFileInfo_isCRCChecked arginfo_class_Phar_getModified</a>
+<a name="384"><span class="lineNum">     384 </span>            : </a>
+<a name="385"><span class="lineNum">     385 </span>            : #define arginfo_class_PharFileInfo_setMetadata arginfo_class_Phar_setMetadata</a>
+<a name="386"><span class="lineNum">     386 </span>            : </a>
+<a name="387"><span class="lineNum">     387 </span>            : </a>
+<a name="388"><span class="lineNum">     388 </span>            : ZEND_METHOD(Phar, __construct);</a>
+<a name="389"><span class="lineNum">     389 </span>            : ZEND_METHOD(Phar, __destruct);</a>
+<a name="390"><span class="lineNum">     390 </span>            : ZEND_METHOD(Phar, addEmptyDir);</a>
+<a name="391"><span class="lineNum">     391 </span>            : ZEND_METHOD(Phar, addFile);</a>
+<a name="392"><span class="lineNum">     392 </span>            : ZEND_METHOD(Phar, addFromString);</a>
+<a name="393"><span class="lineNum">     393 </span>            : ZEND_METHOD(Phar, buildFromDirectory);</a>
+<a name="394"><span class="lineNum">     394 </span>            : ZEND_METHOD(Phar, buildFromIterator);</a>
+<a name="395"><span class="lineNum">     395 </span>            : ZEND_METHOD(Phar, compressFiles);</a>
+<a name="396"><span class="lineNum">     396 </span>            : ZEND_METHOD(Phar, decompressFiles);</a>
+<a name="397"><span class="lineNum">     397 </span>            : ZEND_METHOD(Phar, compress);</a>
+<a name="398"><span class="lineNum">     398 </span>            : ZEND_METHOD(Phar, decompress);</a>
+<a name="399"><span class="lineNum">     399 </span>            : ZEND_METHOD(Phar, convertToExecutable);</a>
+<a name="400"><span class="lineNum">     400 </span>            : ZEND_METHOD(Phar, convertToData);</a>
+<a name="401"><span class="lineNum">     401 </span>            : ZEND_METHOD(Phar, copy);</a>
+<a name="402"><span class="lineNum">     402 </span>            : ZEND_METHOD(Phar, count);</a>
+<a name="403"><span class="lineNum">     403 </span>            : ZEND_METHOD(Phar, delete);</a>
+<a name="404"><span class="lineNum">     404 </span>            : ZEND_METHOD(Phar, delMetadata);</a>
+<a name="405"><span class="lineNum">     405 </span>            : ZEND_METHOD(Phar, extractTo);</a>
+<a name="406"><span class="lineNum">     406 </span>            : ZEND_METHOD(Phar, getAlias);</a>
+<a name="407"><span class="lineNum">     407 </span>            : ZEND_METHOD(Phar, getPath);</a>
+<a name="408"><span class="lineNum">     408 </span>            : ZEND_METHOD(Phar, getMetadata);</a>
+<a name="409"><span class="lineNum">     409 </span>            : ZEND_METHOD(Phar, getModified);</a>
+<a name="410"><span class="lineNum">     410 </span>            : ZEND_METHOD(Phar, getSignature);</a>
+<a name="411"><span class="lineNum">     411 </span>            : ZEND_METHOD(Phar, getStub);</a>
+<a name="412"><span class="lineNum">     412 </span>            : ZEND_METHOD(Phar, getVersion);</a>
+<a name="413"><span class="lineNum">     413 </span>            : ZEND_METHOD(Phar, hasMetadata);</a>
+<a name="414"><span class="lineNum">     414 </span>            : ZEND_METHOD(Phar, isBuffering);</a>
+<a name="415"><span class="lineNum">     415 </span>            : ZEND_METHOD(Phar, isCompressed);</a>
+<a name="416"><span class="lineNum">     416 </span>            : ZEND_METHOD(Phar, isFileFormat);</a>
+<a name="417"><span class="lineNum">     417 </span>            : ZEND_METHOD(Phar, isWritable);</a>
+<a name="418"><span class="lineNum">     418 </span>            : ZEND_METHOD(Phar, offsetExists);</a>
+<a name="419"><span class="lineNum">     419 </span>            : ZEND_METHOD(Phar, offsetGet);</a>
+<a name="420"><span class="lineNum">     420 </span>            : ZEND_METHOD(Phar, offsetSet);</a>
+<a name="421"><span class="lineNum">     421 </span>            : ZEND_METHOD(Phar, offsetUnset);</a>
+<a name="422"><span class="lineNum">     422 </span>            : ZEND_METHOD(Phar, setAlias);</a>
+<a name="423"><span class="lineNum">     423 </span>            : ZEND_METHOD(Phar, setDefaultStub);</a>
+<a name="424"><span class="lineNum">     424 </span>            : ZEND_METHOD(Phar, setMetadata);</a>
+<a name="425"><span class="lineNum">     425 </span>            : ZEND_METHOD(Phar, setSignatureAlgorithm);</a>
+<a name="426"><span class="lineNum">     426 </span>            : ZEND_METHOD(Phar, setStub);</a>
+<a name="427"><span class="lineNum">     427 </span>            : ZEND_METHOD(Phar, startBuffering);</a>
+<a name="428"><span class="lineNum">     428 </span>            : ZEND_METHOD(Phar, stopBuffering);</a>
+<a name="429"><span class="lineNum">     429 </span>            : ZEND_METHOD(Phar, apiVersion);</a>
+<a name="430"><span class="lineNum">     430 </span>            : ZEND_METHOD(Phar, canCompress);</a>
+<a name="431"><span class="lineNum">     431 </span>            : ZEND_METHOD(Phar, canWrite);</a>
+<a name="432"><span class="lineNum">     432 </span>            : ZEND_METHOD(Phar, createDefaultStub);</a>
+<a name="433"><span class="lineNum">     433 </span>            : ZEND_METHOD(Phar, getSupportedCompression);</a>
+<a name="434"><span class="lineNum">     434 </span>            : ZEND_METHOD(Phar, getSupportedSignatures);</a>
+<a name="435"><span class="lineNum">     435 </span>            : ZEND_METHOD(Phar, interceptFileFuncs);</a>
+<a name="436"><span class="lineNum">     436 </span>            : ZEND_METHOD(Phar, isValidPharFilename);</a>
+<a name="437"><span class="lineNum">     437 </span>            : ZEND_METHOD(Phar, loadPhar);</a>
+<a name="438"><span class="lineNum">     438 </span>            : ZEND_METHOD(Phar, mapPhar);</a>
+<a name="439"><span class="lineNum">     439 </span>            : ZEND_METHOD(Phar, running);</a>
+<a name="440"><span class="lineNum">     440 </span>            : ZEND_METHOD(Phar, mount);</a>
+<a name="441"><span class="lineNum">     441 </span>            : ZEND_METHOD(Phar, mungServer);</a>
+<a name="442"><span class="lineNum">     442 </span>            : ZEND_METHOD(Phar, unlinkArchive);</a>
+<a name="443"><span class="lineNum">     443 </span>            : ZEND_METHOD(Phar, webPhar);</a>
+<a name="444"><span class="lineNum">     444 </span>            : ZEND_METHOD(PharFileInfo, __construct);</a>
+<a name="445"><span class="lineNum">     445 </span>            : ZEND_METHOD(PharFileInfo, __destruct);</a>
+<a name="446"><span class="lineNum">     446 </span>            : ZEND_METHOD(PharFileInfo, chmod);</a>
+<a name="447"><span class="lineNum">     447 </span>            : ZEND_METHOD(PharFileInfo, compress);</a>
+<a name="448"><span class="lineNum">     448 </span>            : ZEND_METHOD(PharFileInfo, decompress);</a>
+<a name="449"><span class="lineNum">     449 </span>            : ZEND_METHOD(PharFileInfo, delMetadata);</a>
+<a name="450"><span class="lineNum">     450 </span>            : ZEND_METHOD(PharFileInfo, getCompressedSize);</a>
+<a name="451"><span class="lineNum">     451 </span>            : ZEND_METHOD(PharFileInfo, getCRC32);</a>
+<a name="452"><span class="lineNum">     452 </span>            : ZEND_METHOD(PharFileInfo, getContent);</a>
+<a name="453"><span class="lineNum">     453 </span>            : ZEND_METHOD(PharFileInfo, getMetadata);</a>
+<a name="454"><span class="lineNum">     454 </span>            : ZEND_METHOD(PharFileInfo, getPharFlags);</a>
+<a name="455"><span class="lineNum">     455 </span>            : ZEND_METHOD(PharFileInfo, hasMetadata);</a>
+<a name="456"><span class="lineNum">     456 </span>            : ZEND_METHOD(PharFileInfo, isCompressed);</a>
+<a name="457"><span class="lineNum">     457 </span>            : ZEND_METHOD(PharFileInfo, isCRCChecked);</a>
+<a name="458"><span class="lineNum">     458 </span>            : ZEND_METHOD(PharFileInfo, setMetadata);</a>
+<a name="459"><span class="lineNum">     459 </span>            : </a>
+<a name="460"><span class="lineNum">     460 </span>            : </a>
+<a name="461"><span class="lineNum">     461 </span>            : static const zend_function_entry class_PharException_methods[] = {</a>
+<a name="462"><span class="lineNum">     462 </span>            :         ZEND_FE_END</a>
+<a name="463"><span class="lineNum">     463 </span>            : };</a>
+<a name="464"><span class="lineNum">     464 </span>            : </a>
+<a name="465"><span class="lineNum">     465 </span>            : </a>
+<a name="466"><span class="lineNum">     466 </span>            : static const zend_function_entry class_Phar_methods[] = {</a>
+<a name="467"><span class="lineNum">     467 </span>            :         ZEND_ME(Phar, __construct, arginfo_class_Phar___construct, ZEND_ACC_PUBLIC)</a>
+<a name="468"><span class="lineNum">     468 </span>            :         ZEND_ME(Phar, __destruct, arginfo_class_Phar___destruct, ZEND_ACC_PUBLIC)</a>
+<a name="469"><span class="lineNum">     469 </span>            :         ZEND_ME(Phar, addEmptyDir, arginfo_class_Phar_addEmptyDir, ZEND_ACC_PUBLIC)</a>
+<a name="470"><span class="lineNum">     470 </span>            :         ZEND_ME(Phar, addFile, arginfo_class_Phar_addFile, ZEND_ACC_PUBLIC)</a>
+<a name="471"><span class="lineNum">     471 </span>            :         ZEND_ME(Phar, addFromString, arginfo_class_Phar_addFromString, ZEND_ACC_PUBLIC)</a>
+<a name="472"><span class="lineNum">     472 </span>            :         ZEND_ME(Phar, buildFromDirectory, arginfo_class_Phar_buildFromDirectory, ZEND_ACC_PUBLIC)</a>
+<a name="473"><span class="lineNum">     473 </span>            :         ZEND_ME(Phar, buildFromIterator, arginfo_class_Phar_buildFromIterator, ZEND_ACC_PUBLIC)</a>
+<a name="474"><span class="lineNum">     474 </span>            :         ZEND_ME(Phar, compressFiles, arginfo_class_Phar_compressFiles, ZEND_ACC_PUBLIC)</a>
+<a name="475"><span class="lineNum">     475 </span>            :         ZEND_ME(Phar, decompressFiles, arginfo_class_Phar_decompressFiles, ZEND_ACC_PUBLIC)</a>
+<a name="476"><span class="lineNum">     476 </span>            :         ZEND_ME(Phar, compress, arginfo_class_Phar_compress, ZEND_ACC_PUBLIC)</a>
+<a name="477"><span class="lineNum">     477 </span>            :         ZEND_ME(Phar, decompress, arginfo_class_Phar_decompress, ZEND_ACC_PUBLIC)</a>
+<a name="478"><span class="lineNum">     478 </span>            :         ZEND_ME(Phar, convertToExecutable, arginfo_class_Phar_convertToExecutable, ZEND_ACC_PUBLIC)</a>
+<a name="479"><span class="lineNum">     479 </span>            :         ZEND_ME(Phar, convertToData, arginfo_class_Phar_convertToData, ZEND_ACC_PUBLIC)</a>
+<a name="480"><span class="lineNum">     480 </span>            :         ZEND_ME(Phar, copy, arginfo_class_Phar_copy, ZEND_ACC_PUBLIC)</a>
+<a name="481"><span class="lineNum">     481 </span>            :         ZEND_ME(Phar, count, arginfo_class_Phar_count, ZEND_ACC_PUBLIC)</a>
+<a name="482"><span class="lineNum">     482 </span>            :         ZEND_ME(Phar, delete, arginfo_class_Phar_delete, ZEND_ACC_PUBLIC)</a>
+<a name="483"><span class="lineNum">     483 </span>            :         ZEND_ME(Phar, delMetadata, arginfo_class_Phar_delMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="484"><span class="lineNum">     484 </span>            :         ZEND_ME(Phar, extractTo, arginfo_class_Phar_extractTo, ZEND_ACC_PUBLIC)</a>
+<a name="485"><span class="lineNum">     485 </span>            :         ZEND_ME(Phar, getAlias, arginfo_class_Phar_getAlias, ZEND_ACC_PUBLIC)</a>
+<a name="486"><span class="lineNum">     486 </span>            :         ZEND_ME(Phar, getPath, arginfo_class_Phar_getPath, ZEND_ACC_PUBLIC)</a>
+<a name="487"><span class="lineNum">     487 </span>            :         ZEND_ME(Phar, getMetadata, arginfo_class_Phar_getMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="488"><span class="lineNum">     488 </span>            :         ZEND_ME(Phar, getModified, arginfo_class_Phar_getModified, ZEND_ACC_PUBLIC)</a>
+<a name="489"><span class="lineNum">     489 </span>            :         ZEND_ME(Phar, getSignature, arginfo_class_Phar_getSignature, ZEND_ACC_PUBLIC)</a>
+<a name="490"><span class="lineNum">     490 </span>            :         ZEND_ME(Phar, getStub, arginfo_class_Phar_getStub, ZEND_ACC_PUBLIC)</a>
+<a name="491"><span class="lineNum">     491 </span>            :         ZEND_ME(Phar, getVersion, arginfo_class_Phar_getVersion, ZEND_ACC_PUBLIC)</a>
+<a name="492"><span class="lineNum">     492 </span>            :         ZEND_ME(Phar, hasMetadata, arginfo_class_Phar_hasMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="493"><span class="lineNum">     493 </span>            :         ZEND_ME(Phar, isBuffering, arginfo_class_Phar_isBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="494"><span class="lineNum">     494 </span>            :         ZEND_ME(Phar, isCompressed, arginfo_class_Phar_isCompressed, ZEND_ACC_PUBLIC)</a>
+<a name="495"><span class="lineNum">     495 </span>            :         ZEND_ME(Phar, isFileFormat, arginfo_class_Phar_isFileFormat, ZEND_ACC_PUBLIC)</a>
+<a name="496"><span class="lineNum">     496 </span>            :         ZEND_ME(Phar, isWritable, arginfo_class_Phar_isWritable, ZEND_ACC_PUBLIC)</a>
+<a name="497"><span class="lineNum">     497 </span>            :         ZEND_ME(Phar, offsetExists, arginfo_class_Phar_offsetExists, ZEND_ACC_PUBLIC)</a>
+<a name="498"><span class="lineNum">     498 </span>            :         ZEND_ME(Phar, offsetGet, arginfo_class_Phar_offsetGet, ZEND_ACC_PUBLIC)</a>
+<a name="499"><span class="lineNum">     499 </span>            :         ZEND_ME(Phar, offsetSet, arginfo_class_Phar_offsetSet, ZEND_ACC_PUBLIC)</a>
+<a name="500"><span class="lineNum">     500 </span>            :         ZEND_ME(Phar, offsetUnset, arginfo_class_Phar_offsetUnset, ZEND_ACC_PUBLIC)</a>
+<a name="501"><span class="lineNum">     501 </span>            :         ZEND_ME(Phar, setAlias, arginfo_class_Phar_setAlias, ZEND_ACC_PUBLIC)</a>
+<a name="502"><span class="lineNum">     502 </span>            :         ZEND_ME(Phar, setDefaultStub, arginfo_class_Phar_setDefaultStub, ZEND_ACC_PUBLIC)</a>
+<a name="503"><span class="lineNum">     503 </span>            :         ZEND_ME(Phar, setMetadata, arginfo_class_Phar_setMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="504"><span class="lineNum">     504 </span>            :         ZEND_ME(Phar, setSignatureAlgorithm, arginfo_class_Phar_setSignatureAlgorithm, ZEND_ACC_PUBLIC)</a>
+<a name="505"><span class="lineNum">     505 </span>            :         ZEND_ME(Phar, setStub, arginfo_class_Phar_setStub, ZEND_ACC_PUBLIC)</a>
+<a name="506"><span class="lineNum">     506 </span>            :         ZEND_ME(Phar, startBuffering, arginfo_class_Phar_startBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="507"><span class="lineNum">     507 </span>            :         ZEND_ME(Phar, stopBuffering, arginfo_class_Phar_stopBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="508"><span class="lineNum">     508 </span>            :         ZEND_ME(Phar, apiVersion, arginfo_class_Phar_apiVersion, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="509"><span class="lineNum">     509 </span>            :         ZEND_ME(Phar, canCompress, arginfo_class_Phar_canCompress, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="510"><span class="lineNum">     510 </span>            :         ZEND_ME(Phar, canWrite, arginfo_class_Phar_canWrite, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="511"><span class="lineNum">     511 </span>            :         ZEND_ME(Phar, createDefaultStub, arginfo_class_Phar_createDefaultStub, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="512"><span class="lineNum">     512 </span>            :         ZEND_ME(Phar, getSupportedCompression, arginfo_class_Phar_getSupportedCompression, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="513"><span class="lineNum">     513 </span>            :         ZEND_ME(Phar, getSupportedSignatures, arginfo_class_Phar_getSupportedSignatures, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="514"><span class="lineNum">     514 </span>            :         ZEND_ME(Phar, interceptFileFuncs, arginfo_class_Phar_interceptFileFuncs, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="515"><span class="lineNum">     515 </span>            :         ZEND_ME(Phar, isValidPharFilename, arginfo_class_Phar_isValidPharFilename, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="516"><span class="lineNum">     516 </span>            :         ZEND_ME(Phar, loadPhar, arginfo_class_Phar_loadPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="517"><span class="lineNum">     517 </span>            :         ZEND_ME(Phar, mapPhar, arginfo_class_Phar_mapPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="518"><span class="lineNum">     518 </span>            :         ZEND_ME(Phar, running, arginfo_class_Phar_running, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="519"><span class="lineNum">     519 </span>            :         ZEND_ME(Phar, mount, arginfo_class_Phar_mount, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="520"><span class="lineNum">     520 </span>            :         ZEND_ME(Phar, mungServer, arginfo_class_Phar_mungServer, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="521"><span class="lineNum">     521 </span>            :         ZEND_ME(Phar, unlinkArchive, arginfo_class_Phar_unlinkArchive, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="522"><span class="lineNum">     522 </span>            :         ZEND_ME(Phar, webPhar, arginfo_class_Phar_webPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="523"><span class="lineNum">     523 </span>            :         ZEND_FE_END</a>
+<a name="524"><span class="lineNum">     524 </span>            : };</a>
+<a name="525"><span class="lineNum">     525 </span>            : </a>
+<a name="526"><span class="lineNum">     526 </span>            : </a>
+<a name="527"><span class="lineNum">     527 </span>            : static const zend_function_entry class_PharData_methods[] = {</a>
+<a name="528"><span class="lineNum">     528 </span>            :         ZEND_MALIAS(Phar, __construct, __construct, arginfo_class_PharData___construct, ZEND_ACC_PUBLIC)</a>
+<a name="529"><span class="lineNum">     529 </span>            :         ZEND_MALIAS(Phar, __destruct, __destruct, arginfo_class_PharData___destruct, ZEND_ACC_PUBLIC)</a>
+<a name="530"><span class="lineNum">     530 </span>            :         ZEND_MALIAS(Phar, addEmptyDir, addEmptyDir, arginfo_class_PharData_addEmptyDir, ZEND_ACC_PUBLIC)</a>
+<a name="531"><span class="lineNum">     531 </span>            :         ZEND_MALIAS(Phar, addFile, addFile, arginfo_class_PharData_addFile, ZEND_ACC_PUBLIC)</a>
+<a name="532"><span class="lineNum">     532 </span>            :         ZEND_MALIAS(Phar, addFromString, addFromString, arginfo_class_PharData_addFromString, ZEND_ACC_PUBLIC)</a>
+<a name="533"><span class="lineNum">     533 </span>            :         ZEND_MALIAS(Phar, buildFromDirectory, buildFromDirectory, arginfo_class_PharData_buildFromDirectory, ZEND_ACC_PUBLIC)</a>
+<a name="534"><span class="lineNum">     534 </span>            :         ZEND_MALIAS(Phar, buildFromIterator, buildFromIterator, arginfo_class_PharData_buildFromIterator, ZEND_ACC_PUBLIC)</a>
+<a name="535"><span class="lineNum">     535 </span>            :         ZEND_MALIAS(Phar, compressFiles, compressFiles, arginfo_class_PharData_compressFiles, ZEND_ACC_PUBLIC)</a>
+<a name="536"><span class="lineNum">     536 </span>            :         ZEND_MALIAS(Phar, decompressFiles, decompressFiles, arginfo_class_PharData_decompressFiles, ZEND_ACC_PUBLIC)</a>
+<a name="537"><span class="lineNum">     537 </span>            :         ZEND_MALIAS(Phar, compress, compress, arginfo_class_PharData_compress, ZEND_ACC_PUBLIC)</a>
+<a name="538"><span class="lineNum">     538 </span>            :         ZEND_MALIAS(Phar, decompress, decompress, arginfo_class_PharData_decompress, ZEND_ACC_PUBLIC)</a>
+<a name="539"><span class="lineNum">     539 </span>            :         ZEND_MALIAS(Phar, convertToExecutable, convertToExecutable, arginfo_class_PharData_convertToExecutable, ZEND_ACC_PUBLIC)</a>
+<a name="540"><span class="lineNum">     540 </span>            :         ZEND_MALIAS(Phar, convertToData, convertToData, arginfo_class_PharData_convertToData, ZEND_ACC_PUBLIC)</a>
+<a name="541"><span class="lineNum">     541 </span>            :         ZEND_MALIAS(Phar, copy, copy, arginfo_class_PharData_copy, ZEND_ACC_PUBLIC)</a>
+<a name="542"><span class="lineNum">     542 </span>            :         ZEND_MALIAS(Phar, count, count, arginfo_class_PharData_count, ZEND_ACC_PUBLIC)</a>
+<a name="543"><span class="lineNum">     543 </span>            :         ZEND_MALIAS(Phar, delete, delete, arginfo_class_PharData_delete, ZEND_ACC_PUBLIC)</a>
+<a name="544"><span class="lineNum">     544 </span>            :         ZEND_MALIAS(Phar, delMetadata, delMetadata, arginfo_class_PharData_delMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="545"><span class="lineNum">     545 </span>            :         ZEND_MALIAS(Phar, extractTo, extractTo, arginfo_class_PharData_extractTo, ZEND_ACC_PUBLIC)</a>
+<a name="546"><span class="lineNum">     546 </span>            :         ZEND_MALIAS(Phar, getAlias, getAlias, arginfo_class_PharData_getAlias, ZEND_ACC_PUBLIC)</a>
+<a name="547"><span class="lineNum">     547 </span>            :         ZEND_MALIAS(Phar, getPath, getPath, arginfo_class_PharData_getPath, ZEND_ACC_PUBLIC)</a>
+<a name="548"><span class="lineNum">     548 </span>            :         ZEND_MALIAS(Phar, getMetadata, getMetadata, arginfo_class_PharData_getMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="549"><span class="lineNum">     549 </span>            :         ZEND_MALIAS(Phar, getModified, getModified, arginfo_class_PharData_getModified, ZEND_ACC_PUBLIC)</a>
+<a name="550"><span class="lineNum">     550 </span>            :         ZEND_MALIAS(Phar, getSignature, getSignature, arginfo_class_PharData_getSignature, ZEND_ACC_PUBLIC)</a>
+<a name="551"><span class="lineNum">     551 </span>            :         ZEND_MALIAS(Phar, getStub, getStub, arginfo_class_PharData_getStub, ZEND_ACC_PUBLIC)</a>
+<a name="552"><span class="lineNum">     552 </span>            :         ZEND_MALIAS(Phar, getVersion, getVersion, arginfo_class_PharData_getVersion, ZEND_ACC_PUBLIC)</a>
+<a name="553"><span class="lineNum">     553 </span>            :         ZEND_MALIAS(Phar, hasMetadata, hasMetadata, arginfo_class_PharData_hasMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="554"><span class="lineNum">     554 </span>            :         ZEND_MALIAS(Phar, isBuffering, isBuffering, arginfo_class_PharData_isBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="555"><span class="lineNum">     555 </span>            :         ZEND_MALIAS(Phar, isCompressed, isCompressed, arginfo_class_PharData_isCompressed, ZEND_ACC_PUBLIC)</a>
+<a name="556"><span class="lineNum">     556 </span>            :         ZEND_MALIAS(Phar, isFileFormat, isFileFormat, arginfo_class_PharData_isFileFormat, ZEND_ACC_PUBLIC)</a>
+<a name="557"><span class="lineNum">     557 </span>            :         ZEND_MALIAS(Phar, isWritable, isWritable, arginfo_class_PharData_isWritable, ZEND_ACC_PUBLIC)</a>
+<a name="558"><span class="lineNum">     558 </span>            :         ZEND_MALIAS(Phar, offsetExists, offsetExists, arginfo_class_PharData_offsetExists, ZEND_ACC_PUBLIC)</a>
+<a name="559"><span class="lineNum">     559 </span>            :         ZEND_MALIAS(Phar, offsetGet, offsetGet, arginfo_class_PharData_offsetGet, ZEND_ACC_PUBLIC)</a>
+<a name="560"><span class="lineNum">     560 </span>            :         ZEND_MALIAS(Phar, offsetSet, offsetSet, arginfo_class_PharData_offsetSet, ZEND_ACC_PUBLIC)</a>
+<a name="561"><span class="lineNum">     561 </span>            :         ZEND_MALIAS(Phar, offsetUnset, offsetUnset, arginfo_class_PharData_offsetUnset, ZEND_ACC_PUBLIC)</a>
+<a name="562"><span class="lineNum">     562 </span>            :         ZEND_MALIAS(Phar, setAlias, setAlias, arginfo_class_PharData_setAlias, ZEND_ACC_PUBLIC)</a>
+<a name="563"><span class="lineNum">     563 </span>            :         ZEND_MALIAS(Phar, setDefaultStub, setDefaultStub, arginfo_class_PharData_setDefaultStub, ZEND_ACC_PUBLIC)</a>
+<a name="564"><span class="lineNum">     564 </span>            :         ZEND_MALIAS(Phar, setMetadata, setMetadata, arginfo_class_PharData_setMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="565"><span class="lineNum">     565 </span>            :         ZEND_MALIAS(Phar, setSignatureAlgorithm, setSignatureAlgorithm, arginfo_class_PharData_setSignatureAlgorithm, ZEND_ACC_PUBLIC)</a>
+<a name="566"><span class="lineNum">     566 </span>            :         ZEND_MALIAS(Phar, setStub, setStub, arginfo_class_PharData_setStub, ZEND_ACC_PUBLIC)</a>
+<a name="567"><span class="lineNum">     567 </span>            :         ZEND_MALIAS(Phar, startBuffering, startBuffering, arginfo_class_PharData_startBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="568"><span class="lineNum">     568 </span>            :         ZEND_MALIAS(Phar, stopBuffering, stopBuffering, arginfo_class_PharData_stopBuffering, ZEND_ACC_PUBLIC)</a>
+<a name="569"><span class="lineNum">     569 </span>            :         ZEND_MALIAS(Phar, apiVersion, apiVersion, arginfo_class_PharData_apiVersion, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="570"><span class="lineNum">     570 </span>            :         ZEND_MALIAS(Phar, canCompress, canCompress, arginfo_class_PharData_canCompress, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="571"><span class="lineNum">     571 </span>            :         ZEND_MALIAS(Phar, canWrite, canWrite, arginfo_class_PharData_canWrite, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="572"><span class="lineNum">     572 </span>            :         ZEND_MALIAS(Phar, createDefaultStub, createDefaultStub, arginfo_class_PharData_createDefaultStub, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="573"><span class="lineNum">     573 </span>            :         ZEND_MALIAS(Phar, getSupportedCompression, getSupportedCompression, arginfo_class_PharData_getSupportedCompression, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="574"><span class="lineNum">     574 </span>            :         ZEND_MALIAS(Phar, getSupportedSignatures, getSupportedSignatures, arginfo_class_PharData_getSupportedSignatures, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="575"><span class="lineNum">     575 </span>            :         ZEND_MALIAS(Phar, interceptFileFuncs, interceptFileFuncs, arginfo_class_PharData_interceptFileFuncs, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="576"><span class="lineNum">     576 </span>            :         ZEND_MALIAS(Phar, isValidPharFilename, isValidPharFilename, arginfo_class_PharData_isValidPharFilename, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="577"><span class="lineNum">     577 </span>            :         ZEND_MALIAS(Phar, loadPhar, loadPhar, arginfo_class_PharData_loadPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="578"><span class="lineNum">     578 </span>            :         ZEND_MALIAS(Phar, mapPhar, mapPhar, arginfo_class_PharData_mapPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="579"><span class="lineNum">     579 </span>            :         ZEND_MALIAS(Phar, running, running, arginfo_class_PharData_running, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="580"><span class="lineNum">     580 </span>            :         ZEND_MALIAS(Phar, mount, mount, arginfo_class_PharData_mount, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="581"><span class="lineNum">     581 </span>            :         ZEND_MALIAS(Phar, mungServer, mungServer, arginfo_class_PharData_mungServer, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="582"><span class="lineNum">     582 </span>            :         ZEND_MALIAS(Phar, unlinkArchive, unlinkArchive, arginfo_class_PharData_unlinkArchive, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="583"><span class="lineNum">     583 </span>            :         ZEND_MALIAS(Phar, webPhar, webPhar, arginfo_class_PharData_webPhar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)</a>
+<a name="584"><span class="lineNum">     584 </span>            :         ZEND_FE_END</a>
+<a name="585"><span class="lineNum">     585 </span>            : };</a>
+<a name="586"><span class="lineNum">     586 </span>            : </a>
+<a name="587"><span class="lineNum">     587 </span>            : </a>
+<a name="588"><span class="lineNum">     588 </span>            : static const zend_function_entry class_PharFileInfo_methods[] = {</a>
+<a name="589"><span class="lineNum">     589 </span>            :         ZEND_ME(PharFileInfo, __construct, arginfo_class_PharFileInfo___construct, ZEND_ACC_PUBLIC)</a>
+<a name="590"><span class="lineNum">     590 </span>            :         ZEND_ME(PharFileInfo, __destruct, arginfo_class_PharFileInfo___destruct, ZEND_ACC_PUBLIC)</a>
+<a name="591"><span class="lineNum">     591 </span>            :         ZEND_ME(PharFileInfo, chmod, arginfo_class_PharFileInfo_chmod, ZEND_ACC_PUBLIC)</a>
+<a name="592"><span class="lineNum">     592 </span>            :         ZEND_ME(PharFileInfo, compress, arginfo_class_PharFileInfo_compress, ZEND_ACC_PUBLIC)</a>
+<a name="593"><span class="lineNum">     593 </span>            :         ZEND_ME(PharFileInfo, decompress, arginfo_class_PharFileInfo_decompress, ZEND_ACC_PUBLIC)</a>
+<a name="594"><span class="lineNum">     594 </span>            :         ZEND_ME(PharFileInfo, delMetadata, arginfo_class_PharFileInfo_delMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="595"><span class="lineNum">     595 </span>            :         ZEND_ME(PharFileInfo, getCompressedSize, arginfo_class_PharFileInfo_getCompressedSize, ZEND_ACC_PUBLIC)</a>
+<a name="596"><span class="lineNum">     596 </span>            :         ZEND_ME(PharFileInfo, getCRC32, arginfo_class_PharFileInfo_getCRC32, ZEND_ACC_PUBLIC)</a>
+<a name="597"><span class="lineNum">     597 </span>            :         ZEND_ME(PharFileInfo, getContent, arginfo_class_PharFileInfo_getContent, ZEND_ACC_PUBLIC)</a>
+<a name="598"><span class="lineNum">     598 </span>            :         ZEND_ME(PharFileInfo, getMetadata, arginfo_class_PharFileInfo_getMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="599"><span class="lineNum">     599 </span>            :         ZEND_ME(PharFileInfo, getPharFlags, arginfo_class_PharFileInfo_getPharFlags, ZEND_ACC_PUBLIC)</a>
+<a name="600"><span class="lineNum">     600 </span>            :         ZEND_ME(PharFileInfo, hasMetadata, arginfo_class_PharFileInfo_hasMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="601"><span class="lineNum">     601 </span>            :         ZEND_ME(PharFileInfo, isCompressed, arginfo_class_PharFileInfo_isCompressed, ZEND_ACC_PUBLIC)</a>
+<a name="602"><span class="lineNum">     602 </span>            :         ZEND_ME(PharFileInfo, isCRCChecked, arginfo_class_PharFileInfo_isCRCChecked, ZEND_ACC_PUBLIC)</a>
+<a name="603"><span class="lineNum">     603 </span>            :         ZEND_ME(PharFileInfo, setMetadata, arginfo_class_PharFileInfo_setMetadata, ZEND_ACC_PUBLIC)</a>
+<a name="604"><span class="lineNum">     604 </span>            :         ZEND_FE_END</a>
+<a name="605"><span class="lineNum">     605 </span>            : };</a>
+<a name="606"><span class="lineNum">     606 </span>            : </a>
+<a name="607"><span class="lineNum">     607 </span><span class="lineCov">      38769 : static zend_class_entry *register_class_PharException(zend_class_entry *class_entry_Exception)</span></a>
+<a name="608"><span class="lineNum">     608 </span>            : {</a>
+<a name="609"><span class="lineNum">     609 </span>            :         zend_class_entry ce, *class_entry;</a>
+<a name="610"><span class="lineNum">     610 </span>            : </a>
+<a name="611"><span class="lineNum">     611 </span><span class="lineCov">      38769 :         INIT_CLASS_ENTRY(ce, &quot;PharException&quot;, class_PharException_methods);</span></a>
+<a name="612"><span class="lineNum">     612 </span><span class="lineCov">      38769 :         class_entry = zend_register_internal_class_ex(&amp;ce, class_entry_Exception);</span></a>
+<a name="613"><span class="lineNum">     613 </span>            : </a>
+<a name="614"><span class="lineNum">     614 </span><span class="lineCov">      38769 :         return class_entry;</span></a>
+<a name="615"><span class="lineNum">     615 </span>            : }</a>
+<a name="616"><span class="lineNum">     616 </span>            : </a>
+<a name="617"><span class="lineNum">     617 </span><span class="lineCov">      38769 : static zend_class_entry *register_class_Phar(zend_class_entry *class_entry_RecursiveDirectoryIterator, zend_class_entry *class_entry_Countable, zend_class_entry *class_entry_ArrayAccess)</span></a>
+<a name="618"><span class="lineNum">     618 </span>            : {</a>
+<a name="619"><span class="lineNum">     619 </span>            :         zend_class_entry ce, *class_entry;</a>
+<a name="620"><span class="lineNum">     620 </span>            : </a>
+<a name="621"><span class="lineNum">     621 </span><span class="lineCov">      38769 :         INIT_CLASS_ENTRY(ce, &quot;Phar&quot;, class_Phar_methods);</span></a>
+<a name="622"><span class="lineNum">     622 </span><span class="lineCov">      38769 :         class_entry = zend_register_internal_class_ex(&amp;ce, class_entry_RecursiveDirectoryIterator);</span></a>
+<a name="623"><span class="lineNum">     623 </span><span class="lineCov">      38769 :         zend_class_implements(class_entry, 2, class_entry_Countable, class_entry_ArrayAccess);</span></a>
+<a name="624"><span class="lineNum">     624 </span>            : </a>
+<a name="625"><span class="lineNum">     625 </span><span class="lineCov">      38769 :         return class_entry;</span></a>
+<a name="626"><span class="lineNum">     626 </span>            : }</a>
+<a name="627"><span class="lineNum">     627 </span>            : </a>
+<a name="628"><span class="lineNum">     628 </span><span class="lineCov">      38769 : static zend_class_entry *register_class_PharData(zend_class_entry *class_entry_RecursiveDirectoryIterator, zend_class_entry *class_entry_Countable, zend_class_entry *class_entry_ArrayAccess)</span></a>
+<a name="629"><span class="lineNum">     629 </span>            : {</a>
+<a name="630"><span class="lineNum">     630 </span>            :         zend_class_entry ce, *class_entry;</a>
+<a name="631"><span class="lineNum">     631 </span>            : </a>
+<a name="632"><span class="lineNum">     632 </span><span class="lineCov">      38769 :         INIT_CLASS_ENTRY(ce, &quot;PharData&quot;, class_PharData_methods);</span></a>
+<a name="633"><span class="lineNum">     633 </span><span class="lineCov">      38769 :         class_entry = zend_register_internal_class_ex(&amp;ce, class_entry_RecursiveDirectoryIterator);</span></a>
+<a name="634"><span class="lineNum">     634 </span><span class="lineCov">      38769 :         zend_class_implements(class_entry, 2, class_entry_Countable, class_entry_ArrayAccess);</span></a>
+<a name="635"><span class="lineNum">     635 </span>            : </a>
+<a name="636"><span class="lineNum">     636 </span><span class="lineCov">      38769 :         return class_entry;</span></a>
+<a name="637"><span class="lineNum">     637 </span>            : }</a>
+<a name="638"><span class="lineNum">     638 </span>            : </a>
+<a name="639"><span class="lineNum">     639 </span><span class="lineCov">      38769 : static zend_class_entry *register_class_PharFileInfo(zend_class_entry *class_entry_SplFileInfo)</span></a>
+<a name="640"><span class="lineNum">     640 </span>            : {</a>
+<a name="641"><span class="lineNum">     641 </span>            :         zend_class_entry ce, *class_entry;</a>
+<a name="642"><span class="lineNum">     642 </span>            : </a>
+<a name="643"><span class="lineNum">     643 </span><span class="lineCov">      38769 :         INIT_CLASS_ENTRY(ce, &quot;PharFileInfo&quot;, class_PharFileInfo_methods);</span></a>
+<a name="644"><span class="lineNum">     644 </span><span class="lineCov">      38769 :         class_entry = zend_register_internal_class_ex(&amp;ce, class_entry_SplFileInfo);</span></a>
+<a name="645"><span class="lineNum">     645 </span>            : </a>
+<a name="646"><span class="lineNum">     646 </span><span class="lineCov">      38769 :         return class_entry;</span></a>
+<a name="647"><span class="lineNum">     647 </span>            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

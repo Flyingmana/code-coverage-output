@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - spl/spl_iterators.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">spl</a> - spl_iterators.h<span style="font-size: 80%;"> (source / <a href="spl_iterators.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="3"><span class="lineNum">       3 </span>            :    | Copyright (c) The PHP Group                                          |</a>
+<a name="4"><span class="lineNum">       4 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="5"><span class="lineNum">       5 </span>            :    | This source file is subject to version 3.01 of the PHP license,      |</a>
+<a name="6"><span class="lineNum">       6 </span>            :    | that is bundled with this package in the file LICENSE, and is        |</a>
+<a name="7"><span class="lineNum">       7 </span>            :    | available through the world-wide-web at the following url:           |</a>
+<a name="8"><span class="lineNum">       8 </span>            :    | https://www.php.net/license/3_01.txt                                 |</a>
+<a name="9"><span class="lineNum">       9 </span>            :    | If you did not receive a copy of the PHP license and are unable to   |</a>
+<a name="10"><span class="lineNum">      10 </span>            :    | obtain it through the world-wide-web, please send a note to          |</a>
+<a name="11"><span class="lineNum">      11 </span>            :    | license@php.net so we can mail you a copy immediately.               |</a>
+<a name="12"><span class="lineNum">      12 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="13"><span class="lineNum">      13 </span>            :    | Authors: Marcus Boerger &lt;helly@php.net&gt;                              |</a>
+<a name="14"><span class="lineNum">      14 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="15"><span class="lineNum">      15 </span>            :  */</a>
+<a name="16"><span class="lineNum">      16 </span>            : </a>
+<a name="17"><span class="lineNum">      17 </span>            : #ifndef SPL_ITERATORS_H</a>
+<a name="18"><span class="lineNum">      18 </span>            : #define SPL_ITERATORS_H</a>
+<a name="19"><span class="lineNum">      19 </span>            : </a>
+<a name="20"><span class="lineNum">      20 </span>            : #include &quot;php.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>            : #include &quot;php_spl.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>            : #include &quot;ext/pcre/php_pcre.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<a name="24"><span class="lineNum">      24 </span>            : extern PHPAPI zend_class_entry *spl_ce_AppendIterator;</a>
+<a name="25"><span class="lineNum">      25 </span>            : extern PHPAPI zend_class_entry *spl_ce_CachingIterator;</a>
+<a name="26"><span class="lineNum">      26 </span>            : extern PHPAPI zend_class_entry *spl_ce_CallbackFilterIterator;</a>
+<a name="27"><span class="lineNum">      27 </span>            : extern PHPAPI zend_class_entry *spl_ce_EmptyIterator;</a>
+<a name="28"><span class="lineNum">      28 </span>            : extern PHPAPI zend_class_entry *spl_ce_FilterIterator;</a>
+<a name="29"><span class="lineNum">      29 </span>            : extern PHPAPI zend_class_entry *spl_ce_InfiniteIterator;</a>
+<a name="30"><span class="lineNum">      30 </span>            : extern PHPAPI zend_class_entry *spl_ce_IteratorIterator;</a>
+<a name="31"><span class="lineNum">      31 </span>            : extern PHPAPI zend_class_entry *spl_ce_LimitIterator;</a>
+<a name="32"><span class="lineNum">      32 </span>            : extern PHPAPI zend_class_entry *spl_ce_NoRewindIterator;</a>
+<a name="33"><span class="lineNum">      33 </span>            : extern PHPAPI zend_class_entry *spl_ce_OuterIterator;</a>
+<a name="34"><span class="lineNum">      34 </span>            : extern PHPAPI zend_class_entry *spl_ce_ParentIterator;</a>
+<a name="35"><span class="lineNum">      35 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveCachingIterator;</a>
+<a name="36"><span class="lineNum">      36 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveCallbackFilterIterator;</a>
+<a name="37"><span class="lineNum">      37 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveFilterIterator;</a>
+<a name="38"><span class="lineNum">      38 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveIterator;</a>
+<a name="39"><span class="lineNum">      39 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveIteratorIterator;</a>
+<a name="40"><span class="lineNum">      40 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveRegexIterator;</a>
+<a name="41"><span class="lineNum">      41 </span>            : extern PHPAPI zend_class_entry *spl_ce_RecursiveTreeIterator;</a>
+<a name="42"><span class="lineNum">      42 </span>            : extern PHPAPI zend_class_entry *spl_ce_RegexIterator;</a>
+<a name="43"><span class="lineNum">      43 </span>            : extern PHPAPI zend_class_entry *spl_ce_SeekableIterator;</a>
+<a name="44"><span class="lineNum">      44 </span>            : </a>
+<a name="45"><span class="lineNum">      45 </span>            : PHP_MINIT_FUNCTION(spl_iterators);</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            : typedef enum {</a>
+<a name="48"><span class="lineNum">      48 </span>            :         DIT_Default = 0,</a>
+<a name="49"><span class="lineNum">      49 </span>            :         DIT_FilterIterator = DIT_Default,</a>
+<a name="50"><span class="lineNum">      50 </span>            :         DIT_RecursiveFilterIterator = DIT_Default,</a>
+<a name="51"><span class="lineNum">      51 </span>            :         DIT_ParentIterator = DIT_Default,</a>
+<a name="52"><span class="lineNum">      52 </span>            :         DIT_LimitIterator,</a>
+<a name="53"><span class="lineNum">      53 </span>            :         DIT_CachingIterator,</a>
+<a name="54"><span class="lineNum">      54 </span>            :         DIT_RecursiveCachingIterator,</a>
+<a name="55"><span class="lineNum">      55 </span>            :         DIT_IteratorIterator,</a>
+<a name="56"><span class="lineNum">      56 </span>            :         DIT_NoRewindIterator,</a>
+<a name="57"><span class="lineNum">      57 </span>            :         DIT_InfiniteIterator,</a>
+<a name="58"><span class="lineNum">      58 </span>            :         DIT_AppendIterator,</a>
+<a name="59"><span class="lineNum">      59 </span>            :         DIT_RegexIterator,</a>
+<a name="60"><span class="lineNum">      60 </span>            :         DIT_RecursiveRegexIterator,</a>
+<a name="61"><span class="lineNum">      61 </span>            :         DIT_CallbackFilterIterator,</a>
+<a name="62"><span class="lineNum">      62 </span>            :         DIT_RecursiveCallbackFilterIterator,</a>
+<a name="63"><span class="lineNum">      63 </span>            :         DIT_Unknown = ~0</a>
+<a name="64"><span class="lineNum">      64 </span>            : } dual_it_type;</a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            : typedef enum {</a>
+<a name="67"><span class="lineNum">      67 </span>            :         RIT_Default = 0,</a>
+<a name="68"><span class="lineNum">      68 </span>            :         RIT_RecursiveIteratorIterator = RIT_Default,</a>
+<a name="69"><span class="lineNum">      69 </span>            :         RIT_RecursiveTreeIterator,</a>
+<a name="70"><span class="lineNum">      70 </span>            :         RIT_Unknow = ~0</a>
+<a name="71"><span class="lineNum">      71 </span>            : } recursive_it_it_type;</a>
+<a name="72"><span class="lineNum">      72 </span>            : </a>
+<a name="73"><span class="lineNum">      73 </span>            : enum {</a>
+<a name="74"><span class="lineNum">      74 </span>            :         /* public */</a>
+<a name="75"><span class="lineNum">      75 </span>            :         CIT_CALL_TOSTRING        = 0x00000001,</a>
+<a name="76"><span class="lineNum">      76 </span>            :         CIT_TOSTRING_USE_KEY     = 0x00000002,</a>
+<a name="77"><span class="lineNum">      77 </span>            :         CIT_TOSTRING_USE_CURRENT = 0x00000004,</a>
+<a name="78"><span class="lineNum">      78 </span>            :         CIT_TOSTRING_USE_INNER   = 0x00000008,</a>
+<a name="79"><span class="lineNum">      79 </span>            :         CIT_CATCH_GET_CHILD      = 0x00000010,</a>
+<a name="80"><span class="lineNum">      80 </span>            :         CIT_FULL_CACHE           = 0x00000100,</a>
+<a name="81"><span class="lineNum">      81 </span>            :         CIT_PUBLIC               = 0x0000FFFF,</a>
+<a name="82"><span class="lineNum">      82 </span>            :         /* private */</a>
+<a name="83"><span class="lineNum">      83 </span>            :         CIT_VALID                = 0x00010000,</a>
+<a name="84"><span class="lineNum">      84 </span>            :         CIT_HAS_CHILDREN         = 0x00020000</a>
+<a name="85"><span class="lineNum">      85 </span>            : };</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            : enum {</a>
+<a name="88"><span class="lineNum">      88 </span>            :         /* public */</a>
+<a name="89"><span class="lineNum">      89 </span>            :         REGIT_USE_KEY            = 0x00000001,</a>
+<a name="90"><span class="lineNum">      90 </span>            :         REGIT_INVERTED           = 0x00000002</a>
+<a name="91"><span class="lineNum">      91 </span>            : };</a>
+<a name="92"><span class="lineNum">      92 </span>            : </a>
+<a name="93"><span class="lineNum">      93 </span>            : typedef enum {</a>
+<a name="94"><span class="lineNum">      94 </span>            :         REGIT_MODE_MATCH,</a>
+<a name="95"><span class="lineNum">      95 </span>            :         REGIT_MODE_GET_MATCH,</a>
+<a name="96"><span class="lineNum">      96 </span>            :         REGIT_MODE_ALL_MATCHES,</a>
+<a name="97"><span class="lineNum">      97 </span>            :         REGIT_MODE_SPLIT,</a>
+<a name="98"><span class="lineNum">      98 </span>            :         REGIT_MODE_REPLACE,</a>
+<a name="99"><span class="lineNum">      99 </span>            :         REGIT_MODE_MAX</a>
+<a name="100"><span class="lineNum">     100 </span>            : } regex_mode;</a>
+<a name="101"><span class="lineNum">     101 </span>            : </a>
+<a name="102"><span class="lineNum">     102 </span>            : typedef struct _spl_cbfilter_it_intern {</a>
+<a name="103"><span class="lineNum">     103 </span>            :         zend_fcall_info       fci;</a>
+<a name="104"><span class="lineNum">     104 </span>            :         zend_fcall_info_cache fcc;</a>
+<a name="105"><span class="lineNum">     105 </span>            :         zend_object           *object;</a>
+<a name="106"><span class="lineNum">     106 </span>            : } _spl_cbfilter_it_intern;</a>
+<a name="107"><span class="lineNum">     107 </span>            : </a>
+<a name="108"><span class="lineNum">     108 </span>            : typedef struct _spl_dual_it_object {</a>
+<a name="109"><span class="lineNum">     109 </span>            :         struct {</a>
+<a name="110"><span class="lineNum">     110 </span>            :                 zval                 zobject;</a>
+<a name="111"><span class="lineNum">     111 </span>            :                 zend_class_entry     *ce;</a>
+<a name="112"><span class="lineNum">     112 </span>            :                 zend_object          *object;</a>
+<a name="113"><span class="lineNum">     113 </span>            :                 zend_object_iterator *iterator;</a>
+<a name="114"><span class="lineNum">     114 </span>            :         } inner;</a>
+<a name="115"><span class="lineNum">     115 </span>            :         struct {</a>
+<a name="116"><span class="lineNum">     116 </span>            :                 zval                 data;</a>
+<a name="117"><span class="lineNum">     117 </span>            :                 zval                 key;</a>
+<a name="118"><span class="lineNum">     118 </span>            :                 zend_long            pos;</a>
+<a name="119"><span class="lineNum">     119 </span>            :         } current;</a>
+<a name="120"><span class="lineNum">     120 </span>            :         dual_it_type             dit_type;</a>
+<a name="121"><span class="lineNum">     121 </span>            :         union {</a>
+<a name="122"><span class="lineNum">     122 </span>            :                 struct {</a>
+<a name="123"><span class="lineNum">     123 </span>            :                         zend_long             offset;</a>
+<a name="124"><span class="lineNum">     124 </span>            :                         zend_long             count;</a>
+<a name="125"><span class="lineNum">     125 </span>            :                 } limit;</a>
+<a name="126"><span class="lineNum">     126 </span>            :                 struct {</a>
+<a name="127"><span class="lineNum">     127 </span>            :                         zend_long             flags; /* CIT_* */</a>
+<a name="128"><span class="lineNum">     128 </span>            :                         zend_string          *zstr;</a>
+<a name="129"><span class="lineNum">     129 </span>            :                         zval             zchildren;</a>
+<a name="130"><span class="lineNum">     130 </span>            :                         zval             zcache;</a>
+<a name="131"><span class="lineNum">     131 </span>            :                 } caching;</a>
+<a name="132"><span class="lineNum">     132 </span>            :                 struct {</a>
+<a name="133"><span class="lineNum">     133 </span>            :                         zval                  zarrayit;</a>
+<a name="134"><span class="lineNum">     134 </span>            :                         zend_object_iterator *iterator;</a>
+<a name="135"><span class="lineNum">     135 </span>            :                 } append;</a>
+<a name="136"><span class="lineNum">     136 </span>            :                 struct {</a>
+<a name="137"><span class="lineNum">     137 </span>            :                         zend_long        flags;</a>
+<a name="138"><span class="lineNum">     138 </span>            :                         zend_long        preg_flags;</a>
+<a name="139"><span class="lineNum">     139 </span>            :                         pcre_cache_entry *pce;</a>
+<a name="140"><span class="lineNum">     140 </span>            :                         zend_string      *regex;</a>
+<a name="141"><span class="lineNum">     141 </span>            :                         regex_mode       mode;</a>
+<a name="142"><span class="lineNum">     142 </span>            :                         int              use_flags;</a>
+<a name="143"><span class="lineNum">     143 </span>            :                 } regex;</a>
+<a name="144"><span class="lineNum">     144 </span>            :                 _spl_cbfilter_it_intern *cbfilter;</a>
+<a name="145"><span class="lineNum">     145 </span>            :         } u;</a>
+<a name="146"><span class="lineNum">     146 </span>            :         zend_object              std;</a>
+<a name="147"><span class="lineNum">     147 </span>            : } spl_dual_it_object;</a>
+<a name="148"><span class="lineNum">     148 </span>            : </a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">   18892800 : static inline spl_dual_it_object *spl_dual_it_from_obj(zend_object *obj) /* {{{ */ {</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">   18892800 :         return (spl_dual_it_object*)((char*)(obj) - XtOffsetOf(spl_dual_it_object, std));</span></a>
+<a name="151"><span class="lineNum">     151 </span>            : } /* }}} */</a>
+<a name="152"><span class="lineNum">     152 </span>            : </a>
+<a name="153"><span class="lineNum">     153 </span>            : #define Z_SPLDUAL_IT_P(zv)  spl_dual_it_from_obj(Z_OBJ_P((zv)))</a>
+<a name="154"><span class="lineNum">     154 </span>            : </a>
+<a name="155"><span class="lineNum">     155 </span>            : typedef int (*spl_iterator_apply_func_t)(zend_object_iterator *iter, void *puser);</a>
+<a name="156"><span class="lineNum">     156 </span>            : </a>
+<a name="157"><span class="lineNum">     157 </span>            : PHPAPI int spl_iterator_apply(zval *obj, spl_iterator_apply_func_t apply_func, void *puser);</a>
+<a name="158"><span class="lineNum">     158 </span>            : </a>
+<a name="159"><span class="lineNum">     159 </span>            : #endif /* SPL_ITERATORS_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

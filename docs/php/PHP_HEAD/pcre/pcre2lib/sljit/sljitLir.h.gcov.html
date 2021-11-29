@@ -1,0 +1,1621 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - pcre/pcre2lib/sljit/sljitLir.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">pcre/pcre2lib/sljit</a> - sljitLir.h<span style="font-size: 80%;"> (source / <a href="sljitLir.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>            :  *    Stack-less Just-In-Time compiler</a>
+<a name="3"><span class="lineNum">       3 </span>            :  *</a>
+<a name="4"><span class="lineNum">       4 </span>            :  *    Copyright Zoltan Herczeg (hzmester@freemail.hu). All rights reserved.</a>
+<a name="5"><span class="lineNum">       5 </span>            :  *</a>
+<a name="6"><span class="lineNum">       6 </span>            :  * Redistribution and use in source and binary forms, with or without modification, are</a>
+<a name="7"><span class="lineNum">       7 </span>            :  * permitted provided that the following conditions are met:</a>
+<a name="8"><span class="lineNum">       8 </span>            :  *</a>
+<a name="9"><span class="lineNum">       9 </span>            :  *   1. Redistributions of source code must retain the above copyright notice, this list of</a>
+<a name="10"><span class="lineNum">      10 </span>            :  *      conditions and the following disclaimer.</a>
+<a name="11"><span class="lineNum">      11 </span>            :  *</a>
+<a name="12"><span class="lineNum">      12 </span>            :  *   2. Redistributions in binary form must reproduce the above copyright notice, this list</a>
+<a name="13"><span class="lineNum">      13 </span>            :  *      of conditions and the following disclaimer in the documentation and/or other materials</a>
+<a name="14"><span class="lineNum">      14 </span>            :  *      provided with the distribution.</a>
+<a name="15"><span class="lineNum">      15 </span>            :  *</a>
+<a name="16"><span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(S) AND CONTRIBUTORS ``AS IS'' AND ANY</a>
+<a name="17"><span class="lineNum">      17 </span>            :  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES</a>
+<a name="18"><span class="lineNum">      18 </span>            :  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT</a>
+<a name="19"><span class="lineNum">      19 </span>            :  * SHALL THE COPYRIGHT HOLDER(S) OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,</a>
+<a name="20"><span class="lineNum">      20 </span>            :  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED</a>
+<a name="21"><span class="lineNum">      21 </span>            :  * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR</a>
+<a name="22"><span class="lineNum">      22 </span>            :  * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</a>
+<a name="23"><span class="lineNum">      23 </span>            :  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN</a>
+<a name="24"><span class="lineNum">      24 </span>            :  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</a>
+<a name="25"><span class="lineNum">      25 </span>            :  */</a>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<a name="27"><span class="lineNum">      27 </span>            : #ifndef SLJIT_LIR_H_</a>
+<a name="28"><span class="lineNum">      28 </span>            : #define SLJIT_LIR_H_</a>
+<a name="29"><span class="lineNum">      29 </span>            : </a>
+<a name="30"><span class="lineNum">      30 </span>            : /*</a>
+<a name="31"><span class="lineNum">      31 </span>            :    ------------------------------------------------------------------------</a>
+<a name="32"><span class="lineNum">      32 </span>            :     Stack-Less JIT compiler for multiple architectures (x86, ARM, PowerPC)</a>
+<a name="33"><span class="lineNum">      33 </span>            :    ------------------------------------------------------------------------</a>
+<a name="34"><span class="lineNum">      34 </span>            : </a>
+<a name="35"><span class="lineNum">      35 </span>            :    Short description</a>
+<a name="36"><span class="lineNum">      36 </span>            :     Advantages:</a>
+<a name="37"><span class="lineNum">      37 </span>            :       - The execution can be continued from any LIR instruction. In other</a>
+<a name="38"><span class="lineNum">      38 </span>            :         words, it is possible to jump to any label from anywhere, even from</a>
+<a name="39"><span class="lineNum">      39 </span>            :         a code fragment, which is compiled later, if both compiled code</a>
+<a name="40"><span class="lineNum">      40 </span>            :         shares the same context. See sljit_emit_enter for more details</a>
+<a name="41"><span class="lineNum">      41 </span>            :       - Supports self modifying code: target of (conditional) jump and call</a>
+<a name="42"><span class="lineNum">      42 </span>            :         instructions and some constant values can be dynamically modified</a>
+<a name="43"><span class="lineNum">      43 </span>            :         during runtime</a>
+<a name="44"><span class="lineNum">      44 </span>            :         - although it is not suggested to do it frequently</a>
+<a name="45"><span class="lineNum">      45 </span>            :         - can be used for inline caching: save an important value once</a>
+<a name="46"><span class="lineNum">      46 </span>            :           in the instruction stream</a>
+<a name="47"><span class="lineNum">      47 </span>            :         - since this feature limits the optimization possibilities, a</a>
+<a name="48"><span class="lineNum">      48 </span>            :           special flag must be passed at compile time when these</a>
+<a name="49"><span class="lineNum">      49 </span>            :           instructions are emitted</a>
+<a name="50"><span class="lineNum">      50 </span>            :       - A fixed stack space can be allocated for local variables</a>
+<a name="51"><span class="lineNum">      51 </span>            :       - The compiler is thread-safe</a>
+<a name="52"><span class="lineNum">      52 </span>            :       - The compiler is highly configurable through preprocessor macros.</a>
+<a name="53"><span class="lineNum">      53 </span>            :         You can disable unneeded features (multithreading in single</a>
+<a name="54"><span class="lineNum">      54 </span>            :         threaded applications), and you can use your own system functions</a>
+<a name="55"><span class="lineNum">      55 </span>            :         (including memory allocators). See sljitConfig.h</a>
+<a name="56"><span class="lineNum">      56 </span>            :     Disadvantages:</a>
+<a name="57"><span class="lineNum">      57 </span>            :       - No automatic register allocation, and temporary results are</a>
+<a name="58"><span class="lineNum">      58 </span>            :         not stored on the stack. (hence the name comes)</a>
+<a name="59"><span class="lineNum">      59 </span>            :     In practice:</a>
+<a name="60"><span class="lineNum">      60 </span>            :       - This approach is very effective for interpreters</a>
+<a name="61"><span class="lineNum">      61 </span>            :         - One of the saved registers typically points to a stack interface</a>
+<a name="62"><span class="lineNum">      62 </span>            :         - It can jump to any exception handler anytime (even if it belongs</a>
+<a name="63"><span class="lineNum">      63 </span>            :           to another function)</a>
+<a name="64"><span class="lineNum">      64 </span>            :         - Hot paths can be modified during runtime reflecting the changes</a>
+<a name="65"><span class="lineNum">      65 </span>            :           of the fastest execution path of the dynamic language</a>
+<a name="66"><span class="lineNum">      66 </span>            :         - SLJIT supports complex memory addressing modes</a>
+<a name="67"><span class="lineNum">      67 </span>            :         - mainly position and context independent code (except some cases)</a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            :     For valgrind users:</a>
+<a name="70"><span class="lineNum">      70 </span>            :       - pass --smc-check=all argument to valgrind, since JIT is a &quot;self-modifying code&quot;</a>
+<a name="71"><span class="lineNum">      71 </span>            : */</a>
+<a name="72"><span class="lineNum">      72 </span>            : </a>
+<a name="73"><span class="lineNum">      73 </span>            : #if (defined SLJIT_HAVE_CONFIG_PRE &amp;&amp; SLJIT_HAVE_CONFIG_PRE)</a>
+<a name="74"><span class="lineNum">      74 </span>            : #include &quot;sljitConfigPre.h&quot;</a>
+<a name="75"><span class="lineNum">      75 </span>            : #endif /* SLJIT_HAVE_CONFIG_PRE */</a>
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<a name="77"><span class="lineNum">      77 </span>            : #include &quot;sljitConfig.h&quot;</a>
+<a name="78"><span class="lineNum">      78 </span>            : </a>
+<a name="79"><span class="lineNum">      79 </span>            : /* The following header file defines useful macros for fine tuning</a>
+<a name="80"><span class="lineNum">      80 </span>            : sljit based code generators. They are listed in the beginning</a>
+<a name="81"><span class="lineNum">      81 </span>            : of sljitConfigInternal.h */</a>
+<a name="82"><span class="lineNum">      82 </span>            : </a>
+<a name="83"><span class="lineNum">      83 </span>            : #include &quot;sljitConfigInternal.h&quot;</a>
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<a name="85"><span class="lineNum">      85 </span>            : #if (defined SLJIT_HAVE_CONFIG_POST &amp;&amp; SLJIT_HAVE_CONFIG_POST)</a>
+<a name="86"><span class="lineNum">      86 </span>            : #include &quot;sljitConfigPost.h&quot;</a>
+<a name="87"><span class="lineNum">      87 </span>            : #endif /* SLJIT_HAVE_CONFIG_POST */</a>
+<a name="88"><span class="lineNum">      88 </span>            : </a>
+<a name="89"><span class="lineNum">      89 </span>            : #ifdef __cplusplus</a>
+<a name="90"><span class="lineNum">      90 </span>            : extern &quot;C&quot; {</a>
+<a name="91"><span class="lineNum">      91 </span>            : #endif</a>
+<a name="92"><span class="lineNum">      92 </span>            : </a>
+<a name="93"><span class="lineNum">      93 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="94"><span class="lineNum">      94 </span>            : /*  Error codes                                                          */</a>
+<a name="95"><span class="lineNum">      95 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="96"><span class="lineNum">      96 </span>            : </a>
+<a name="97"><span class="lineNum">      97 </span>            : /* Indicates no error. */</a>
+<a name="98"><span class="lineNum">      98 </span>            : #define SLJIT_SUCCESS                   0</a>
+<a name="99"><span class="lineNum">      99 </span>            : /* After the call of sljit_generate_code(), the error code of the compiler</a>
+<a name="100"><span class="lineNum">     100 </span>            :    is set to this value to avoid future sljit calls (in debug mode at least).</a>
+<a name="101"><span class="lineNum">     101 </span>            :    The complier should be freed after sljit_generate_code(). */</a>
+<a name="102"><span class="lineNum">     102 </span>            : #define SLJIT_ERR_COMPILED              1</a>
+<a name="103"><span class="lineNum">     103 </span>            : /* Cannot allocate non executable memory. */</a>
+<a name="104"><span class="lineNum">     104 </span>            : #define SLJIT_ERR_ALLOC_FAILED          2</a>
+<a name="105"><span class="lineNum">     105 </span>            : /* Cannot allocate executable memory.</a>
+<a name="106"><span class="lineNum">     106 </span>            :    Only for sljit_generate_code() */</a>
+<a name="107"><span class="lineNum">     107 </span>            : #define SLJIT_ERR_EX_ALLOC_FAILED       3</a>
+<a name="108"><span class="lineNum">     108 </span>            : /* Return value for SLJIT_CONFIG_UNSUPPORTED placeholder architecture. */</a>
+<a name="109"><span class="lineNum">     109 </span>            : #define SLJIT_ERR_UNSUPPORTED           4</a>
+<a name="110"><span class="lineNum">     110 </span>            : /* An ivalid argument is passed to any SLJIT function. */</a>
+<a name="111"><span class="lineNum">     111 </span>            : #define SLJIT_ERR_BAD_ARGUMENT          5</a>
+<a name="112"><span class="lineNum">     112 </span>            : /* Dynamic code modification is not enabled. */</a>
+<a name="113"><span class="lineNum">     113 </span>            : #define SLJIT_ERR_DYN_CODE_MOD          6</a>
+<a name="114"><span class="lineNum">     114 </span>            : </a>
+<a name="115"><span class="lineNum">     115 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="116"><span class="lineNum">     116 </span>            : /*  Registers                                                            */</a>
+<a name="117"><span class="lineNum">     117 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="118"><span class="lineNum">     118 </span>            : </a>
+<a name="119"><span class="lineNum">     119 </span>            : /*</a>
+<a name="120"><span class="lineNum">     120 </span>            :   Scratch (R) registers: registers whose may not preserve their values</a>
+<a name="121"><span class="lineNum">     121 </span>            :   across function calls.</a>
+<a name="122"><span class="lineNum">     122 </span>            : </a>
+<a name="123"><span class="lineNum">     123 </span>            :   Saved (S) registers: registers whose preserve their values across</a>
+<a name="124"><span class="lineNum">     124 </span>            :   function calls.</a>
+<a name="125"><span class="lineNum">     125 </span>            : </a>
+<a name="126"><span class="lineNum">     126 </span>            :   The scratch and saved register sets are overlap. The last scratch register</a>
+<a name="127"><span class="lineNum">     127 </span>            :   is the first saved register, the one before the last is the second saved</a>
+<a name="128"><span class="lineNum">     128 </span>            :   register, and so on.</a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span>            :   If an architecture provides two scratch and three saved registers,</a>
+<a name="131"><span class="lineNum">     131 </span>            :   its scratch and saved register sets are the following:</a>
+<a name="132"><span class="lineNum">     132 </span>            : </a>
+<a name="133"><span class="lineNum">     133 </span>            :      R0   |        |   R0 is always a scratch register</a>
+<a name="134"><span class="lineNum">     134 </span>            :      R1   |        |   R1 is always a scratch register</a>
+<a name="135"><span class="lineNum">     135 </span>            :     [R2]  |   S2   |   R2 and S2 represent the same physical register</a>
+<a name="136"><span class="lineNum">     136 </span>            :     [R3]  |   S1   |   R3 and S1 represent the same physical register</a>
+<a name="137"><span class="lineNum">     137 </span>            :     [R4]  |   S0   |   R4 and S0 represent the same physical register</a>
+<a name="138"><span class="lineNum">     138 </span>            : </a>
+<a name="139"><span class="lineNum">     139 </span>            :   Note: SLJIT_NUMBER_OF_SCRATCH_REGISTERS would be 2 and</a>
+<a name="140"><span class="lineNum">     140 </span>            :         SLJIT_NUMBER_OF_SAVED_REGISTERS would be 3 for this architecture.</a>
+<a name="141"><span class="lineNum">     141 </span>            : </a>
+<a name="142"><span class="lineNum">     142 </span>            :   Note: On all supported architectures SLJIT_NUMBER_OF_REGISTERS &gt;= 12</a>
+<a name="143"><span class="lineNum">     143 </span>            :         and SLJIT_NUMBER_OF_SAVED_REGISTERS &gt;= 6. However, 6 registers</a>
+<a name="144"><span class="lineNum">     144 </span>            :         are virtual on x86-32. See below.</a>
+<a name="145"><span class="lineNum">     145 </span>            : </a>
+<a name="146"><span class="lineNum">     146 </span>            :   The purpose of this definition is convenience: saved registers can</a>
+<a name="147"><span class="lineNum">     147 </span>            :   be used as extra scratch registers. For example four registers can</a>
+<a name="148"><span class="lineNum">     148 </span>            :   be specified as scratch registers and the fifth one as saved register</a>
+<a name="149"><span class="lineNum">     149 </span>            :   on the CPU above and any user code which requires four scratch</a>
+<a name="150"><span class="lineNum">     150 </span>            :   registers can run unmodified. The SLJIT compiler automatically saves</a>
+<a name="151"><span class="lineNum">     151 </span>            :   the content of the two extra scratch register on the stack. Scratch</a>
+<a name="152"><span class="lineNum">     152 </span>            :   registers can also be preserved by saving their value on the stack</a>
+<a name="153"><span class="lineNum">     153 </span>            :   but this needs to be done manually.</a>
+<a name="154"><span class="lineNum">     154 </span>            : </a>
+<a name="155"><span class="lineNum">     155 </span>            :   Note: To emphasize that registers assigned to R2-R4 are saved</a>
+<a name="156"><span class="lineNum">     156 </span>            :         registers, they are enclosed by square brackets.</a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            :   Note: sljit_emit_enter and sljit_set_context defines whether a register</a>
+<a name="159"><span class="lineNum">     159 </span>            :         is S or R register. E.g: when 3 scratches and 1 saved is mapped</a>
+<a name="160"><span class="lineNum">     160 </span>            :         by sljit_emit_enter, the allowed register set will be: R0-R2 and</a>
+<a name="161"><span class="lineNum">     161 </span>            :         S0. Although S2 is mapped to the same position as R2, it does not</a>
+<a name="162"><span class="lineNum">     162 </span>            :         available in the current configuration. Furthermore the S1 register</a>
+<a name="163"><span class="lineNum">     163 </span>            :         is not available at all.</a>
+<a name="164"><span class="lineNum">     164 </span>            : */</a>
+<a name="165"><span class="lineNum">     165 </span>            : </a>
+<a name="166"><span class="lineNum">     166 </span>            : /* When SLJIT_UNUSED is specified as the destination of sljit_emit_op1</a>
+<a name="167"><span class="lineNum">     167 </span>            :    or sljit_emit_op2 operations the result is discarded. Some status</a>
+<a name="168"><span class="lineNum">     168 </span>            :    flags must be set when the destination is SLJIT_UNUSED, because the</a>
+<a name="169"><span class="lineNum">     169 </span>            :    operation would have no effect otherwise. Other SLJIT operations do</a>
+<a name="170"><span class="lineNum">     170 </span>            :    not support SLJIT_UNUSED as a destination operand. */</a>
+<a name="171"><span class="lineNum">     171 </span>            : #define SLJIT_UNUSED            0</a>
+<a name="172"><span class="lineNum">     172 </span>            : </a>
+<a name="173"><span class="lineNum">     173 </span>            : /* Scratch registers. */</a>
+<a name="174"><span class="lineNum">     174 </span>            : #define SLJIT_R0        1</a>
+<a name="175"><span class="lineNum">     175 </span>            : #define SLJIT_R1        2</a>
+<a name="176"><span class="lineNum">     176 </span>            : #define SLJIT_R2        3</a>
+<a name="177"><span class="lineNum">     177 </span>            : /* Note: on x86-32, R3 - R6 (same as S3 - S6) are emulated (they</a>
+<a name="178"><span class="lineNum">     178 </span>            :    are allocated on the stack). These registers are called virtual</a>
+<a name="179"><span class="lineNum">     179 </span>            :    and cannot be used for memory addressing (cannot be part of</a>
+<a name="180"><span class="lineNum">     180 </span>            :    any SLJIT_MEM1, SLJIT_MEM2 construct). There is no such</a>
+<a name="181"><span class="lineNum">     181 </span>            :    limitation on other CPUs. See sljit_get_register_index(). */</a>
+<a name="182"><span class="lineNum">     182 </span>            : #define SLJIT_R3        4</a>
+<a name="183"><span class="lineNum">     183 </span>            : #define SLJIT_R4        5</a>
+<a name="184"><span class="lineNum">     184 </span>            : #define SLJIT_R5        6</a>
+<a name="185"><span class="lineNum">     185 </span>            : #define SLJIT_R6        7</a>
+<a name="186"><span class="lineNum">     186 </span>            : #define SLJIT_R7        8</a>
+<a name="187"><span class="lineNum">     187 </span>            : #define SLJIT_R8        9</a>
+<a name="188"><span class="lineNum">     188 </span>            : #define SLJIT_R9        10</a>
+<a name="189"><span class="lineNum">     189 </span>            : /* All R registers provided by the architecture can be accessed by SLJIT_R(i)</a>
+<a name="190"><span class="lineNum">     190 </span>            :    The i parameter must be &gt;= 0 and &lt; SLJIT_NUMBER_OF_REGISTERS. */</a>
+<a name="191"><span class="lineNum">     191 </span>            : #define SLJIT_R(i)      (1 + (i))</a>
+<a name="192"><span class="lineNum">     192 </span>            : </a>
+<a name="193"><span class="lineNum">     193 </span>            : /* Saved registers. */</a>
+<a name="194"><span class="lineNum">     194 </span>            : #define SLJIT_S0        (SLJIT_NUMBER_OF_REGISTERS)</a>
+<a name="195"><span class="lineNum">     195 </span>            : #define SLJIT_S1        (SLJIT_NUMBER_OF_REGISTERS - 1)</a>
+<a name="196"><span class="lineNum">     196 </span>            : #define SLJIT_S2        (SLJIT_NUMBER_OF_REGISTERS - 2)</a>
+<a name="197"><span class="lineNum">     197 </span>            : /* Note: on x86-32, S3 - S6 (same as R3 - R6) are emulated (they</a>
+<a name="198"><span class="lineNum">     198 </span>            :    are allocated on the stack). These registers are called virtual</a>
+<a name="199"><span class="lineNum">     199 </span>            :    and cannot be used for memory addressing (cannot be part of</a>
+<a name="200"><span class="lineNum">     200 </span>            :    any SLJIT_MEM1, SLJIT_MEM2 construct). There is no such</a>
+<a name="201"><span class="lineNum">     201 </span>            :    limitation on other CPUs. See sljit_get_register_index(). */</a>
+<a name="202"><span class="lineNum">     202 </span>            : #define SLJIT_S3        (SLJIT_NUMBER_OF_REGISTERS - 3)</a>
+<a name="203"><span class="lineNum">     203 </span>            : #define SLJIT_S4        (SLJIT_NUMBER_OF_REGISTERS - 4)</a>
+<a name="204"><span class="lineNum">     204 </span>            : #define SLJIT_S5        (SLJIT_NUMBER_OF_REGISTERS - 5)</a>
+<a name="205"><span class="lineNum">     205 </span>            : #define SLJIT_S6        (SLJIT_NUMBER_OF_REGISTERS - 6)</a>
+<a name="206"><span class="lineNum">     206 </span>            : #define SLJIT_S7        (SLJIT_NUMBER_OF_REGISTERS - 7)</a>
+<a name="207"><span class="lineNum">     207 </span>            : #define SLJIT_S8        (SLJIT_NUMBER_OF_REGISTERS - 8)</a>
+<a name="208"><span class="lineNum">     208 </span>            : #define SLJIT_S9        (SLJIT_NUMBER_OF_REGISTERS - 9)</a>
+<a name="209"><span class="lineNum">     209 </span>            : /* All S registers provided by the architecture can be accessed by SLJIT_S(i)</a>
+<a name="210"><span class="lineNum">     210 </span>            :    The i parameter must be &gt;= 0 and &lt; SLJIT_NUMBER_OF_SAVED_REGISTERS. */</a>
+<a name="211"><span class="lineNum">     211 </span>            : #define SLJIT_S(i)      (SLJIT_NUMBER_OF_REGISTERS - (i))</a>
+<a name="212"><span class="lineNum">     212 </span>            : </a>
+<a name="213"><span class="lineNum">     213 </span>            : /* Registers &gt;= SLJIT_FIRST_SAVED_REG are saved registers. */</a>
+<a name="214"><span class="lineNum">     214 </span>            : #define SLJIT_FIRST_SAVED_REG (SLJIT_S0 - SLJIT_NUMBER_OF_SAVED_REGISTERS + 1)</a>
+<a name="215"><span class="lineNum">     215 </span>            : </a>
+<a name="216"><span class="lineNum">     216 </span>            : /* The SLJIT_SP provides direct access to the linear stack space allocated by</a>
+<a name="217"><span class="lineNum">     217 </span>            :    sljit_emit_enter. It can only be used in the following form: SLJIT_MEM1(SLJIT_SP).</a>
+<a name="218"><span class="lineNum">     218 </span>            :    The immediate offset is extended by the relative stack offset automatically.</a>
+<a name="219"><span class="lineNum">     219 </span>            :    The sljit_get_local_base can be used to obtain the absolute offset. */</a>
+<a name="220"><span class="lineNum">     220 </span>            : #define SLJIT_SP        (SLJIT_NUMBER_OF_REGISTERS + 1)</a>
+<a name="221"><span class="lineNum">     221 </span>            : </a>
+<a name="222"><span class="lineNum">     222 </span>            : /* Return with machine word. */</a>
+<a name="223"><span class="lineNum">     223 </span>            : </a>
+<a name="224"><span class="lineNum">     224 </span>            : #define SLJIT_RETURN_REG        SLJIT_R0</a>
+<a name="225"><span class="lineNum">     225 </span>            : </a>
+<a name="226"><span class="lineNum">     226 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="227"><span class="lineNum">     227 </span>            : /*  Floating point registers                                             */</a>
+<a name="228"><span class="lineNum">     228 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="229"><span class="lineNum">     229 </span>            : </a>
+<a name="230"><span class="lineNum">     230 </span>            : /* Each floating point register can store a 32 or a 64 bit precision</a>
+<a name="231"><span class="lineNum">     231 </span>            :    value. The FR and FS register sets are overlap in the same way as R</a>
+<a name="232"><span class="lineNum">     232 </span>            :    and S register sets. See above. */</a>
+<a name="233"><span class="lineNum">     233 </span>            : </a>
+<a name="234"><span class="lineNum">     234 </span>            : /* Note: SLJIT_UNUSED as destination is not valid for floating point</a>
+<a name="235"><span class="lineNum">     235 </span>            :    operations, since they cannot be used for setting flags. */</a>
+<a name="236"><span class="lineNum">     236 </span>            : </a>
+<a name="237"><span class="lineNum">     237 </span>            : /* Floating point scratch registers. */</a>
+<a name="238"><span class="lineNum">     238 </span>            : #define SLJIT_FR0       1</a>
+<a name="239"><span class="lineNum">     239 </span>            : #define SLJIT_FR1       2</a>
+<a name="240"><span class="lineNum">     240 </span>            : #define SLJIT_FR2       3</a>
+<a name="241"><span class="lineNum">     241 </span>            : #define SLJIT_FR3       4</a>
+<a name="242"><span class="lineNum">     242 </span>            : #define SLJIT_FR4       5</a>
+<a name="243"><span class="lineNum">     243 </span>            : #define SLJIT_FR5       6</a>
+<a name="244"><span class="lineNum">     244 </span>            : /* All FR registers provided by the architecture can be accessed by SLJIT_FR(i)</a>
+<a name="245"><span class="lineNum">     245 </span>            :    The i parameter must be &gt;= 0 and &lt; SLJIT_NUMBER_OF_FLOAT_REGISTERS. */</a>
+<a name="246"><span class="lineNum">     246 </span>            : #define SLJIT_FR(i)     (1 + (i))</a>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<a name="248"><span class="lineNum">     248 </span>            : /* Floating point saved registers. */</a>
+<a name="249"><span class="lineNum">     249 </span>            : #define SLJIT_FS0       (SLJIT_NUMBER_OF_FLOAT_REGISTERS)</a>
+<a name="250"><span class="lineNum">     250 </span>            : #define SLJIT_FS1       (SLJIT_NUMBER_OF_FLOAT_REGISTERS - 1)</a>
+<a name="251"><span class="lineNum">     251 </span>            : #define SLJIT_FS2       (SLJIT_NUMBER_OF_FLOAT_REGISTERS - 2)</a>
+<a name="252"><span class="lineNum">     252 </span>            : #define SLJIT_FS3       (SLJIT_NUMBER_OF_FLOAT_REGISTERS - 3)</a>
+<a name="253"><span class="lineNum">     253 </span>            : #define SLJIT_FS4       (SLJIT_NUMBER_OF_FLOAT_REGISTERS - 4)</a>
+<a name="254"><span class="lineNum">     254 </span>            : #define SLJIT_FS5       (SLJIT_NUMBER_OF_FLOAT_REGISTERS - 5)</a>
+<a name="255"><span class="lineNum">     255 </span>            : /* All S registers provided by the architecture can be accessed by SLJIT_FS(i)</a>
+<a name="256"><span class="lineNum">     256 </span>            :    The i parameter must be &gt;= 0 and &lt; SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS. */</a>
+<a name="257"><span class="lineNum">     257 </span>            : #define SLJIT_FS(i)     (SLJIT_NUMBER_OF_FLOAT_REGISTERS - (i))</a>
+<a name="258"><span class="lineNum">     258 </span>            : </a>
+<a name="259"><span class="lineNum">     259 </span>            : /* Float registers &gt;= SLJIT_FIRST_SAVED_FLOAT_REG are saved registers. */</a>
+<a name="260"><span class="lineNum">     260 </span>            : #define SLJIT_FIRST_SAVED_FLOAT_REG (SLJIT_FS0 - SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS + 1)</a>
+<a name="261"><span class="lineNum">     261 </span>            : </a>
+<a name="262"><span class="lineNum">     262 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="263"><span class="lineNum">     263 </span>            : /*  Argument type definitions                                            */</a>
+<a name="264"><span class="lineNum">     264 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="265"><span class="lineNum">     265 </span>            : </a>
+<a name="266"><span class="lineNum">     266 </span>            : /* Argument type definitions.</a>
+<a name="267"><span class="lineNum">     267 </span>            :    Used by SLJIT_[DEF_]ARGx and SLJIT_[DEF]_RET macros. */</a>
+<a name="268"><span class="lineNum">     268 </span>            : </a>
+<a name="269"><span class="lineNum">     269 </span>            : #define SLJIT_ARG_TYPE_VOID 0</a>
+<a name="270"><span class="lineNum">     270 </span>            : #define SLJIT_ARG_TYPE_SW 1</a>
+<a name="271"><span class="lineNum">     271 </span>            : #define SLJIT_ARG_TYPE_UW 2</a>
+<a name="272"><span class="lineNum">     272 </span>            : #define SLJIT_ARG_TYPE_S32 3</a>
+<a name="273"><span class="lineNum">     273 </span>            : #define SLJIT_ARG_TYPE_U32 4</a>
+<a name="274"><span class="lineNum">     274 </span>            : #define SLJIT_ARG_TYPE_F32 5</a>
+<a name="275"><span class="lineNum">     275 </span>            : #define SLJIT_ARG_TYPE_F64 6</a>
+<a name="276"><span class="lineNum">     276 </span>            : </a>
+<a name="277"><span class="lineNum">     277 </span>            : /* The following argument type definitions are used by sljit_emit_enter,</a>
+<a name="278"><span class="lineNum">     278 </span>            :    sljit_set_context, sljit_emit_call, and sljit_emit_icall functions.</a>
+<a name="279"><span class="lineNum">     279 </span>            :    The following return type definitions are used by sljit_emit_call</a>
+<a name="280"><span class="lineNum">     280 </span>            :    and sljit_emit_icall functions.</a>
+<a name="281"><span class="lineNum">     281 </span>            : </a>
+<a name="282"><span class="lineNum">     282 </span>            :    When a function is called, the first integer argument must be placed</a>
+<a name="283"><span class="lineNum">     283 </span>            :    in SLJIT_R0, the second in SLJIT_R1, and so on. Similarly the first</a>
+<a name="284"><span class="lineNum">     284 </span>            :    floating point argument must be placed in SLJIT_FR0, the second in</a>
+<a name="285"><span class="lineNum">     285 </span>            :    SLJIT_FR1, and so on.</a>
+<a name="286"><span class="lineNum">     286 </span>            : </a>
+<a name="287"><span class="lineNum">     287 </span>            :    Example function definition:</a>
+<a name="288"><span class="lineNum">     288 </span>            :      sljit_f32 SLJIT_FUNC example_c_callback(sljit_sw arg_a,</a>
+<a name="289"><span class="lineNum">     289 </span>            :          sljit_f64 arg_b, sljit_u32 arg_c, sljit_f32 arg_d);</a>
+<a name="290"><span class="lineNum">     290 </span>            : </a>
+<a name="291"><span class="lineNum">     291 </span>            :    Argument type definition:</a>
+<a name="292"><span class="lineNum">     292 </span>            :      SLJIT_DEF_RET(SLJIT_ARG_TYPE_F32)</a>
+<a name="293"><span class="lineNum">     293 </span>            :         | SLJIT_DEF_ARG1(SLJIT_ARG_TYPE_SW) | SLJIT_DEF_ARG2(SLJIT_ARG_TYPE_F64)</a>
+<a name="294"><span class="lineNum">     294 </span>            :         | SLJIT_DEF_ARG3(SLJIT_ARG_TYPE_U32) | SLJIT_DEF_ARG2(SLJIT_ARG_TYPE_F32)</a>
+<a name="295"><span class="lineNum">     295 </span>            : </a>
+<a name="296"><span class="lineNum">     296 </span>            :    Short form of argument type definition:</a>
+<a name="297"><span class="lineNum">     297 </span>            :      SLJIT_RET(F32) | SLJIT_ARG1(SW) | SLJIT_ARG2(F64)</a>
+<a name="298"><span class="lineNum">     298 </span>            :         | SLJIT_ARG3(S32) | SLJIT_ARG4(F32)</a>
+<a name="299"><span class="lineNum">     299 </span>            : </a>
+<a name="300"><span class="lineNum">     300 </span>            :    Argument passing:</a>
+<a name="301"><span class="lineNum">     301 </span>            :      arg_a must be placed in SLJIT_R0</a>
+<a name="302"><span class="lineNum">     302 </span>            :      arg_c must be placed in SLJIT_R1</a>
+<a name="303"><span class="lineNum">     303 </span>            :      arg_b must be placed in SLJIT_FR0</a>
+<a name="304"><span class="lineNum">     304 </span>            :      arg_d must be placed in SLJIT_FR1</a>
+<a name="305"><span class="lineNum">     305 </span>            : </a>
+<a name="306"><span class="lineNum">     306 </span>            : Note:</a>
+<a name="307"><span class="lineNum">     307 </span>            :    The SLJIT_ARG_TYPE_VOID type is only supported by</a>
+<a name="308"><span class="lineNum">     308 </span>            :    SLJIT_DEF_RET, and SLJIT_ARG_TYPE_VOID is also the</a>
+<a name="309"><span class="lineNum">     309 </span>            :    default value when SLJIT_DEF_RET is not specified. */</a>
+<a name="310"><span class="lineNum">     310 </span>            : #define SLJIT_DEF_SHIFT 4</a>
+<a name="311"><span class="lineNum">     311 </span>            : #define SLJIT_DEF_RET(type) (type)</a>
+<a name="312"><span class="lineNum">     312 </span>            : #define SLJIT_DEF_ARG1(type) ((type) &lt;&lt; SLJIT_DEF_SHIFT)</a>
+<a name="313"><span class="lineNum">     313 </span>            : #define SLJIT_DEF_ARG2(type) ((type) &lt;&lt; (2 * SLJIT_DEF_SHIFT))</a>
+<a name="314"><span class="lineNum">     314 </span>            : #define SLJIT_DEF_ARG3(type) ((type) &lt;&lt; (3 * SLJIT_DEF_SHIFT))</a>
+<a name="315"><span class="lineNum">     315 </span>            : #define SLJIT_DEF_ARG4(type) ((type) &lt;&lt; (4 * SLJIT_DEF_SHIFT))</a>
+<a name="316"><span class="lineNum">     316 </span>            : </a>
+<a name="317"><span class="lineNum">     317 </span>            : /* Short form of the macros above.</a>
+<a name="318"><span class="lineNum">     318 </span>            : </a>
+<a name="319"><span class="lineNum">     319 </span>            :    For example the following definition:</a>
+<a name="320"><span class="lineNum">     320 </span>            :    SLJIT_DEF_RET(SLJIT_ARG_TYPE_SW) | SLJIT_DEF_ARG1(SLJIT_ARG_TYPE_F32)</a>
+<a name="321"><span class="lineNum">     321 </span>            : </a>
+<a name="322"><span class="lineNum">     322 </span>            :    can be shortened to:</a>
+<a name="323"><span class="lineNum">     323 </span>            :    SLJIT_RET(SW) | SLJIT_ARG1(F32)</a>
+<a name="324"><span class="lineNum">     324 </span>            : </a>
+<a name="325"><span class="lineNum">     325 </span>            : Note:</a>
+<a name="326"><span class="lineNum">     326 </span>            :    The VOID type is only supported by SLJIT_RET, and</a>
+<a name="327"><span class="lineNum">     327 </span>            :    VOID is also the default value when SLJIT_RET is</a>
+<a name="328"><span class="lineNum">     328 </span>            :    not specified. */</a>
+<a name="329"><span class="lineNum">     329 </span>            : #define SLJIT_RET(type) SLJIT_DEF_RET(SLJIT_ARG_TYPE_ ## type)</a>
+<a name="330"><span class="lineNum">     330 </span>            : #define SLJIT_ARG1(type) SLJIT_DEF_ARG1(SLJIT_ARG_TYPE_ ## type)</a>
+<a name="331"><span class="lineNum">     331 </span>            : #define SLJIT_ARG2(type) SLJIT_DEF_ARG2(SLJIT_ARG_TYPE_ ## type)</a>
+<a name="332"><span class="lineNum">     332 </span>            : #define SLJIT_ARG3(type) SLJIT_DEF_ARG3(SLJIT_ARG_TYPE_ ## type)</a>
+<a name="333"><span class="lineNum">     333 </span>            : #define SLJIT_ARG4(type) SLJIT_DEF_ARG4(SLJIT_ARG_TYPE_ ## type)</a>
+<a name="334"><span class="lineNum">     334 </span>            : </a>
+<a name="335"><span class="lineNum">     335 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="336"><span class="lineNum">     336 </span>            : /*  Main structures and functions                                        */</a>
+<a name="337"><span class="lineNum">     337 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="338"><span class="lineNum">     338 </span>            : </a>
+<a name="339"><span class="lineNum">     339 </span>            : /*</a>
+<a name="340"><span class="lineNum">     340 </span>            :         The following structures are private, and can be changed in the</a>
+<a name="341"><span class="lineNum">     341 </span>            :         future. Keeping them here allows code inlining.</a>
+<a name="342"><span class="lineNum">     342 </span>            : */</a>
+<a name="343"><span class="lineNum">     343 </span>            : </a>
+<a name="344"><span class="lineNum">     344 </span>            : struct sljit_memory_fragment {</a>
+<a name="345"><span class="lineNum">     345 </span>            :         struct sljit_memory_fragment *next;</a>
+<a name="346"><span class="lineNum">     346 </span>            :         sljit_uw used_size;</a>
+<a name="347"><span class="lineNum">     347 </span>            :         /* Must be aligned to sljit_sw. */</a>
+<a name="348"><span class="lineNum">     348 </span>            :         sljit_u8 memory[1];</a>
+<a name="349"><span class="lineNum">     349 </span>            : };</a>
+<a name="350"><span class="lineNum">     350 </span>            : </a>
+<a name="351"><span class="lineNum">     351 </span>            : struct sljit_label {</a>
+<a name="352"><span class="lineNum">     352 </span>            :         struct sljit_label *next;</a>
+<a name="353"><span class="lineNum">     353 </span>            :         sljit_uw addr;</a>
+<a name="354"><span class="lineNum">     354 </span>            :         /* The maximum size difference. */</a>
+<a name="355"><span class="lineNum">     355 </span>            :         sljit_uw size;</a>
+<a name="356"><span class="lineNum">     356 </span>            : };</a>
+<a name="357"><span class="lineNum">     357 </span>            : </a>
+<a name="358"><span class="lineNum">     358 </span>            : struct sljit_jump {</a>
+<a name="359"><span class="lineNum">     359 </span>            :         struct sljit_jump *next;</a>
+<a name="360"><span class="lineNum">     360 </span>            :         sljit_uw addr;</a>
+<a name="361"><span class="lineNum">     361 </span>            :         sljit_uw flags;</a>
+<a name="362"><span class="lineNum">     362 </span>            :         union {</a>
+<a name="363"><span class="lineNum">     363 </span>            :                 sljit_uw target;</a>
+<a name="364"><span class="lineNum">     364 </span>            :                 struct sljit_label *label;</a>
+<a name="365"><span class="lineNum">     365 </span>            :         } u;</a>
+<a name="366"><span class="lineNum">     366 </span>            : };</a>
+<a name="367"><span class="lineNum">     367 </span>            : </a>
+<a name="368"><span class="lineNum">     368 </span>            : struct sljit_put_label {</a>
+<a name="369"><span class="lineNum">     369 </span>            :         struct sljit_put_label *next;</a>
+<a name="370"><span class="lineNum">     370 </span>            :         struct sljit_label *label;</a>
+<a name="371"><span class="lineNum">     371 </span>            :         sljit_uw addr;</a>
+<a name="372"><span class="lineNum">     372 </span>            :         sljit_uw flags;</a>
+<a name="373"><span class="lineNum">     373 </span>            : };</a>
+<a name="374"><span class="lineNum">     374 </span>            : </a>
+<a name="375"><span class="lineNum">     375 </span>            : struct sljit_const {</a>
+<a name="376"><span class="lineNum">     376 </span>            :         struct sljit_const *next;</a>
+<a name="377"><span class="lineNum">     377 </span>            :         sljit_uw addr;</a>
+<a name="378"><span class="lineNum">     378 </span>            : };</a>
+<a name="379"><span class="lineNum">     379 </span>            : </a>
+<a name="380"><span class="lineNum">     380 </span>            : struct sljit_compiler {</a>
+<a name="381"><span class="lineNum">     381 </span>            :         sljit_s32 error;</a>
+<a name="382"><span class="lineNum">     382 </span>            :         sljit_s32 options;</a>
+<a name="383"><span class="lineNum">     383 </span>            : </a>
+<a name="384"><span class="lineNum">     384 </span>            :         struct sljit_label *labels;</a>
+<a name="385"><span class="lineNum">     385 </span>            :         struct sljit_jump *jumps;</a>
+<a name="386"><span class="lineNum">     386 </span>            :         struct sljit_put_label *put_labels;</a>
+<a name="387"><span class="lineNum">     387 </span>            :         struct sljit_const *consts;</a>
+<a name="388"><span class="lineNum">     388 </span>            :         struct sljit_label *last_label;</a>
+<a name="389"><span class="lineNum">     389 </span>            :         struct sljit_jump *last_jump;</a>
+<a name="390"><span class="lineNum">     390 </span>            :         struct sljit_const *last_const;</a>
+<a name="391"><span class="lineNum">     391 </span>            :         struct sljit_put_label *last_put_label;</a>
+<a name="392"><span class="lineNum">     392 </span>            : </a>
+<a name="393"><span class="lineNum">     393 </span>            :         void *allocator_data;</a>
+<a name="394"><span class="lineNum">     394 </span>            :         void *exec_allocator_data;</a>
+<a name="395"><span class="lineNum">     395 </span>            :         struct sljit_memory_fragment *buf;</a>
+<a name="396"><span class="lineNum">     396 </span>            :         struct sljit_memory_fragment *abuf;</a>
+<a name="397"><span class="lineNum">     397 </span>            : </a>
+<a name="398"><span class="lineNum">     398 </span>            :         /* Used scratch registers. */</a>
+<a name="399"><span class="lineNum">     399 </span>            :         sljit_s32 scratches;</a>
+<a name="400"><span class="lineNum">     400 </span>            :         /* Used saved registers. */</a>
+<a name="401"><span class="lineNum">     401 </span>            :         sljit_s32 saveds;</a>
+<a name="402"><span class="lineNum">     402 </span>            :         /* Used float scratch registers. */</a>
+<a name="403"><span class="lineNum">     403 </span>            :         sljit_s32 fscratches;</a>
+<a name="404"><span class="lineNum">     404 </span>            :         /* Used float saved registers. */</a>
+<a name="405"><span class="lineNum">     405 </span>            :         sljit_s32 fsaveds;</a>
+<a name="406"><span class="lineNum">     406 </span>            :         /* Local stack size. */</a>
+<a name="407"><span class="lineNum">     407 </span>            :         sljit_s32 local_size;</a>
+<a name="408"><span class="lineNum">     408 </span>            :         /* Code size. */</a>
+<a name="409"><span class="lineNum">     409 </span>            :         sljit_uw size;</a>
+<a name="410"><span class="lineNum">     410 </span>            :         /* Relative offset of the executable mapping from the writable mapping. */</a>
+<a name="411"><span class="lineNum">     411 </span>            :         sljit_uw executable_offset;</a>
+<a name="412"><span class="lineNum">     412 </span>            :         /* Executable size for statistical purposes. */</a>
+<a name="413"><span class="lineNum">     413 </span>            :         sljit_uw executable_size;</a>
+<a name="414"><span class="lineNum">     414 </span>            : </a>
+<a name="415"><span class="lineNum">     415 </span>            : #if (defined SLJIT_HAS_STATUS_FLAGS_STATE &amp;&amp; SLJIT_HAS_STATUS_FLAGS_STATE)</a>
+<a name="416"><span class="lineNum">     416 </span>            :         sljit_s32 status_flags_state;</a>
+<a name="417"><span class="lineNum">     417 </span>            : #endif</a>
+<a name="418"><span class="lineNum">     418 </span>            : </a>
+<a name="419"><span class="lineNum">     419 </span>            : #if (defined SLJIT_CONFIG_X86_32 &amp;&amp; SLJIT_CONFIG_X86_32)</a>
+<a name="420"><span class="lineNum">     420 </span>            :         sljit_s32 args;</a>
+<a name="421"><span class="lineNum">     421 </span>            :         sljit_s32 locals_offset;</a>
+<a name="422"><span class="lineNum">     422 </span>            :         sljit_s32 saveds_offset;</a>
+<a name="423"><span class="lineNum">     423 </span>            :         sljit_s32 stack_tmp_size;</a>
+<a name="424"><span class="lineNum">     424 </span>            : #endif</a>
+<a name="425"><span class="lineNum">     425 </span>            : </a>
+<a name="426"><span class="lineNum">     426 </span>            : #if (defined SLJIT_CONFIG_X86_64 &amp;&amp; SLJIT_CONFIG_X86_64)</a>
+<a name="427"><span class="lineNum">     427 </span>            :         sljit_s32 mode32;</a>
+<a name="428"><span class="lineNum">     428 </span>            : #ifdef _WIN64</a>
+<a name="429"><span class="lineNum">     429 </span>            :         sljit_s32 locals_offset;</a>
+<a name="430"><span class="lineNum">     430 </span>            : #endif</a>
+<a name="431"><span class="lineNum">     431 </span>            : #endif</a>
+<a name="432"><span class="lineNum">     432 </span>            : </a>
+<a name="433"><span class="lineNum">     433 </span>            : #if (defined SLJIT_CONFIG_ARM_V5 &amp;&amp; SLJIT_CONFIG_ARM_V5)</a>
+<a name="434"><span class="lineNum">     434 </span>            :         /* Constant pool handling. */</a>
+<a name="435"><span class="lineNum">     435 </span>            :         sljit_uw *cpool;</a>
+<a name="436"><span class="lineNum">     436 </span>            :         sljit_u8 *cpool_unique;</a>
+<a name="437"><span class="lineNum">     437 </span>            :         sljit_uw cpool_diff;</a>
+<a name="438"><span class="lineNum">     438 </span>            :         sljit_uw cpool_fill;</a>
+<a name="439"><span class="lineNum">     439 </span>            :         /* Other members. */</a>
+<a name="440"><span class="lineNum">     440 </span>            :         /* Contains pointer, &quot;ldr pc, [...]&quot; pairs. */</a>
+<a name="441"><span class="lineNum">     441 </span>            :         sljit_uw patches;</a>
+<a name="442"><span class="lineNum">     442 </span>            : #endif</a>
+<a name="443"><span class="lineNum">     443 </span>            : </a>
+<a name="444"><span class="lineNum">     444 </span>            : #if (defined SLJIT_CONFIG_ARM_V5 &amp;&amp; SLJIT_CONFIG_ARM_V5) || (defined SLJIT_CONFIG_ARM_V7 &amp;&amp; SLJIT_CONFIG_ARM_V7)</a>
+<a name="445"><span class="lineNum">     445 </span>            :         /* Temporary fields. */</a>
+<a name="446"><span class="lineNum">     446 </span>            :         sljit_uw shift_imm;</a>
+<a name="447"><span class="lineNum">     447 </span>            : #endif</a>
+<a name="448"><span class="lineNum">     448 </span>            : </a>
+<a name="449"><span class="lineNum">     449 </span>            : #if (defined SLJIT_CONFIG_PPC &amp;&amp; SLJIT_CONFIG_PPC)</a>
+<a name="450"><span class="lineNum">     450 </span>            :         sljit_sw imm;</a>
+<a name="451"><span class="lineNum">     451 </span>            : #endif</a>
+<a name="452"><span class="lineNum">     452 </span>            : </a>
+<a name="453"><span class="lineNum">     453 </span>            : #if (defined SLJIT_CONFIG_MIPS &amp;&amp; SLJIT_CONFIG_MIPS)</a>
+<a name="454"><span class="lineNum">     454 </span>            :         sljit_s32 delay_slot;</a>
+<a name="455"><span class="lineNum">     455 </span>            :         sljit_s32 cache_arg;</a>
+<a name="456"><span class="lineNum">     456 </span>            :         sljit_sw cache_argw;</a>
+<a name="457"><span class="lineNum">     457 </span>            : #endif</a>
+<a name="458"><span class="lineNum">     458 </span>            : </a>
+<a name="459"><span class="lineNum">     459 </span>            : #if (defined SLJIT_CONFIG_SPARC_32 &amp;&amp; SLJIT_CONFIG_SPARC_32)</a>
+<a name="460"><span class="lineNum">     460 </span>            :         sljit_s32 delay_slot;</a>
+<a name="461"><span class="lineNum">     461 </span>            :         sljit_s32 cache_arg;</a>
+<a name="462"><span class="lineNum">     462 </span>            :         sljit_sw cache_argw;</a>
+<a name="463"><span class="lineNum">     463 </span>            : #endif</a>
+<a name="464"><span class="lineNum">     464 </span>            : </a>
+<a name="465"><span class="lineNum">     465 </span>            : #if (defined SLJIT_CONFIG_S390X &amp;&amp; SLJIT_CONFIG_S390X)</a>
+<a name="466"><span class="lineNum">     466 </span>            :         /* Need to allocate register save area to make calls. */</a>
+<a name="467"><span class="lineNum">     467 </span>            :         sljit_s32 mode;</a>
+<a name="468"><span class="lineNum">     468 </span>            : #endif</a>
+<a name="469"><span class="lineNum">     469 </span>            : </a>
+<a name="470"><span class="lineNum">     470 </span>            : #if (defined SLJIT_VERBOSE &amp;&amp; SLJIT_VERBOSE)</a>
+<a name="471"><span class="lineNum">     471 </span>            :         FILE* verbose;</a>
+<a name="472"><span class="lineNum">     472 </span>            : #endif</a>
+<a name="473"><span class="lineNum">     473 </span>            : </a>
+<a name="474"><span class="lineNum">     474 </span>            : #if (defined SLJIT_ARGUMENT_CHECKS &amp;&amp; SLJIT_ARGUMENT_CHECKS) \</a>
+<a name="475"><span class="lineNum">     475 </span>            :                 || (defined SLJIT_DEBUG &amp;&amp; SLJIT_DEBUG)</a>
+<a name="476"><span class="lineNum">     476 </span>            :         /* Flags specified by the last arithmetic instruction.</a>
+<a name="477"><span class="lineNum">     477 </span>            :            It contains the type of the variable flag. */</a>
+<a name="478"><span class="lineNum">     478 </span>            :         sljit_s32 last_flags;</a>
+<a name="479"><span class="lineNum">     479 </span>            :         /* Local size passed to the functions. */</a>
+<a name="480"><span class="lineNum">     480 </span>            :         sljit_s32 logical_local_size;</a>
+<a name="481"><span class="lineNum">     481 </span>            : #endif</a>
+<a name="482"><span class="lineNum">     482 </span>            : </a>
+<a name="483"><span class="lineNum">     483 </span>            : #if (defined SLJIT_ARGUMENT_CHECKS &amp;&amp; SLJIT_ARGUMENT_CHECKS) \</a>
+<a name="484"><span class="lineNum">     484 </span>            :                 || (defined SLJIT_DEBUG &amp;&amp; SLJIT_DEBUG) \</a>
+<a name="485"><span class="lineNum">     485 </span>            :                 || (defined SLJIT_VERBOSE &amp;&amp; SLJIT_VERBOSE)</a>
+<a name="486"><span class="lineNum">     486 </span>            :         /* Trust arguments when the API function is called. */</a>
+<a name="487"><span class="lineNum">     487 </span>            :         sljit_s32 skip_checks;</a>
+<a name="488"><span class="lineNum">     488 </span>            : #endif</a>
+<a name="489"><span class="lineNum">     489 </span>            : };</a>
+<a name="490"><span class="lineNum">     490 </span>            : </a>
+<a name="491"><span class="lineNum">     491 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="492"><span class="lineNum">     492 </span>            : /*  Main functions                                                       */</a>
+<a name="493"><span class="lineNum">     493 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="494"><span class="lineNum">     494 </span>            : </a>
+<a name="495"><span class="lineNum">     495 </span>            : /* Creates an sljit compiler. The allocator_data is required by some</a>
+<a name="496"><span class="lineNum">     496 </span>            :    custom memory managers. This pointer is passed to SLJIT_MALLOC</a>
+<a name="497"><span class="lineNum">     497 </span>            :    and SLJIT_FREE macros. Most allocators (including the default</a>
+<a name="498"><span class="lineNum">     498 </span>            :    one) ignores this value, and it is recommended to pass NULL</a>
+<a name="499"><span class="lineNum">     499 </span>            :    as a dummy value for allocator_data. The exec_allocator_data</a>
+<a name="500"><span class="lineNum">     500 </span>            :    has the same purpose but this one is passed to SLJIT_MALLOC_EXEC /</a>
+<a name="501"><span class="lineNum">     501 </span>            :    SLJIT_MALLOC_FREE functions.</a>
+<a name="502"><span class="lineNum">     502 </span>            : </a>
+<a name="503"><span class="lineNum">     503 </span>            :    Returns NULL if failed. */</a>
+<a name="504"><span class="lineNum">     504 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_compiler* sljit_create_compiler(void *allocator_data, void *exec_allocator_data);</a>
+<a name="505"><span class="lineNum">     505 </span>            : </a>
+<a name="506"><span class="lineNum">     506 </span>            : /* Frees everything except the compiled machine code. */</a>
+<a name="507"><span class="lineNum">     507 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_free_compiler(struct sljit_compiler *compiler);</a>
+<a name="508"><span class="lineNum">     508 </span>            : </a>
+<a name="509"><span class="lineNum">     509 </span>            : /* Returns the current error code. If an error is occurred, future sljit</a>
+<a name="510"><span class="lineNum">     510 </span>            :    calls which uses the same compiler argument returns early with the same</a>
+<a name="511"><span class="lineNum">     511 </span>            :    error code. Thus there is no need for checking the error after every</a>
+<a name="512"><span class="lineNum">     512 </span>            :    call, it is enough to do it before the code is compiled. Removing</a>
+<a name="513"><span class="lineNum">     513 </span>            :    these checks increases the performance of the compiling process. */</a>
+<a name="514"><span class="lineNum">     514 </span><span class="lineCov">     693116 : static SLJIT_INLINE sljit_s32 sljit_get_compiler_error(struct sljit_compiler *compiler) { return compiler-&gt;error; }</span></a>
+<a name="515"><span class="lineNum">     515 </span>            : </a>
+<a name="516"><span class="lineNum">     516 </span>            : /* Sets the compiler error code to SLJIT_ERR_ALLOC_FAILED except</a>
+<a name="517"><span class="lineNum">     517 </span>            :    if an error was detected before. After the error code is set</a>
+<a name="518"><span class="lineNum">     518 </span>            :    the compiler behaves as if the allocation failure happened</a>
+<a name="519"><span class="lineNum">     519 </span>            :    during an sljit function call. This can greatly simplify error</a>
+<a name="520"><span class="lineNum">     520 </span>            :    checking, since only the compiler status needs to be checked</a>
+<a name="521"><span class="lineNum">     521 </span>            :    after the compilation. */</a>
+<a name="522"><span class="lineNum">     522 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_compiler_memory_error(struct sljit_compiler *compiler);</a>
+<a name="523"><span class="lineNum">     523 </span>            : </a>
+<a name="524"><span class="lineNum">     524 </span>            : /*</a>
+<a name="525"><span class="lineNum">     525 </span>            :    Allocate a small amount of memory. The size must be &lt;= 64 bytes on 32 bit,</a>
+<a name="526"><span class="lineNum">     526 </span>            :    and &lt;= 128 bytes on 64 bit architectures. The memory area is owned by the</a>
+<a name="527"><span class="lineNum">     527 </span>            :    compiler, and freed by sljit_free_compiler. The returned pointer is</a>
+<a name="528"><span class="lineNum">     528 </span>            :    sizeof(sljit_sw) aligned. Excellent for allocating small blocks during</a>
+<a name="529"><span class="lineNum">     529 </span>            :    the compiling, and no need to worry about freeing them. The size is</a>
+<a name="530"><span class="lineNum">     530 </span>            :    enough to contain at most 16 pointers. If the size is outside of the range,</a>
+<a name="531"><span class="lineNum">     531 </span>            :    the function will return with NULL. However, this return value does not</a>
+<a name="532"><span class="lineNum">     532 </span>            :    indicate that there is no more memory (does not set the current error code</a>
+<a name="533"><span class="lineNum">     533 </span>            :    of the compiler to out-of-memory status).</a>
+<a name="534"><span class="lineNum">     534 </span>            : */</a>
+<a name="535"><span class="lineNum">     535 </span>            : SLJIT_API_FUNC_ATTRIBUTE void* sljit_alloc_memory(struct sljit_compiler *compiler, sljit_s32 size);</a>
+<a name="536"><span class="lineNum">     536 </span>            : </a>
+<a name="537"><span class="lineNum">     537 </span>            : #if (defined SLJIT_VERBOSE &amp;&amp; SLJIT_VERBOSE)</a>
+<a name="538"><span class="lineNum">     538 </span>            : /* Passing NULL disables verbose. */</a>
+<a name="539"><span class="lineNum">     539 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_compiler_verbose(struct sljit_compiler *compiler, FILE* verbose);</a>
+<a name="540"><span class="lineNum">     540 </span>            : #endif</a>
+<a name="541"><span class="lineNum">     541 </span>            : </a>
+<a name="542"><span class="lineNum">     542 </span>            : /*</a>
+<a name="543"><span class="lineNum">     543 </span>            :    Create executable code from the sljit instruction stream. This is the final step</a>
+<a name="544"><span class="lineNum">     544 </span>            :    of the code generation so no more instructions can be added after this call.</a>
+<a name="545"><span class="lineNum">     545 </span>            : */</a>
+<a name="546"><span class="lineNum">     546 </span>            : </a>
+<a name="547"><span class="lineNum">     547 </span>            : SLJIT_API_FUNC_ATTRIBUTE void* sljit_generate_code(struct sljit_compiler *compiler);</a>
+<a name="548"><span class="lineNum">     548 </span>            : </a>
+<a name="549"><span class="lineNum">     549 </span>            : /* Free executable code. */</a>
+<a name="550"><span class="lineNum">     550 </span>            : </a>
+<a name="551"><span class="lineNum">     551 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_free_code(void* code, void *exec_allocator_data);</a>
+<a name="552"><span class="lineNum">     552 </span>            : </a>
+<a name="553"><span class="lineNum">     553 </span>            : /*</a>
+<a name="554"><span class="lineNum">     554 </span>            :    When the protected executable allocator is used the JIT code is mapped</a>
+<a name="555"><span class="lineNum">     555 </span>            :    twice. The first mapping has read/write and the second mapping has read/exec</a>
+<a name="556"><span class="lineNum">     556 </span>            :    permissions. This function returns with the relative offset of the executable</a>
+<a name="557"><span class="lineNum">     557 </span>            :    mapping using the writable mapping as the base after the machine code is</a>
+<a name="558"><span class="lineNum">     558 </span>            :    successfully generated. The returned value is always 0 for the normal executable</a>
+<a name="559"><span class="lineNum">     559 </span>            :    allocator, since it uses only one mapping with read/write/exec permissions.</a>
+<a name="560"><span class="lineNum">     560 </span>            :    Dynamic code modifications requires this value.</a>
+<a name="561"><span class="lineNum">     561 </span>            : </a>
+<a name="562"><span class="lineNum">     562 </span>            :    Before a successful code generation, this function returns with 0.</a>
+<a name="563"><span class="lineNum">     563 </span>            : */</a>
+<a name="564"><span class="lineNum">     564 </span>            : static SLJIT_INLINE sljit_sw sljit_get_executable_offset(struct sljit_compiler *compiler) { return compiler-&gt;executable_offset; }</a>
+<a name="565"><span class="lineNum">     565 </span>            : </a>
+<a name="566"><span class="lineNum">     566 </span>            : /*</a>
+<a name="567"><span class="lineNum">     567 </span>            :    The executable memory consumption of the generated code can be retrieved by</a>
+<a name="568"><span class="lineNum">     568 </span>            :    this function. The returned value can be used for statistical purposes.</a>
+<a name="569"><span class="lineNum">     569 </span>            : </a>
+<a name="570"><span class="lineNum">     570 </span>            :    Before a successful code generation, this function returns with 0.</a>
+<a name="571"><span class="lineNum">     571 </span>            : */</a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineCov">     124864 : static SLJIT_INLINE sljit_uw sljit_get_generated_code_size(struct sljit_compiler *compiler) { return compiler-&gt;executable_size; }</span></a>
+<a name="573"><span class="lineNum">     573 </span>            : </a>
+<a name="574"><span class="lineNum">     574 </span>            : /* Returns with non-zero if the feature or limitation type passed as its</a>
+<a name="575"><span class="lineNum">     575 </span>            :    argument is present on the current CPU.</a>
+<a name="576"><span class="lineNum">     576 </span>            : </a>
+<a name="577"><span class="lineNum">     577 </span>            :    Some features (e.g. floating point operations) require hardware (CPU)</a>
+<a name="578"><span class="lineNum">     578 </span>            :    support while others (e.g. move with update) are emulated if not available.</a>
+<a name="579"><span class="lineNum">     579 </span>            :    However even if a feature is emulated, specialized code paths can be faster</a>
+<a name="580"><span class="lineNum">     580 </span>            :    than the emulation. Some limitations are emulated as well so their general</a>
+<a name="581"><span class="lineNum">     581 </span>            :    case is supported but it has extra performance costs. */</a>
+<a name="582"><span class="lineNum">     582 </span>            : </a>
+<a name="583"><span class="lineNum">     583 </span>            : /* [Not emulated] Floating-point support is available. */</a>
+<a name="584"><span class="lineNum">     584 </span>            : #define SLJIT_HAS_FPU                   0</a>
+<a name="585"><span class="lineNum">     585 </span>            : /* [Limitation] Some registers are virtual registers. */</a>
+<a name="586"><span class="lineNum">     586 </span>            : #define SLJIT_HAS_VIRTUAL_REGISTERS     1</a>
+<a name="587"><span class="lineNum">     587 </span>            : /* [Emulated] Has zero register (setting a memory location to zero is efficient). */</a>
+<a name="588"><span class="lineNum">     588 </span>            : #define SLJIT_HAS_ZERO_REGISTER         2</a>
+<a name="589"><span class="lineNum">     589 </span>            : /* [Emulated] Count leading zero is supported. */</a>
+<a name="590"><span class="lineNum">     590 </span>            : #define SLJIT_HAS_CLZ                   3</a>
+<a name="591"><span class="lineNum">     591 </span>            : /* [Emulated] Conditional move is supported. */</a>
+<a name="592"><span class="lineNum">     592 </span>            : #define SLJIT_HAS_CMOV                  4</a>
+<a name="593"><span class="lineNum">     593 </span>            : /* [Emulated] Conditional move is supported. */</a>
+<a name="594"><span class="lineNum">     594 </span>            : #define SLJIT_HAS_PREFETCH              5</a>
+<a name="595"><span class="lineNum">     595 </span>            : </a>
+<a name="596"><span class="lineNum">     596 </span>            : #if (defined SLJIT_CONFIG_X86 &amp;&amp; SLJIT_CONFIG_X86)</a>
+<a name="597"><span class="lineNum">     597 </span>            : /* [Not emulated] SSE2 support is available on x86. */</a>
+<a name="598"><span class="lineNum">     598 </span>            : #define SLJIT_HAS_SSE2                  100</a>
+<a name="599"><span class="lineNum">     599 </span>            : #endif</a>
+<a name="600"><span class="lineNum">     600 </span>            : </a>
+<a name="601"><span class="lineNum">     601 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_has_cpu_feature(sljit_s32 feature_type);</a>
+<a name="602"><span class="lineNum">     602 </span>            : </a>
+<a name="603"><span class="lineNum">     603 </span>            : /* Instruction generation. Returns with any error code. If there is no</a>
+<a name="604"><span class="lineNum">     604 </span>            :    error, they return with SLJIT_SUCCESS. */</a>
+<a name="605"><span class="lineNum">     605 </span>            : </a>
+<a name="606"><span class="lineNum">     606 </span>            : /*</a>
+<a name="607"><span class="lineNum">     607 </span>            :    The executable code is a function from the viewpoint of the C</a>
+<a name="608"><span class="lineNum">     608 </span>            :    language. The function calls must obey to the ABI (Application</a>
+<a name="609"><span class="lineNum">     609 </span>            :    Binary Interface) of the platform, which specify the purpose of</a>
+<a name="610"><span class="lineNum">     610 </span>            :    machine registers and stack handling among other things. The</a>
+<a name="611"><span class="lineNum">     611 </span>            :    sljit_emit_enter function emits the necessary instructions for</a>
+<a name="612"><span class="lineNum">     612 </span>            :    setting up a new context for the executable code and moves function</a>
+<a name="613"><span class="lineNum">     613 </span>            :    arguments to the saved registers. Furthermore the options argument</a>
+<a name="614"><span class="lineNum">     614 </span>            :    can be used to pass configuration options to the compiler. The</a>
+<a name="615"><span class="lineNum">     615 </span>            :    available options are listed before sljit_emit_enter.</a>
+<a name="616"><span class="lineNum">     616 </span>            : </a>
+<a name="617"><span class="lineNum">     617 </span>            :    The function argument list is the combination of SLJIT_ARGx</a>
+<a name="618"><span class="lineNum">     618 </span>            :    (SLJIT_DEF_ARG1) macros. Currently maximum 3 SW / UW</a>
+<a name="619"><span class="lineNum">     619 </span>            :    (SLJIT_ARG_TYPE_SW / LJIT_ARG_TYPE_UW) arguments are supported.</a>
+<a name="620"><span class="lineNum">     620 </span>            :    The first argument goes to SLJIT_S0, the second goes to SLJIT_S1</a>
+<a name="621"><span class="lineNum">     621 </span>            :    and so on. The register set used by the function must be declared</a>
+<a name="622"><span class="lineNum">     622 </span>            :    as well. The number of scratch and saved registers used by the</a>
+<a name="623"><span class="lineNum">     623 </span>            :    function must be passed to sljit_emit_enter. Only R registers</a>
+<a name="624"><span class="lineNum">     624 </span>            :    between R0 and &quot;scratches&quot; argument can be used later. E.g. if</a>
+<a name="625"><span class="lineNum">     625 </span>            :    &quot;scratches&quot; is set to 2, the scratch register set will be limited</a>
+<a name="626"><span class="lineNum">     626 </span>            :    to SLJIT_R0 and SLJIT_R1. The S registers and the floating point</a>
+<a name="627"><span class="lineNum">     627 </span>            :    registers (&quot;fscratches&quot; and &quot;fsaveds&quot;) are specified in a similar</a>
+<a name="628"><span class="lineNum">     628 </span>            :    manner. The sljit_emit_enter is also capable of allocating a stack</a>
+<a name="629"><span class="lineNum">     629 </span>            :    space for local variables. The &quot;local_size&quot; argument contains the</a>
+<a name="630"><span class="lineNum">     630 </span>            :    size in bytes of this local area and its staring address is stored</a>
+<a name="631"><span class="lineNum">     631 </span>            :    in SLJIT_SP. The memory area between SLJIT_SP (inclusive) and</a>
+<a name="632"><span class="lineNum">     632 </span>            :    SLJIT_SP + local_size (exclusive) can be modified freely until</a>
+<a name="633"><span class="lineNum">     633 </span>            :    the function returns. The stack space is not initialized.</a>
+<a name="634"><span class="lineNum">     634 </span>            : </a>
+<a name="635"><span class="lineNum">     635 </span>            :    Note: the following conditions must met:</a>
+<a name="636"><span class="lineNum">     636 </span>            :          0 &lt;= scratches &lt;= SLJIT_NUMBER_OF_REGISTERS</a>
+<a name="637"><span class="lineNum">     637 </span>            :          0 &lt;= saveds &lt;= SLJIT_NUMBER_OF_REGISTERS</a>
+<a name="638"><span class="lineNum">     638 </span>            :          scratches + saveds &lt;= SLJIT_NUMBER_OF_REGISTERS</a>
+<a name="639"><span class="lineNum">     639 </span>            :          0 &lt;= fscratches &lt;= SLJIT_NUMBER_OF_FLOAT_REGISTERS</a>
+<a name="640"><span class="lineNum">     640 </span>            :          0 &lt;= fsaveds &lt;= SLJIT_NUMBER_OF_FLOAT_REGISTERS</a>
+<a name="641"><span class="lineNum">     641 </span>            :          fscratches + fsaveds &lt;= SLJIT_NUMBER_OF_FLOAT_REGISTERS</a>
+<a name="642"><span class="lineNum">     642 </span>            : </a>
+<a name="643"><span class="lineNum">     643 </span>            :    Note: every call of sljit_emit_enter and sljit_set_context</a>
+<a name="644"><span class="lineNum">     644 </span>            :          overwrites the previous context.</a>
+<a name="645"><span class="lineNum">     645 </span>            : */</a>
+<a name="646"><span class="lineNum">     646 </span>            : </a>
+<a name="647"><span class="lineNum">     647 </span>            : /* The absolute address returned by sljit_get_local_base with</a>
+<a name="648"><span class="lineNum">     648 </span>            : offset 0 is aligned to sljit_f64. Otherwise it is aligned to sljit_sw. */</a>
+<a name="649"><span class="lineNum">     649 </span>            : #define SLJIT_F64_ALIGNMENT 0x00000001</a>
+<a name="650"><span class="lineNum">     650 </span>            : </a>
+<a name="651"><span class="lineNum">     651 </span>            : /* The local_size must be &gt;= 0 and &lt;= SLJIT_MAX_LOCAL_SIZE. */</a>
+<a name="652"><span class="lineNum">     652 </span>            : #define SLJIT_MAX_LOCAL_SIZE    65536</a>
+<a name="653"><span class="lineNum">     653 </span>            : </a>
+<a name="654"><span class="lineNum">     654 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compiler,</a>
+<a name="655"><span class="lineNum">     655 </span>            :         sljit_s32 options, sljit_s32 arg_types, sljit_s32 scratches, sljit_s32 saveds,</a>
+<a name="656"><span class="lineNum">     656 </span>            :         sljit_s32 fscratches, sljit_s32 fsaveds, sljit_s32 local_size);</a>
+<a name="657"><span class="lineNum">     657 </span>            : </a>
+<a name="658"><span class="lineNum">     658 </span>            : /* The machine code has a context (which contains the local stack space size,</a>
+<a name="659"><span class="lineNum">     659 </span>            :    number of used registers, etc.) which initialized by sljit_emit_enter. Several</a>
+<a name="660"><span class="lineNum">     660 </span>            :    functions (like sljit_emit_return) requres this context to be able to generate</a>
+<a name="661"><span class="lineNum">     661 </span>            :    the appropriate code. However, some code fragments (like inline cache) may have</a>
+<a name="662"><span class="lineNum">     662 </span>            :    no normal entry point so their context is unknown for the compiler. Their context</a>
+<a name="663"><span class="lineNum">     663 </span>            :    can be provided to the compiler by the sljit_set_context function.</a>
+<a name="664"><span class="lineNum">     664 </span>            : </a>
+<a name="665"><span class="lineNum">     665 </span>            :    Note: every call of sljit_emit_enter and sljit_set_context overwrites</a>
+<a name="666"><span class="lineNum">     666 </span>            :          the previous context. */</a>
+<a name="667"><span class="lineNum">     667 </span>            : </a>
+<a name="668"><span class="lineNum">     668 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_set_context(struct sljit_compiler *compiler,</a>
+<a name="669"><span class="lineNum">     669 </span>            :         sljit_s32 options, sljit_s32 arg_types, sljit_s32 scratches, sljit_s32 saveds,</a>
+<a name="670"><span class="lineNum">     670 </span>            :         sljit_s32 fscratches, sljit_s32 fsaveds, sljit_s32 local_size);</a>
+<a name="671"><span class="lineNum">     671 </span>            : </a>
+<a name="672"><span class="lineNum">     672 </span>            : /* Return from machine code.  The op argument can be SLJIT_UNUSED which means the</a>
+<a name="673"><span class="lineNum">     673 </span>            :    function does not return with anything or any opcode between SLJIT_MOV and</a>
+<a name="674"><span class="lineNum">     674 </span>            :    SLJIT_MOV_P (see sljit_emit_op1). As for src and srcw they must be 0 if op</a>
+<a name="675"><span class="lineNum">     675 </span>            :    is SLJIT_UNUSED, otherwise see below the description about source and</a>
+<a name="676"><span class="lineNum">     676 </span>            :    destination arguments. */</a>
+<a name="677"><span class="lineNum">     677 </span>            : </a>
+<a name="678"><span class="lineNum">     678 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_return(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="679"><span class="lineNum">     679 </span>            :         sljit_s32 src, sljit_sw srcw);</a>
+<a name="680"><span class="lineNum">     680 </span>            : </a>
+<a name="681"><span class="lineNum">     681 </span>            : /* Generating entry and exit points for fast call functions (see SLJIT_FAST_CALL).</a>
+<a name="682"><span class="lineNum">     682 </span>            :    Both sljit_emit_fast_enter and SLJIT_FAST_RETURN operations preserve the</a>
+<a name="683"><span class="lineNum">     683 </span>            :    values of all registers and stack frame. The return address is stored in the</a>
+<a name="684"><span class="lineNum">     684 </span>            :    dst argument of sljit_emit_fast_enter, and this return address can be passed</a>
+<a name="685"><span class="lineNum">     685 </span>            :    to SLJIT_FAST_RETURN to continue the execution after the fast call.</a>
+<a name="686"><span class="lineNum">     686 </span>            : </a>
+<a name="687"><span class="lineNum">     687 </span>            :    Fast calls are cheap operations (usually only a single call instruction is</a>
+<a name="688"><span class="lineNum">     688 </span>            :    emitted) but they do not preserve any registers. However the callee function</a>
+<a name="689"><span class="lineNum">     689 </span>            :    can freely use / update any registers and stack values which can be</a>
+<a name="690"><span class="lineNum">     690 </span>            :    efficiently exploited by various optimizations. Registers can be saved</a>
+<a name="691"><span class="lineNum">     691 </span>            :    manually by the callee function if needed.</a>
+<a name="692"><span class="lineNum">     692 </span>            : </a>
+<a name="693"><span class="lineNum">     693 </span>            :    Although returning to different address by SLJIT_FAST_RETURN is possible,</a>
+<a name="694"><span class="lineNum">     694 </span>            :    this address usually cannot be predicted by the return address predictor of</a>
+<a name="695"><span class="lineNum">     695 </span>            :    modern CPUs which may reduce performance. Furthermore certain security</a>
+<a name="696"><span class="lineNum">     696 </span>            :    enhancement technologies such as Intel Control-flow Enforcement Technology</a>
+<a name="697"><span class="lineNum">     697 </span>            :    (CET) may disallow returning to a different address.</a>
+<a name="698"><span class="lineNum">     698 </span>            : </a>
+<a name="699"><span class="lineNum">     699 </span>            :    Flags: - (does not modify flags). */</a>
+<a name="700"><span class="lineNum">     700 </span>            : </a>
+<a name="701"><span class="lineNum">     701 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fast_enter(struct sljit_compiler *compiler, sljit_s32 dst, sljit_sw dstw);</a>
+<a name="702"><span class="lineNum">     702 </span>            : </a>
+<a name="703"><span class="lineNum">     703 </span>            : /*</a>
+<a name="704"><span class="lineNum">     704 </span>            :    Source and destination operands for arithmetical instructions</a>
+<a name="705"><span class="lineNum">     705 </span>            :     imm              - a simple immediate value (cannot be used as a destination)</a>
+<a name="706"><span class="lineNum">     706 </span>            :     reg              - any of the registers (immediate argument must be 0)</a>
+<a name="707"><span class="lineNum">     707 </span>            :     [imm]            - absolute immediate memory address</a>
+<a name="708"><span class="lineNum">     708 </span>            :     [reg+imm]        - indirect memory address</a>
+<a name="709"><span class="lineNum">     709 </span>            :     [reg+(reg&lt;&lt;imm)] - indirect indexed memory address (shift must be between 0 and 3)</a>
+<a name="710"><span class="lineNum">     710 </span>            :                        useful for (byte, half, int, sljit_sw) array access</a>
+<a name="711"><span class="lineNum">     711 </span>            :                        (fully supported by both x86 and ARM architectures, and cheap operation on others)</a>
+<a name="712"><span class="lineNum">     712 </span>            : */</a>
+<a name="713"><span class="lineNum">     713 </span>            : </a>
+<a name="714"><span class="lineNum">     714 </span>            : /*</a>
+<a name="715"><span class="lineNum">     715 </span>            :    IMPORTANT NOTE: memory access MUST be naturally aligned unless</a>
+<a name="716"><span class="lineNum">     716 </span>            :                    SLJIT_UNALIGNED macro is defined and its value is 1.</a>
+<a name="717"><span class="lineNum">     717 </span>            : </a>
+<a name="718"><span class="lineNum">     718 </span>            :      length | alignment</a>
+<a name="719"><span class="lineNum">     719 </span>            :    ---------+-----------</a>
+<a name="720"><span class="lineNum">     720 </span>            :      byte   | 1 byte (any physical_address is accepted)</a>
+<a name="721"><span class="lineNum">     721 </span>            :      half   | 2 byte (physical_address &amp; 0x1 == 0)</a>
+<a name="722"><span class="lineNum">     722 </span>            :      int    | 4 byte (physical_address &amp; 0x3 == 0)</a>
+<a name="723"><span class="lineNum">     723 </span>            :      word   | 4 byte if SLJIT_32BIT_ARCHITECTURE is defined and its value is 1</a>
+<a name="724"><span class="lineNum">     724 </span>            :             | 8 byte if SLJIT_64BIT_ARCHITECTURE is defined and its value is 1</a>
+<a name="725"><span class="lineNum">     725 </span>            :     pointer | size of sljit_p type (4 byte on 32 bit machines, 4 or 8 byte</a>
+<a name="726"><span class="lineNum">     726 </span>            :             | on 64 bit machines)</a>
+<a name="727"><span class="lineNum">     727 </span>            : </a>
+<a name="728"><span class="lineNum">     728 </span>            :    Note:   Different architectures have different addressing limitations.</a>
+<a name="729"><span class="lineNum">     729 </span>            :            A single instruction is enough for the following addressing</a>
+<a name="730"><span class="lineNum">     730 </span>            :            modes. Other adrressing modes are emulated by instruction</a>
+<a name="731"><span class="lineNum">     731 </span>            :            sequences. This information could help to improve those code</a>
+<a name="732"><span class="lineNum">     732 </span>            :            generators which focuses only a few architectures.</a>
+<a name="733"><span class="lineNum">     733 </span>            : </a>
+<a name="734"><span class="lineNum">     734 </span>            :    x86:    [reg+imm], -2^32+1 &lt;= imm &lt;= 2^32-1 (full address space on x86-32)</a>
+<a name="735"><span class="lineNum">     735 </span>            :            [reg+(reg&lt;&lt;imm)] is supported</a>
+<a name="736"><span class="lineNum">     736 </span>            :            [imm], -2^32+1 &lt;= imm &lt;= 2^32-1 is supported</a>
+<a name="737"><span class="lineNum">     737 </span>            :            Write-back is not supported</a>
+<a name="738"><span class="lineNum">     738 </span>            :    arm:    [reg+imm], -4095 &lt;= imm &lt;= 4095 or -255 &lt;= imm &lt;= 255 for signed</a>
+<a name="739"><span class="lineNum">     739 </span>            :                 bytes, any halfs or floating point values)</a>
+<a name="740"><span class="lineNum">     740 </span>            :            [reg+(reg&lt;&lt;imm)] is supported</a>
+<a name="741"><span class="lineNum">     741 </span>            :            Write-back is supported</a>
+<a name="742"><span class="lineNum">     742 </span>            :    arm-t2: [reg+imm], -255 &lt;= imm &lt;= 4095</a>
+<a name="743"><span class="lineNum">     743 </span>            :            [reg+(reg&lt;&lt;imm)] is supported</a>
+<a name="744"><span class="lineNum">     744 </span>            :            Write back is supported only for [reg+imm], where -255 &lt;= imm &lt;= 255</a>
+<a name="745"><span class="lineNum">     745 </span>            :    arm64:  [reg+imm], -256 &lt;= imm &lt;= 255, 0 &lt;= aligned imm &lt;= 4095 * alignment</a>
+<a name="746"><span class="lineNum">     746 </span>            :            [reg+(reg&lt;&lt;imm)] is supported</a>
+<a name="747"><span class="lineNum">     747 </span>            :            Write back is supported only for [reg+imm], where -256 &lt;= imm &lt;= 255</a>
+<a name="748"><span class="lineNum">     748 </span>            :    ppc:    [reg+imm], -65536 &lt;= imm &lt;= 65535. 64 bit loads/stores and 32 bit</a>
+<a name="749"><span class="lineNum">     749 </span>            :                 signed load on 64 bit requires immediates divisible by 4.</a>
+<a name="750"><span class="lineNum">     750 </span>            :                 [reg+imm] is not supported for signed 8 bit values.</a>
+<a name="751"><span class="lineNum">     751 </span>            :            [reg+reg] is supported</a>
+<a name="752"><span class="lineNum">     752 </span>            :            Write-back is supported except for one instruction: 32 bit signed</a>
+<a name="753"><span class="lineNum">     753 </span>            :                 load with [reg+imm] addressing mode on 64 bit.</a>
+<a name="754"><span class="lineNum">     754 </span>            :    mips:   [reg+imm], -65536 &lt;= imm &lt;= 65535</a>
+<a name="755"><span class="lineNum">     755 </span>            :    sparc:  [reg+imm], -4096 &lt;= imm &lt;= 4095</a>
+<a name="756"><span class="lineNum">     756 </span>            :            [reg+reg] is supported</a>
+<a name="757"><span class="lineNum">     757 </span>            :    s390x:  [reg+imm], -2^19 &lt;= imm &lt; 2^19</a>
+<a name="758"><span class="lineNum">     758 </span>            :            [reg+reg] is supported</a>
+<a name="759"><span class="lineNum">     759 </span>            :            Write-back is not supported</a>
+<a name="760"><span class="lineNum">     760 </span>            : */</a>
+<a name="761"><span class="lineNum">     761 </span>            : </a>
+<a name="762"><span class="lineNum">     762 </span>            : /* Macros for specifying operand types. */</a>
+<a name="763"><span class="lineNum">     763 </span>            : #define SLJIT_MEM               0x80</a>
+<a name="764"><span class="lineNum">     764 </span>            : #define SLJIT_MEM0()            (SLJIT_MEM)</a>
+<a name="765"><span class="lineNum">     765 </span>            : #define SLJIT_MEM1(r1)          (SLJIT_MEM | (r1))</a>
+<a name="766"><span class="lineNum">     766 </span>            : #define SLJIT_MEM2(r1, r2)      (SLJIT_MEM | (r1) | ((r2) &lt;&lt; 8))</a>
+<a name="767"><span class="lineNum">     767 </span>            : #define SLJIT_IMM               0x40</a>
+<a name="768"><span class="lineNum">     768 </span>            : </a>
+<a name="769"><span class="lineNum">     769 </span>            : /* Set 32 bit operation mode (I) on 64 bit CPUs. This option is ignored on</a>
+<a name="770"><span class="lineNum">     770 </span>            :    32 bit CPUs. When this option is set for an arithmetic operation, only</a>
+<a name="771"><span class="lineNum">     771 </span>            :    the lower 32 bit of the input registers are used, and the CPU status</a>
+<a name="772"><span class="lineNum">     772 </span>            :    flags are set according to the 32 bit result. Although the higher 32 bit</a>
+<a name="773"><span class="lineNum">     773 </span>            :    of the input and the result registers are not defined by SLJIT, it might</a>
+<a name="774"><span class="lineNum">     774 </span>            :    be defined by the CPU architecture (e.g. MIPS). To satisfy these CPU</a>
+<a name="775"><span class="lineNum">     775 </span>            :    requirements all source registers must be the result of those operations</a>
+<a name="776"><span class="lineNum">     776 </span>            :    where this option was also set. Memory loads read 32 bit values rather</a>
+<a name="777"><span class="lineNum">     777 </span>            :    than 64 bit ones. In other words 32 bit and 64 bit operations cannot</a>
+<a name="778"><span class="lineNum">     778 </span>            :    be mixed. The only exception is SLJIT_MOV32 and SLJIT_MOVU32 whose source</a>
+<a name="779"><span class="lineNum">     779 </span>            :    register can hold any 32 or 64 bit value, and it is converted to a 32 bit</a>
+<a name="780"><span class="lineNum">     780 </span>            :    compatible format first. This conversion is free (no instructions are</a>
+<a name="781"><span class="lineNum">     781 </span>            :    emitted) on most CPUs. A 32 bit value can also be converted to a 64 bit</a>
+<a name="782"><span class="lineNum">     782 </span>            :    value by SLJIT_MOV_S32 (sign extension) or SLJIT_MOV_U32 (zero extension).</a>
+<a name="783"><span class="lineNum">     783 </span>            : </a>
+<a name="784"><span class="lineNum">     784 </span>            :    Note: memory addressing always uses 64 bit values on 64 bit systems so</a>
+<a name="785"><span class="lineNum">     785 </span>            :          the result of a 32 bit operation must not be used with SLJIT_MEMx</a>
+<a name="786"><span class="lineNum">     786 </span>            :          macros.</a>
+<a name="787"><span class="lineNum">     787 </span>            : </a>
+<a name="788"><span class="lineNum">     788 </span>            :    This option is part of the instruction name, so there is no need to</a>
+<a name="789"><span class="lineNum">     789 </span>            :    manually set it. E.g:</a>
+<a name="790"><span class="lineNum">     790 </span>            : </a>
+<a name="791"><span class="lineNum">     791 </span>            :      SLJIT_ADD32 == (SLJIT_ADD | SLJIT_I32_OP) */</a>
+<a name="792"><span class="lineNum">     792 </span>            : #define SLJIT_I32_OP            0x100</a>
+<a name="793"><span class="lineNum">     793 </span>            : </a>
+<a name="794"><span class="lineNum">     794 </span>            : /* Set F32 (single) precision mode for floating-point computation. This</a>
+<a name="795"><span class="lineNum">     795 </span>            :    option is similar to SLJIT_I32_OP, it just applies to floating point</a>
+<a name="796"><span class="lineNum">     796 </span>            :    registers. When this option is passed, the CPU performs 32 bit floating</a>
+<a name="797"><span class="lineNum">     797 </span>            :    point operations, rather than 64 bit one. Similar to SLJIT_I32_OP, all</a>
+<a name="798"><span class="lineNum">     798 </span>            :    register arguments must be the result of those operations where this</a>
+<a name="799"><span class="lineNum">     799 </span>            :    option was also set.</a>
+<a name="800"><span class="lineNum">     800 </span>            : </a>
+<a name="801"><span class="lineNum">     801 </span>            :    This option is part of the instruction name, so there is no need to</a>
+<a name="802"><span class="lineNum">     802 </span>            :    manually set it. E.g:</a>
+<a name="803"><span class="lineNum">     803 </span>            : </a>
+<a name="804"><span class="lineNum">     804 </span>            :      SLJIT_MOV_F32 = (SLJIT_MOV_F64 | SLJIT_F32_OP)</a>
+<a name="805"><span class="lineNum">     805 </span>            :  */</a>
+<a name="806"><span class="lineNum">     806 </span>            : #define SLJIT_F32_OP            SLJIT_I32_OP</a>
+<a name="807"><span class="lineNum">     807 </span>            : </a>
+<a name="808"><span class="lineNum">     808 </span>            : /* Many CPUs (x86, ARM, PPC) have status flags which can be set according</a>
+<a name="809"><span class="lineNum">     809 </span>            :    to the result of an operation. Other CPUs (MIPS) do not have status</a>
+<a name="810"><span class="lineNum">     810 </span>            :    flags, and results must be stored in registers. To cover both architecture</a>
+<a name="811"><span class="lineNum">     811 </span>            :    types efficiently only two flags are defined by SLJIT:</a>
+<a name="812"><span class="lineNum">     812 </span>            : </a>
+<a name="813"><span class="lineNum">     813 </span>            :     * Zero (equal) flag: it is set if the result is zero</a>
+<a name="814"><span class="lineNum">     814 </span>            :     * Variable flag: its value is defined by the last arithmetic operation</a>
+<a name="815"><span class="lineNum">     815 </span>            : </a>
+<a name="816"><span class="lineNum">     816 </span>            :    SLJIT instructions can set any or both of these flags. The value of</a>
+<a name="817"><span class="lineNum">     817 </span>            :    these flags is undefined if the instruction does not specify their value.</a>
+<a name="818"><span class="lineNum">     818 </span>            :    The description of each instruction contains the list of allowed flag</a>
+<a name="819"><span class="lineNum">     819 </span>            :    types.</a>
+<a name="820"><span class="lineNum">     820 </span>            : </a>
+<a name="821"><span class="lineNum">     821 </span>            :    Example: SLJIT_ADD can set the Z, OVERFLOW, CARRY flags hence</a>
+<a name="822"><span class="lineNum">     822 </span>            : </a>
+<a name="823"><span class="lineNum">     823 </span>            :      sljit_op2(..., SLJIT_ADD, ...)</a>
+<a name="824"><span class="lineNum">     824 </span>            :        Both the zero and variable flags are undefined so they can</a>
+<a name="825"><span class="lineNum">     825 </span>            :        have any value after the operation is completed.</a>
+<a name="826"><span class="lineNum">     826 </span>            : </a>
+<a name="827"><span class="lineNum">     827 </span>            :      sljit_op2(..., SLJIT_ADD | SLJIT_SET_Z, ...)</a>
+<a name="828"><span class="lineNum">     828 </span>            :        Sets the zero flag if the result is zero, clears it otherwise.</a>
+<a name="829"><span class="lineNum">     829 </span>            :        The variable flag is undefined.</a>
+<a name="830"><span class="lineNum">     830 </span>            : </a>
+<a name="831"><span class="lineNum">     831 </span>            :      sljit_op2(..., SLJIT_ADD | SLJIT_SET_OVERFLOW, ...)</a>
+<a name="832"><span class="lineNum">     832 </span>            :        Sets the variable flag if an integer overflow occurs, clears</a>
+<a name="833"><span class="lineNum">     833 </span>            :        it otherwise. The zero flag is undefined.</a>
+<a name="834"><span class="lineNum">     834 </span>            : </a>
+<a name="835"><span class="lineNum">     835 </span>            :      sljit_op2(..., SLJIT_ADD | SLJIT_SET_Z | SLJIT_SET_CARRY, ...)</a>
+<a name="836"><span class="lineNum">     836 </span>            :        Sets the zero flag if the result is zero, clears it otherwise.</a>
+<a name="837"><span class="lineNum">     837 </span>            :        Sets the variable flag if unsigned overflow (carry) occurs,</a>
+<a name="838"><span class="lineNum">     838 </span>            :        clears it otherwise.</a>
+<a name="839"><span class="lineNum">     839 </span>            : </a>
+<a name="840"><span class="lineNum">     840 </span>            :    If an instruction (e.g. SLJIT_MOV) does not modify flags the flags are</a>
+<a name="841"><span class="lineNum">     841 </span>            :    unchanged.</a>
+<a name="842"><span class="lineNum">     842 </span>            : </a>
+<a name="843"><span class="lineNum">     843 </span>            :    Using these flags can reduce the number of emitted instructions. E.g. a</a>
+<a name="844"><span class="lineNum">     844 </span>            :    fast loop can be implemented by decreasing a counter register and set the</a>
+<a name="845"><span class="lineNum">     845 </span>            :    zero flag to jump back if the counter register has not reached zero.</a>
+<a name="846"><span class="lineNum">     846 </span>            : </a>
+<a name="847"><span class="lineNum">     847 </span>            :    Motivation: although CPUs can set a large number of flags, usually their</a>
+<a name="848"><span class="lineNum">     848 </span>            :    values are ignored or only one of them is used. Emulating a large number</a>
+<a name="849"><span class="lineNum">     849 </span>            :    of flags on systems without flag register is complicated so SLJIT</a>
+<a name="850"><span class="lineNum">     850 </span>            :    instructions must specify the flag they want to use and only that flag</a>
+<a name="851"><span class="lineNum">     851 </span>            :    will be emulated. The last arithmetic instruction can be repeated if</a>
+<a name="852"><span class="lineNum">     852 </span>            :    multiple flags need to be checked.</a>
+<a name="853"><span class="lineNum">     853 </span>            : */</a>
+<a name="854"><span class="lineNum">     854 </span>            : </a>
+<a name="855"><span class="lineNum">     855 </span>            : /* Set Zero status flag. */</a>
+<a name="856"><span class="lineNum">     856 </span>            : #define SLJIT_SET_Z                     0x0200</a>
+<a name="857"><span class="lineNum">     857 </span>            : /* Set the variable status flag if condition is true.</a>
+<a name="858"><span class="lineNum">     858 </span>            :    See comparison types. */</a>
+<a name="859"><span class="lineNum">     859 </span>            : #define SLJIT_SET(condition)                    ((condition) &lt;&lt; 10)</a>
+<a name="860"><span class="lineNum">     860 </span>            : </a>
+<a name="861"><span class="lineNum">     861 </span>            : /* Notes:</a>
+<a name="862"><span class="lineNum">     862 </span>            :      - you cannot postpone conditional jump instructions except if noted that</a>
+<a name="863"><span class="lineNum">     863 </span>            :        the instruction does not set flags (See: SLJIT_KEEP_FLAGS).</a>
+<a name="864"><span class="lineNum">     864 </span>            :      - flag combinations: '|' means 'logical or'. */</a>
+<a name="865"><span class="lineNum">     865 </span>            : </a>
+<a name="866"><span class="lineNum">     866 </span>            : /* Starting index of opcodes for sljit_emit_op0. */</a>
+<a name="867"><span class="lineNum">     867 </span>            : #define SLJIT_OP0_BASE                  0</a>
+<a name="868"><span class="lineNum">     868 </span>            : </a>
+<a name="869"><span class="lineNum">     869 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="870"><span class="lineNum">     870 </span>            :    Note: breakpoint instruction is not supported by all architectures (e.g. ppc)</a>
+<a name="871"><span class="lineNum">     871 </span>            :          It falls back to SLJIT_NOP in those cases. */</a>
+<a name="872"><span class="lineNum">     872 </span>            : #define SLJIT_BREAKPOINT                (SLJIT_OP0_BASE + 0)</a>
+<a name="873"><span class="lineNum">     873 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="874"><span class="lineNum">     874 </span>            :    Note: may or may not cause an extra cycle wait</a>
+<a name="875"><span class="lineNum">     875 </span>            :          it can even decrease the runtime in a few cases. */</a>
+<a name="876"><span class="lineNum">     876 </span>            : #define SLJIT_NOP                       (SLJIT_OP0_BASE + 1)</a>
+<a name="877"><span class="lineNum">     877 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="878"><span class="lineNum">     878 </span>            :    Unsigned multiplication of SLJIT_R0 and SLJIT_R1.</a>
+<a name="879"><span class="lineNum">     879 </span>            :    Result is placed into SLJIT_R1:SLJIT_R0 (high:low) word */</a>
+<a name="880"><span class="lineNum">     880 </span>            : #define SLJIT_LMUL_UW                   (SLJIT_OP0_BASE + 2)</a>
+<a name="881"><span class="lineNum">     881 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="882"><span class="lineNum">     882 </span>            :    Signed multiplication of SLJIT_R0 and SLJIT_R1.</a>
+<a name="883"><span class="lineNum">     883 </span>            :    Result is placed into SLJIT_R1:SLJIT_R0 (high:low) word */</a>
+<a name="884"><span class="lineNum">     884 </span>            : #define SLJIT_LMUL_SW                   (SLJIT_OP0_BASE + 3)</a>
+<a name="885"><span class="lineNum">     885 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="886"><span class="lineNum">     886 </span>            :    Unsigned divide of the value in SLJIT_R0 by the value in SLJIT_R1.</a>
+<a name="887"><span class="lineNum">     887 </span>            :    The result is placed into SLJIT_R0 and the remainder into SLJIT_R1.</a>
+<a name="888"><span class="lineNum">     888 </span>            :    Note: if SLJIT_R1 is 0, the behaviour is undefined. */</a>
+<a name="889"><span class="lineNum">     889 </span>            : #define SLJIT_DIVMOD_UW                 (SLJIT_OP0_BASE + 4)</a>
+<a name="890"><span class="lineNum">     890 </span>            : #define SLJIT_DIVMOD_U32                (SLJIT_DIVMOD_UW | SLJIT_I32_OP)</a>
+<a name="891"><span class="lineNum">     891 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="892"><span class="lineNum">     892 </span>            :    Signed divide of the value in SLJIT_R0 by the value in SLJIT_R1.</a>
+<a name="893"><span class="lineNum">     893 </span>            :    The result is placed into SLJIT_R0 and the remainder into SLJIT_R1.</a>
+<a name="894"><span class="lineNum">     894 </span>            :    Note: if SLJIT_R1 is 0, the behaviour is undefined.</a>
+<a name="895"><span class="lineNum">     895 </span>            :    Note: if SLJIT_R1 is -1 and SLJIT_R0 is integer min (0x800..00),</a>
+<a name="896"><span class="lineNum">     896 </span>            :          the behaviour is undefined. */</a>
+<a name="897"><span class="lineNum">     897 </span>            : #define SLJIT_DIVMOD_SW                 (SLJIT_OP0_BASE + 5)</a>
+<a name="898"><span class="lineNum">     898 </span>            : #define SLJIT_DIVMOD_S32                (SLJIT_DIVMOD_SW | SLJIT_I32_OP)</a>
+<a name="899"><span class="lineNum">     899 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="900"><span class="lineNum">     900 </span>            :    Unsigned divide of the value in SLJIT_R0 by the value in SLJIT_R1.</a>
+<a name="901"><span class="lineNum">     901 </span>            :    The result is placed into SLJIT_R0. SLJIT_R1 preserves its value.</a>
+<a name="902"><span class="lineNum">     902 </span>            :    Note: if SLJIT_R1 is 0, the behaviour is undefined. */</a>
+<a name="903"><span class="lineNum">     903 </span>            : #define SLJIT_DIV_UW                    (SLJIT_OP0_BASE + 6)</a>
+<a name="904"><span class="lineNum">     904 </span>            : #define SLJIT_DIV_U32                   (SLJIT_DIV_UW | SLJIT_I32_OP)</a>
+<a name="905"><span class="lineNum">     905 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="906"><span class="lineNum">     906 </span>            :    Signed divide of the value in SLJIT_R0 by the value in SLJIT_R1.</a>
+<a name="907"><span class="lineNum">     907 </span>            :    The result is placed into SLJIT_R0. SLJIT_R1 preserves its value.</a>
+<a name="908"><span class="lineNum">     908 </span>            :    Note: if SLJIT_R1 is 0, the behaviour is undefined.</a>
+<a name="909"><span class="lineNum">     909 </span>            :    Note: if SLJIT_R1 is -1 and SLJIT_R0 is integer min (0x800..00),</a>
+<a name="910"><span class="lineNum">     910 </span>            :          the behaviour is undefined. */</a>
+<a name="911"><span class="lineNum">     911 </span>            : #define SLJIT_DIV_SW                    (SLJIT_OP0_BASE + 7)</a>
+<a name="912"><span class="lineNum">     912 </span>            : #define SLJIT_DIV_S32                   (SLJIT_DIV_SW | SLJIT_I32_OP)</a>
+<a name="913"><span class="lineNum">     913 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="914"><span class="lineNum">     914 </span>            :    ENDBR32 instruction for x86-32 and ENDBR64 instruction for x86-64</a>
+<a name="915"><span class="lineNum">     915 </span>            :    when Intel Control-flow Enforcement Technology (CET) is enabled.</a>
+<a name="916"><span class="lineNum">     916 </span>            :    No instruction for other architectures.  */</a>
+<a name="917"><span class="lineNum">     917 </span>            : #define SLJIT_ENDBR                     (SLJIT_OP0_BASE + 8)</a>
+<a name="918"><span class="lineNum">     918 </span>            : /* Flags: - (may destroy flags)</a>
+<a name="919"><span class="lineNum">     919 </span>            :    Skip stack frames before return.  */</a>
+<a name="920"><span class="lineNum">     920 </span>            : #define SLJIT_SKIP_FRAMES_BEFORE_RETURN (SLJIT_OP0_BASE + 9)</a>
+<a name="921"><span class="lineNum">     921 </span>            : </a>
+<a name="922"><span class="lineNum">     922 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op0(struct sljit_compiler *compiler, sljit_s32 op);</a>
+<a name="923"><span class="lineNum">     923 </span>            : </a>
+<a name="924"><span class="lineNum">     924 </span>            : /* Starting index of opcodes for sljit_emit_op1. */</a>
+<a name="925"><span class="lineNum">     925 </span>            : #define SLJIT_OP1_BASE                  32</a>
+<a name="926"><span class="lineNum">     926 </span>            : </a>
+<a name="927"><span class="lineNum">     927 </span>            : /* The MOV instruction transfers data from source to destination.</a>
+<a name="928"><span class="lineNum">     928 </span>            : </a>
+<a name="929"><span class="lineNum">     929 </span>            :    MOV instruction suffixes:</a>
+<a name="930"><span class="lineNum">     930 </span>            : </a>
+<a name="931"><span class="lineNum">     931 </span>            :    U8  - unsigned 8 bit data transfer</a>
+<a name="932"><span class="lineNum">     932 </span>            :    S8  - signed 8 bit data transfer</a>
+<a name="933"><span class="lineNum">     933 </span>            :    U16 - unsigned 16 bit data transfer</a>
+<a name="934"><span class="lineNum">     934 </span>            :    S16 - signed 16 bit data transfer</a>
+<a name="935"><span class="lineNum">     935 </span>            :    U32 - unsigned int (32 bit) data transfer</a>
+<a name="936"><span class="lineNum">     936 </span>            :    S32 - signed int (32 bit) data transfer</a>
+<a name="937"><span class="lineNum">     937 </span>            :    P   - pointer (sljit_p) data transfer</a>
+<a name="938"><span class="lineNum">     938 </span>            : */</a>
+<a name="939"><span class="lineNum">     939 </span>            : </a>
+<a name="940"><span class="lineNum">     940 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="941"><span class="lineNum">     941 </span>            : #define SLJIT_MOV                       (SLJIT_OP1_BASE + 0)</a>
+<a name="942"><span class="lineNum">     942 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="943"><span class="lineNum">     943 </span>            : #define SLJIT_MOV_U8                    (SLJIT_OP1_BASE + 1)</a>
+<a name="944"><span class="lineNum">     944 </span>            : #define SLJIT_MOV32_U8                  (SLJIT_MOV_U8 | SLJIT_I32_OP)</a>
+<a name="945"><span class="lineNum">     945 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="946"><span class="lineNum">     946 </span>            : #define SLJIT_MOV_S8                    (SLJIT_OP1_BASE + 2)</a>
+<a name="947"><span class="lineNum">     947 </span>            : #define SLJIT_MOV32_S8                  (SLJIT_MOV_S8 | SLJIT_I32_OP)</a>
+<a name="948"><span class="lineNum">     948 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="949"><span class="lineNum">     949 </span>            : #define SLJIT_MOV_U16                   (SLJIT_OP1_BASE + 3)</a>
+<a name="950"><span class="lineNum">     950 </span>            : #define SLJIT_MOV32_U16                 (SLJIT_MOV_U16 | SLJIT_I32_OP)</a>
+<a name="951"><span class="lineNum">     951 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="952"><span class="lineNum">     952 </span>            : #define SLJIT_MOV_S16                   (SLJIT_OP1_BASE + 4)</a>
+<a name="953"><span class="lineNum">     953 </span>            : #define SLJIT_MOV32_S16                 (SLJIT_MOV_S16 | SLJIT_I32_OP)</a>
+<a name="954"><span class="lineNum">     954 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="955"><span class="lineNum">     955 </span>            :    Note: no SLJIT_MOV32_U32 form, since it is the same as SLJIT_MOV32 */</a>
+<a name="956"><span class="lineNum">     956 </span>            : #define SLJIT_MOV_U32                   (SLJIT_OP1_BASE + 5)</a>
+<a name="957"><span class="lineNum">     957 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="958"><span class="lineNum">     958 </span>            :    Note: no SLJIT_MOV32_S32 form, since it is the same as SLJIT_MOV32 */</a>
+<a name="959"><span class="lineNum">     959 </span>            : #define SLJIT_MOV_S32                   (SLJIT_OP1_BASE + 6)</a>
+<a name="960"><span class="lineNum">     960 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="961"><span class="lineNum">     961 </span>            : #define SLJIT_MOV32                     (SLJIT_MOV_S32 | SLJIT_I32_OP)</a>
+<a name="962"><span class="lineNum">     962 </span>            : /* Flags: - (does not modify flags)</a>
+<a name="963"><span class="lineNum">     963 </span>            :    Note: load a pointer sized data, useful on x32 (a 32 bit mode on x86-64</a>
+<a name="964"><span class="lineNum">     964 </span>            :          where all x64 features are available, e.g. 16 register) or similar</a>
+<a name="965"><span class="lineNum">     965 </span>            :          compiling modes */</a>
+<a name="966"><span class="lineNum">     966 </span>            : #define SLJIT_MOV_P                     (SLJIT_OP1_BASE + 7)</a>
+<a name="967"><span class="lineNum">     967 </span>            : /* Flags: Z</a>
+<a name="968"><span class="lineNum">     968 </span>            :    Note: immediate source argument is not supported */</a>
+<a name="969"><span class="lineNum">     969 </span>            : #define SLJIT_NOT                       (SLJIT_OP1_BASE + 8)</a>
+<a name="970"><span class="lineNum">     970 </span>            : #define SLJIT_NOT32                     (SLJIT_NOT | SLJIT_I32_OP)</a>
+<a name="971"><span class="lineNum">     971 </span>            : /* Flags: Z | OVERFLOW</a>
+<a name="972"><span class="lineNum">     972 </span>            :    Note: immediate source argument is not supported */</a>
+<a name="973"><span class="lineNum">     973 </span>            : #define SLJIT_NEG                       (SLJIT_OP1_BASE + 9)</a>
+<a name="974"><span class="lineNum">     974 </span>            : #define SLJIT_NEG32                     (SLJIT_NEG | SLJIT_I32_OP)</a>
+<a name="975"><span class="lineNum">     975 </span>            : /* Count leading zeroes</a>
+<a name="976"><span class="lineNum">     976 </span>            :    Flags: - (may destroy flags)</a>
+<a name="977"><span class="lineNum">     977 </span>            :    Note: immediate source argument is not supported */</a>
+<a name="978"><span class="lineNum">     978 </span>            : #define SLJIT_CLZ                       (SLJIT_OP1_BASE + 10)</a>
+<a name="979"><span class="lineNum">     979 </span>            : #define SLJIT_CLZ32                     (SLJIT_CLZ | SLJIT_I32_OP)</a>
+<a name="980"><span class="lineNum">     980 </span>            : </a>
+<a name="981"><span class="lineNum">     981 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op1(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="982"><span class="lineNum">     982 </span>            :         sljit_s32 dst, sljit_sw dstw,</a>
+<a name="983"><span class="lineNum">     983 </span>            :         sljit_s32 src, sljit_sw srcw);</a>
+<a name="984"><span class="lineNum">     984 </span>            : </a>
+<a name="985"><span class="lineNum">     985 </span>            : /* Starting index of opcodes for sljit_emit_op2. */</a>
+<a name="986"><span class="lineNum">     986 </span>            : #define SLJIT_OP2_BASE                  96</a>
+<a name="987"><span class="lineNum">     987 </span>            : </a>
+<a name="988"><span class="lineNum">     988 </span>            : /* Flags: Z | OVERFLOW | CARRY */</a>
+<a name="989"><span class="lineNum">     989 </span>            : #define SLJIT_ADD                       (SLJIT_OP2_BASE + 0)</a>
+<a name="990"><span class="lineNum">     990 </span>            : #define SLJIT_ADD32                     (SLJIT_ADD | SLJIT_I32_OP)</a>
+<a name="991"><span class="lineNum">     991 </span>            : /* Flags: CARRY */</a>
+<a name="992"><span class="lineNum">     992 </span>            : #define SLJIT_ADDC                      (SLJIT_OP2_BASE + 1)</a>
+<a name="993"><span class="lineNum">     993 </span>            : #define SLJIT_ADDC32                    (SLJIT_ADDC | SLJIT_I32_OP)</a>
+<a name="994"><span class="lineNum">     994 </span>            : /* Flags: Z | LESS | GREATER_EQUAL | GREATER | LESS_EQUAL</a>
+<a name="995"><span class="lineNum">     995 </span>            :           SIG_LESS | SIG_GREATER_EQUAL | SIG_GREATER</a>
+<a name="996"><span class="lineNum">     996 </span>            :           SIG_LESS_EQUAL | CARRY */</a>
+<a name="997"><span class="lineNum">     997 </span>            : #define SLJIT_SUB                       (SLJIT_OP2_BASE + 2)</a>
+<a name="998"><span class="lineNum">     998 </span>            : #define SLJIT_SUB32                     (SLJIT_SUB | SLJIT_I32_OP)</a>
+<a name="999"><span class="lineNum">     999 </span>            : /* Flags: CARRY */</a>
+<a name="1000"><span class="lineNum">    1000 </span>            : #define SLJIT_SUBC                      (SLJIT_OP2_BASE + 3)</a>
+<a name="1001"><span class="lineNum">    1001 </span>            : #define SLJIT_SUBC32                    (SLJIT_SUBC | SLJIT_I32_OP)</a>
+<a name="1002"><span class="lineNum">    1002 </span>            : /* Note: integer mul</a>
+<a name="1003"><span class="lineNum">    1003 </span>            :    Flags: OVERFLOW */</a>
+<a name="1004"><span class="lineNum">    1004 </span>            : #define SLJIT_MUL                       (SLJIT_OP2_BASE + 4)</a>
+<a name="1005"><span class="lineNum">    1005 </span>            : #define SLJIT_MUL32                     (SLJIT_MUL | SLJIT_I32_OP)</a>
+<a name="1006"><span class="lineNum">    1006 </span>            : /* Flags: Z */</a>
+<a name="1007"><span class="lineNum">    1007 </span>            : #define SLJIT_AND                       (SLJIT_OP2_BASE + 5)</a>
+<a name="1008"><span class="lineNum">    1008 </span>            : #define SLJIT_AND32                     (SLJIT_AND | SLJIT_I32_OP)</a>
+<a name="1009"><span class="lineNum">    1009 </span>            : /* Flags: Z */</a>
+<a name="1010"><span class="lineNum">    1010 </span>            : #define SLJIT_OR                        (SLJIT_OP2_BASE + 6)</a>
+<a name="1011"><span class="lineNum">    1011 </span>            : #define SLJIT_OR32                      (SLJIT_OR | SLJIT_I32_OP)</a>
+<a name="1012"><span class="lineNum">    1012 </span>            : /* Flags: Z */</a>
+<a name="1013"><span class="lineNum">    1013 </span>            : #define SLJIT_XOR                       (SLJIT_OP2_BASE + 7)</a>
+<a name="1014"><span class="lineNum">    1014 </span>            : #define SLJIT_XOR32                     (SLJIT_XOR | SLJIT_I32_OP)</a>
+<a name="1015"><span class="lineNum">    1015 </span>            : /* Flags: Z</a>
+<a name="1016"><span class="lineNum">    1016 </span>            :    Let bit_length be the length of the shift operation: 32 or 64.</a>
+<a name="1017"><span class="lineNum">    1017 </span>            :    If src2 is immediate, src2w is masked by (bit_length - 1).</a>
+<a name="1018"><span class="lineNum">    1018 </span>            :    Otherwise, if the content of src2 is outside the range from 0</a>
+<a name="1019"><span class="lineNum">    1019 </span>            :    to bit_length - 1, the result is undefined. */</a>
+<a name="1020"><span class="lineNum">    1020 </span>            : #define SLJIT_SHL                       (SLJIT_OP2_BASE + 8)</a>
+<a name="1021"><span class="lineNum">    1021 </span>            : #define SLJIT_SHL32                     (SLJIT_SHL | SLJIT_I32_OP)</a>
+<a name="1022"><span class="lineNum">    1022 </span>            : /* Flags: Z</a>
+<a name="1023"><span class="lineNum">    1023 </span>            :    Let bit_length be the length of the shift operation: 32 or 64.</a>
+<a name="1024"><span class="lineNum">    1024 </span>            :    If src2 is immediate, src2w is masked by (bit_length - 1).</a>
+<a name="1025"><span class="lineNum">    1025 </span>            :    Otherwise, if the content of src2 is outside the range from 0</a>
+<a name="1026"><span class="lineNum">    1026 </span>            :    to bit_length - 1, the result is undefined. */</a>
+<a name="1027"><span class="lineNum">    1027 </span>            : #define SLJIT_LSHR                      (SLJIT_OP2_BASE + 9)</a>
+<a name="1028"><span class="lineNum">    1028 </span>            : #define SLJIT_LSHR32                    (SLJIT_LSHR | SLJIT_I32_OP)</a>
+<a name="1029"><span class="lineNum">    1029 </span>            : /* Flags: Z</a>
+<a name="1030"><span class="lineNum">    1030 </span>            :    Let bit_length be the length of the shift operation: 32 or 64.</a>
+<a name="1031"><span class="lineNum">    1031 </span>            :    If src2 is immediate, src2w is masked by (bit_length - 1).</a>
+<a name="1032"><span class="lineNum">    1032 </span>            :    Otherwise, if the content of src2 is outside the range from 0</a>
+<a name="1033"><span class="lineNum">    1033 </span>            :    to bit_length - 1, the result is undefined. */</a>
+<a name="1034"><span class="lineNum">    1034 </span>            : #define SLJIT_ASHR                      (SLJIT_OP2_BASE + 10)</a>
+<a name="1035"><span class="lineNum">    1035 </span>            : #define SLJIT_ASHR32                    (SLJIT_ASHR | SLJIT_I32_OP)</a>
+<a name="1036"><span class="lineNum">    1036 </span>            : </a>
+<a name="1037"><span class="lineNum">    1037 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op2(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="1038"><span class="lineNum">    1038 </span>            :         sljit_s32 dst, sljit_sw dstw,</a>
+<a name="1039"><span class="lineNum">    1039 </span>            :         sljit_s32 src1, sljit_sw src1w,</a>
+<a name="1040"><span class="lineNum">    1040 </span>            :         sljit_s32 src2, sljit_sw src2w);</a>
+<a name="1041"><span class="lineNum">    1041 </span>            : </a>
+<a name="1042"><span class="lineNum">    1042 </span>            : /* Starting index of opcodes for sljit_emit_op2. */</a>
+<a name="1043"><span class="lineNum">    1043 </span>            : #define SLJIT_OP_SRC_BASE               128</a>
+<a name="1044"><span class="lineNum">    1044 </span>            : </a>
+<a name="1045"><span class="lineNum">    1045 </span>            : /* Note: src cannot be an immedate value</a>
+<a name="1046"><span class="lineNum">    1046 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1047"><span class="lineNum">    1047 </span>            : #define SLJIT_FAST_RETURN               (SLJIT_OP_SRC_BASE + 0)</a>
+<a name="1048"><span class="lineNum">    1048 </span>            : /* Skip stack frames before fast return.</a>
+<a name="1049"><span class="lineNum">    1049 </span>            :    Note: src cannot be an immedate value</a>
+<a name="1050"><span class="lineNum">    1050 </span>            :    Flags: may destroy flags. */</a>
+<a name="1051"><span class="lineNum">    1051 </span>            : #define SLJIT_SKIP_FRAMES_BEFORE_FAST_RETURN    (SLJIT_OP_SRC_BASE + 1)</a>
+<a name="1052"><span class="lineNum">    1052 </span>            : /* Prefetch value into the level 1 data cache</a>
+<a name="1053"><span class="lineNum">    1053 </span>            :    Note: if the target CPU does not support data prefetch,</a>
+<a name="1054"><span class="lineNum">    1054 </span>            :          no instructions are emitted.</a>
+<a name="1055"><span class="lineNum">    1055 </span>            :    Note: this instruction never fails, even if the memory address is invalid.</a>
+<a name="1056"><span class="lineNum">    1056 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1057"><span class="lineNum">    1057 </span>            : #define SLJIT_PREFETCH_L1               (SLJIT_OP_SRC_BASE + 2)</a>
+<a name="1058"><span class="lineNum">    1058 </span>            : /* Prefetch value into the level 2 data cache</a>
+<a name="1059"><span class="lineNum">    1059 </span>            :    Note: same as SLJIT_PREFETCH_L1 if the target CPU</a>
+<a name="1060"><span class="lineNum">    1060 </span>            :          does not support this instruction form.</a>
+<a name="1061"><span class="lineNum">    1061 </span>            :    Note: this instruction never fails, even if the memory address is invalid.</a>
+<a name="1062"><span class="lineNum">    1062 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1063"><span class="lineNum">    1063 </span>            : #define SLJIT_PREFETCH_L2               (SLJIT_OP_SRC_BASE + 3)</a>
+<a name="1064"><span class="lineNum">    1064 </span>            : /* Prefetch value into the level 3 data cache</a>
+<a name="1065"><span class="lineNum">    1065 </span>            :    Note: same as SLJIT_PREFETCH_L2 if the target CPU</a>
+<a name="1066"><span class="lineNum">    1066 </span>            :          does not support this instruction form.</a>
+<a name="1067"><span class="lineNum">    1067 </span>            :    Note: this instruction never fails, even if the memory address is invalid.</a>
+<a name="1068"><span class="lineNum">    1068 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1069"><span class="lineNum">    1069 </span>            : #define SLJIT_PREFETCH_L3               (SLJIT_OP_SRC_BASE + 4)</a>
+<a name="1070"><span class="lineNum">    1070 </span>            : /* Prefetch a value which is only used once (and can be discarded afterwards)</a>
+<a name="1071"><span class="lineNum">    1071 </span>            :    Note: same as SLJIT_PREFETCH_L1 if the target CPU</a>
+<a name="1072"><span class="lineNum">    1072 </span>            :          does not support this instruction form.</a>
+<a name="1073"><span class="lineNum">    1073 </span>            :    Note: this instruction never fails, even if the memory address is invalid.</a>
+<a name="1074"><span class="lineNum">    1074 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1075"><span class="lineNum">    1075 </span>            : #define SLJIT_PREFETCH_ONCE             (SLJIT_OP_SRC_BASE + 5)</a>
+<a name="1076"><span class="lineNum">    1076 </span>            : </a>
+<a name="1077"><span class="lineNum">    1077 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op_src(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="1078"><span class="lineNum">    1078 </span>            :         sljit_s32 src, sljit_sw srcw);</a>
+<a name="1079"><span class="lineNum">    1079 </span>            : </a>
+<a name="1080"><span class="lineNum">    1080 </span>            : /* Starting index of opcodes for sljit_emit_fop1. */</a>
+<a name="1081"><span class="lineNum">    1081 </span>            : #define SLJIT_FOP1_BASE                 160</a>
+<a name="1082"><span class="lineNum">    1082 </span>            : </a>
+<a name="1083"><span class="lineNum">    1083 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1084"><span class="lineNum">    1084 </span>            : #define SLJIT_MOV_F64                   (SLJIT_FOP1_BASE + 0)</a>
+<a name="1085"><span class="lineNum">    1085 </span>            : #define SLJIT_MOV_F32                   (SLJIT_MOV_F64 | SLJIT_F32_OP)</a>
+<a name="1086"><span class="lineNum">    1086 </span>            : /* Convert opcodes: CONV[DST_TYPE].FROM[SRC_TYPE]</a>
+<a name="1087"><span class="lineNum">    1087 </span>            :    SRC/DST TYPE can be: D - double, S - single, W - signed word, I - signed int</a>
+<a name="1088"><span class="lineNum">    1088 </span>            :    Rounding mode when the destination is W or I: round towards zero. */</a>
+<a name="1089"><span class="lineNum">    1089 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1090"><span class="lineNum">    1090 </span>            : #define SLJIT_CONV_F64_FROM_F32         (SLJIT_FOP1_BASE + 1)</a>
+<a name="1091"><span class="lineNum">    1091 </span>            : #define SLJIT_CONV_F32_FROM_F64         (SLJIT_CONV_F64_FROM_F32 | SLJIT_F32_OP)</a>
+<a name="1092"><span class="lineNum">    1092 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1093"><span class="lineNum">    1093 </span>            : #define SLJIT_CONV_SW_FROM_F64          (SLJIT_FOP1_BASE + 2)</a>
+<a name="1094"><span class="lineNum">    1094 </span>            : #define SLJIT_CONV_SW_FROM_F32          (SLJIT_CONV_SW_FROM_F64 | SLJIT_F32_OP)</a>
+<a name="1095"><span class="lineNum">    1095 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1096"><span class="lineNum">    1096 </span>            : #define SLJIT_CONV_S32_FROM_F64         (SLJIT_FOP1_BASE + 3)</a>
+<a name="1097"><span class="lineNum">    1097 </span>            : #define SLJIT_CONV_S32_FROM_F32         (SLJIT_CONV_S32_FROM_F64 | SLJIT_F32_OP)</a>
+<a name="1098"><span class="lineNum">    1098 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1099"><span class="lineNum">    1099 </span>            : #define SLJIT_CONV_F64_FROM_SW          (SLJIT_FOP1_BASE + 4)</a>
+<a name="1100"><span class="lineNum">    1100 </span>            : #define SLJIT_CONV_F32_FROM_SW          (SLJIT_CONV_F64_FROM_SW | SLJIT_F32_OP)</a>
+<a name="1101"><span class="lineNum">    1101 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1102"><span class="lineNum">    1102 </span>            : #define SLJIT_CONV_F64_FROM_S32         (SLJIT_FOP1_BASE + 5)</a>
+<a name="1103"><span class="lineNum">    1103 </span>            : #define SLJIT_CONV_F32_FROM_S32         (SLJIT_CONV_F64_FROM_S32 | SLJIT_F32_OP)</a>
+<a name="1104"><span class="lineNum">    1104 </span>            : /* Note: dst is the left and src is the right operand for SLJIT_CMPD.</a>
+<a name="1105"><span class="lineNum">    1105 </span>            :    Flags: EQUAL_F | LESS_F | GREATER_EQUAL_F | GREATER_F | LESS_EQUAL_F */</a>
+<a name="1106"><span class="lineNum">    1106 </span>            : #define SLJIT_CMP_F64                   (SLJIT_FOP1_BASE + 6)</a>
+<a name="1107"><span class="lineNum">    1107 </span>            : #define SLJIT_CMP_F32                   (SLJIT_CMP_F64 | SLJIT_F32_OP)</a>
+<a name="1108"><span class="lineNum">    1108 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1109"><span class="lineNum">    1109 </span>            : #define SLJIT_NEG_F64                   (SLJIT_FOP1_BASE + 7)</a>
+<a name="1110"><span class="lineNum">    1110 </span>            : #define SLJIT_NEG_F32                   (SLJIT_NEG_F64 | SLJIT_F32_OP)</a>
+<a name="1111"><span class="lineNum">    1111 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1112"><span class="lineNum">    1112 </span>            : #define SLJIT_ABS_F64                   (SLJIT_FOP1_BASE + 8)</a>
+<a name="1113"><span class="lineNum">    1113 </span>            : #define SLJIT_ABS_F32                   (SLJIT_ABS_F64 | SLJIT_F32_OP)</a>
+<a name="1114"><span class="lineNum">    1114 </span>            : </a>
+<a name="1115"><span class="lineNum">    1115 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fop1(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="1116"><span class="lineNum">    1116 </span>            :         sljit_s32 dst, sljit_sw dstw,</a>
+<a name="1117"><span class="lineNum">    1117 </span>            :         sljit_s32 src, sljit_sw srcw);</a>
+<a name="1118"><span class="lineNum">    1118 </span>            : </a>
+<a name="1119"><span class="lineNum">    1119 </span>            : /* Starting index of opcodes for sljit_emit_fop2. */</a>
+<a name="1120"><span class="lineNum">    1120 </span>            : #define SLJIT_FOP2_BASE                 192</a>
+<a name="1121"><span class="lineNum">    1121 </span>            : </a>
+<a name="1122"><span class="lineNum">    1122 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1123"><span class="lineNum">    1123 </span>            : #define SLJIT_ADD_F64                   (SLJIT_FOP2_BASE + 0)</a>
+<a name="1124"><span class="lineNum">    1124 </span>            : #define SLJIT_ADD_F32                   (SLJIT_ADD_F64 | SLJIT_F32_OP)</a>
+<a name="1125"><span class="lineNum">    1125 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1126"><span class="lineNum">    1126 </span>            : #define SLJIT_SUB_F64                   (SLJIT_FOP2_BASE + 1)</a>
+<a name="1127"><span class="lineNum">    1127 </span>            : #define SLJIT_SUB_F32                   (SLJIT_SUB_F64 | SLJIT_F32_OP)</a>
+<a name="1128"><span class="lineNum">    1128 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1129"><span class="lineNum">    1129 </span>            : #define SLJIT_MUL_F64                   (SLJIT_FOP2_BASE + 2)</a>
+<a name="1130"><span class="lineNum">    1130 </span>            : #define SLJIT_MUL_F32                   (SLJIT_MUL_F64 | SLJIT_F32_OP)</a>
+<a name="1131"><span class="lineNum">    1131 </span>            : /* Flags: - (does not modify flags) */</a>
+<a name="1132"><span class="lineNum">    1132 </span>            : #define SLJIT_DIV_F64                   (SLJIT_FOP2_BASE + 3)</a>
+<a name="1133"><span class="lineNum">    1133 </span>            : #define SLJIT_DIV_F32                   (SLJIT_DIV_F64 | SLJIT_F32_OP)</a>
+<a name="1134"><span class="lineNum">    1134 </span>            : </a>
+<a name="1135"><span class="lineNum">    1135 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fop2(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="1136"><span class="lineNum">    1136 </span>            :         sljit_s32 dst, sljit_sw dstw,</a>
+<a name="1137"><span class="lineNum">    1137 </span>            :         sljit_s32 src1, sljit_sw src1w,</a>
+<a name="1138"><span class="lineNum">    1138 </span>            :         sljit_s32 src2, sljit_sw src2w);</a>
+<a name="1139"><span class="lineNum">    1139 </span>            : </a>
+<a name="1140"><span class="lineNum">    1140 </span>            : /* Label and jump instructions. */</a>
+<a name="1141"><span class="lineNum">    1141 </span>            : </a>
+<a name="1142"><span class="lineNum">    1142 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_label* sljit_emit_label(struct sljit_compiler *compiler);</a>
+<a name="1143"><span class="lineNum">    1143 </span>            : </a>
+<a name="1144"><span class="lineNum">    1144 </span>            : /* Invert (negate) conditional type: xor (^) with 0x1 */</a>
+<a name="1145"><span class="lineNum">    1145 </span>            : </a>
+<a name="1146"><span class="lineNum">    1146 </span>            : /* Integer comparison types. */</a>
+<a name="1147"><span class="lineNum">    1147 </span>            : #define SLJIT_EQUAL                     0</a>
+<a name="1148"><span class="lineNum">    1148 </span>            : #define SLJIT_ZERO                      SLJIT_EQUAL</a>
+<a name="1149"><span class="lineNum">    1149 </span>            : #define SLJIT_NOT_EQUAL                 1</a>
+<a name="1150"><span class="lineNum">    1150 </span>            : #define SLJIT_NOT_ZERO                  SLJIT_NOT_EQUAL</a>
+<a name="1151"><span class="lineNum">    1151 </span>            : </a>
+<a name="1152"><span class="lineNum">    1152 </span>            : #define SLJIT_LESS                      2</a>
+<a name="1153"><span class="lineNum">    1153 </span>            : #define SLJIT_SET_LESS                  SLJIT_SET(SLJIT_LESS)</a>
+<a name="1154"><span class="lineNum">    1154 </span>            : #define SLJIT_GREATER_EQUAL             3</a>
+<a name="1155"><span class="lineNum">    1155 </span>            : #define SLJIT_SET_GREATER_EQUAL         SLJIT_SET(SLJIT_GREATER_EQUAL)</a>
+<a name="1156"><span class="lineNum">    1156 </span>            : #define SLJIT_GREATER                   4</a>
+<a name="1157"><span class="lineNum">    1157 </span>            : #define SLJIT_SET_GREATER               SLJIT_SET(SLJIT_GREATER)</a>
+<a name="1158"><span class="lineNum">    1158 </span>            : #define SLJIT_LESS_EQUAL                5</a>
+<a name="1159"><span class="lineNum">    1159 </span>            : #define SLJIT_SET_LESS_EQUAL            SLJIT_SET(SLJIT_LESS_EQUAL)</a>
+<a name="1160"><span class="lineNum">    1160 </span>            : #define SLJIT_SIG_LESS                  6</a>
+<a name="1161"><span class="lineNum">    1161 </span>            : #define SLJIT_SET_SIG_LESS              SLJIT_SET(SLJIT_SIG_LESS)</a>
+<a name="1162"><span class="lineNum">    1162 </span>            : #define SLJIT_SIG_GREATER_EQUAL         7</a>
+<a name="1163"><span class="lineNum">    1163 </span>            : #define SLJIT_SET_SIG_GREATER_EQUAL     SLJIT_SET(SLJIT_SIG_GREATER_EQUAL)</a>
+<a name="1164"><span class="lineNum">    1164 </span>            : #define SLJIT_SIG_GREATER               8</a>
+<a name="1165"><span class="lineNum">    1165 </span>            : #define SLJIT_SET_SIG_GREATER           SLJIT_SET(SLJIT_SIG_GREATER)</a>
+<a name="1166"><span class="lineNum">    1166 </span>            : #define SLJIT_SIG_LESS_EQUAL            9</a>
+<a name="1167"><span class="lineNum">    1167 </span>            : #define SLJIT_SET_SIG_LESS_EQUAL        SLJIT_SET(SLJIT_SIG_LESS_EQUAL)</a>
+<a name="1168"><span class="lineNum">    1168 </span>            : </a>
+<a name="1169"><span class="lineNum">    1169 </span>            : #define SLJIT_OVERFLOW                  10</a>
+<a name="1170"><span class="lineNum">    1170 </span>            : #define SLJIT_SET_OVERFLOW              SLJIT_SET(SLJIT_OVERFLOW)</a>
+<a name="1171"><span class="lineNum">    1171 </span>            : #define SLJIT_NOT_OVERFLOW              11</a>
+<a name="1172"><span class="lineNum">    1172 </span>            : </a>
+<a name="1173"><span class="lineNum">    1173 </span>            : /* There is no SLJIT_CARRY or SLJIT_NOT_CARRY. */</a>
+<a name="1174"><span class="lineNum">    1174 </span>            : #define SLJIT_SET_CARRY                 SLJIT_SET(12)</a>
+<a name="1175"><span class="lineNum">    1175 </span>            : </a>
+<a name="1176"><span class="lineNum">    1176 </span>            : /* Floating point comparison types. */</a>
+<a name="1177"><span class="lineNum">    1177 </span>            : #define SLJIT_EQUAL_F64                 14</a>
+<a name="1178"><span class="lineNum">    1178 </span>            : #define SLJIT_EQUAL_F32                 (SLJIT_EQUAL_F64 | SLJIT_F32_OP)</a>
+<a name="1179"><span class="lineNum">    1179 </span>            : #define SLJIT_SET_EQUAL_F               SLJIT_SET(SLJIT_EQUAL_F64)</a>
+<a name="1180"><span class="lineNum">    1180 </span>            : #define SLJIT_NOT_EQUAL_F64             15</a>
+<a name="1181"><span class="lineNum">    1181 </span>            : #define SLJIT_NOT_EQUAL_F32             (SLJIT_NOT_EQUAL_F64 | SLJIT_F32_OP)</a>
+<a name="1182"><span class="lineNum">    1182 </span>            : #define SLJIT_SET_NOT_EQUAL_F           SLJIT_SET(SLJIT_NOT_EQUAL_F64)</a>
+<a name="1183"><span class="lineNum">    1183 </span>            : #define SLJIT_LESS_F64                  16</a>
+<a name="1184"><span class="lineNum">    1184 </span>            : #define SLJIT_LESS_F32                  (SLJIT_LESS_F64 | SLJIT_F32_OP)</a>
+<a name="1185"><span class="lineNum">    1185 </span>            : #define SLJIT_SET_LESS_F                SLJIT_SET(SLJIT_LESS_F64)</a>
+<a name="1186"><span class="lineNum">    1186 </span>            : #define SLJIT_GREATER_EQUAL_F64         17</a>
+<a name="1187"><span class="lineNum">    1187 </span>            : #define SLJIT_GREATER_EQUAL_F32         (SLJIT_GREATER_EQUAL_F64 | SLJIT_F32_OP)</a>
+<a name="1188"><span class="lineNum">    1188 </span>            : #define SLJIT_SET_GREATER_EQUAL_F       SLJIT_SET(SLJIT_GREATER_EQUAL_F64)</a>
+<a name="1189"><span class="lineNum">    1189 </span>            : #define SLJIT_GREATER_F64               18</a>
+<a name="1190"><span class="lineNum">    1190 </span>            : #define SLJIT_GREATER_F32               (SLJIT_GREATER_F64 | SLJIT_F32_OP)</a>
+<a name="1191"><span class="lineNum">    1191 </span>            : #define SLJIT_SET_GREATER_F             SLJIT_SET(SLJIT_GREATER_F64)</a>
+<a name="1192"><span class="lineNum">    1192 </span>            : #define SLJIT_LESS_EQUAL_F64            19</a>
+<a name="1193"><span class="lineNum">    1193 </span>            : #define SLJIT_LESS_EQUAL_F32            (SLJIT_LESS_EQUAL_F64 | SLJIT_F32_OP)</a>
+<a name="1194"><span class="lineNum">    1194 </span>            : #define SLJIT_SET_LESS_EQUAL_F          SLJIT_SET(SLJIT_LESS_EQUAL_F64)</a>
+<a name="1195"><span class="lineNum">    1195 </span>            : #define SLJIT_UNORDERED_F64             20</a>
+<a name="1196"><span class="lineNum">    1196 </span>            : #define SLJIT_UNORDERED_F32             (SLJIT_UNORDERED_F64 | SLJIT_F32_OP)</a>
+<a name="1197"><span class="lineNum">    1197 </span>            : #define SLJIT_SET_UNORDERED_F           SLJIT_SET(SLJIT_UNORDERED_F64)</a>
+<a name="1198"><span class="lineNum">    1198 </span>            : #define SLJIT_ORDERED_F64               21</a>
+<a name="1199"><span class="lineNum">    1199 </span>            : #define SLJIT_ORDERED_F32               (SLJIT_ORDERED_F64 | SLJIT_F32_OP)</a>
+<a name="1200"><span class="lineNum">    1200 </span>            : #define SLJIT_SET_ORDERED_F             SLJIT_SET(SLJIT_ORDERED_F64)</a>
+<a name="1201"><span class="lineNum">    1201 </span>            : </a>
+<a name="1202"><span class="lineNum">    1202 </span>            : /* Unconditional jump types. */</a>
+<a name="1203"><span class="lineNum">    1203 </span>            : #define SLJIT_JUMP                      22</a>
+<a name="1204"><span class="lineNum">    1204 </span>            :         /* Fast calling method. See sljit_emit_fast_enter / SLJIT_FAST_RETURN. */</a>
+<a name="1205"><span class="lineNum">    1205 </span>            : #define SLJIT_FAST_CALL                 23</a>
+<a name="1206"><span class="lineNum">    1206 </span>            :         /* Called function must be declared with the SLJIT_FUNC attribute. */</a>
+<a name="1207"><span class="lineNum">    1207 </span>            : #define SLJIT_CALL                      24</a>
+<a name="1208"><span class="lineNum">    1208 </span>            :         /* Called function must be declared with cdecl attribute.</a>
+<a name="1209"><span class="lineNum">    1209 </span>            :            This is the default attribute for C functions. */</a>
+<a name="1210"><span class="lineNum">    1210 </span>            : #define SLJIT_CALL_CDECL                25</a>
+<a name="1211"><span class="lineNum">    1211 </span>            : </a>
+<a name="1212"><span class="lineNum">    1212 </span>            : /* The target can be changed during runtime (see: sljit_set_jump_addr). */</a>
+<a name="1213"><span class="lineNum">    1213 </span>            : #define SLJIT_REWRITABLE_JUMP           0x1000</a>
+<a name="1214"><span class="lineNum">    1214 </span>            : </a>
+<a name="1215"><span class="lineNum">    1215 </span>            : /* Emit a jump instruction. The destination is not set, only the type of the jump.</a>
+<a name="1216"><span class="lineNum">    1216 </span>            :     type must be between SLJIT_EQUAL and SLJIT_FAST_CALL</a>
+<a name="1217"><span class="lineNum">    1217 </span>            :     type can be combined (or'ed) with SLJIT_REWRITABLE_JUMP</a>
+<a name="1218"><span class="lineNum">    1218 </span>            : </a>
+<a name="1219"><span class="lineNum">    1219 </span>            :    Flags: does not modify flags. */</a>
+<a name="1220"><span class="lineNum">    1220 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_jump* sljit_emit_jump(struct sljit_compiler *compiler, sljit_s32 type);</a>
+<a name="1221"><span class="lineNum">    1221 </span>            : </a>
+<a name="1222"><span class="lineNum">    1222 </span>            : /* Emit a C compiler (ABI) compatible function call.</a>
+<a name="1223"><span class="lineNum">    1223 </span>            :     type must be SLJIT_CALL or SLJIT_CALL_CDECL</a>
+<a name="1224"><span class="lineNum">    1224 </span>            :     type can be combined (or'ed) with SLJIT_REWRITABLE_JUMP</a>
+<a name="1225"><span class="lineNum">    1225 </span>            :     arg_types is the combination of SLJIT_RET / SLJIT_ARGx (SLJIT_DEF_RET / SLJIT_DEF_ARGx) macros</a>
+<a name="1226"><span class="lineNum">    1226 </span>            : </a>
+<a name="1227"><span class="lineNum">    1227 </span>            :    Flags: destroy all flags. */</a>
+<a name="1228"><span class="lineNum">    1228 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_jump* sljit_emit_call(struct sljit_compiler *compiler, sljit_s32 type, sljit_s32 arg_types);</a>
+<a name="1229"><span class="lineNum">    1229 </span>            : </a>
+<a name="1230"><span class="lineNum">    1230 </span>            : /* Basic arithmetic comparison. In most architectures it is implemented as</a>
+<a name="1231"><span class="lineNum">    1231 </span>            :    an SLJIT_SUB operation (with SLJIT_UNUSED destination and setting</a>
+<a name="1232"><span class="lineNum">    1232 </span>            :    appropriate flags) followed by a sljit_emit_jump. However some</a>
+<a name="1233"><span class="lineNum">    1233 </span>            :    architectures (i.e: ARM64 or MIPS) may employ special optimizations here.</a>
+<a name="1234"><span class="lineNum">    1234 </span>            :    It is suggested to use this comparison form when appropriate.</a>
+<a name="1235"><span class="lineNum">    1235 </span>            :     type must be between SLJIT_EQUAL and SLJIT_I_SIG_LESS_EQUAL</a>
+<a name="1236"><span class="lineNum">    1236 </span>            :     type can be combined (or'ed) with SLJIT_REWRITABLE_JUMP</a>
+<a name="1237"><span class="lineNum">    1237 </span>            : </a>
+<a name="1238"><span class="lineNum">    1238 </span>            :    Flags: may destroy flags. */</a>
+<a name="1239"><span class="lineNum">    1239 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_jump* sljit_emit_cmp(struct sljit_compiler *compiler, sljit_s32 type,</a>
+<a name="1240"><span class="lineNum">    1240 </span>            :         sljit_s32 src1, sljit_sw src1w,</a>
+<a name="1241"><span class="lineNum">    1241 </span>            :         sljit_s32 src2, sljit_sw src2w);</a>
+<a name="1242"><span class="lineNum">    1242 </span>            : </a>
+<a name="1243"><span class="lineNum">    1243 </span>            : /* Basic floating point comparison. In most architectures it is implemented as</a>
+<a name="1244"><span class="lineNum">    1244 </span>            :    an SLJIT_FCMP operation (setting appropriate flags) followed by a</a>
+<a name="1245"><span class="lineNum">    1245 </span>            :    sljit_emit_jump. However some architectures (i.e: MIPS) may employ</a>
+<a name="1246"><span class="lineNum">    1246 </span>            :    special optimizations here. It is suggested to use this comparison form</a>
+<a name="1247"><span class="lineNum">    1247 </span>            :    when appropriate.</a>
+<a name="1248"><span class="lineNum">    1248 </span>            :     type must be between SLJIT_EQUAL_F64 and SLJIT_ORDERED_F32</a>
+<a name="1249"><span class="lineNum">    1249 </span>            :     type can be combined (or'ed) with SLJIT_REWRITABLE_JUMP</a>
+<a name="1250"><span class="lineNum">    1250 </span>            :    Flags: destroy flags.</a>
+<a name="1251"><span class="lineNum">    1251 </span>            :    Note: if either operand is NaN, the behaviour is undefined for</a>
+<a name="1252"><span class="lineNum">    1252 </span>            :          types up to SLJIT_S_LESS_EQUAL. */</a>
+<a name="1253"><span class="lineNum">    1253 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_jump* sljit_emit_fcmp(struct sljit_compiler *compiler, sljit_s32 type,</a>
+<a name="1254"><span class="lineNum">    1254 </span>            :         sljit_s32 src1, sljit_sw src1w,</a>
+<a name="1255"><span class="lineNum">    1255 </span>            :         sljit_s32 src2, sljit_sw src2w);</a>
+<a name="1256"><span class="lineNum">    1256 </span>            : </a>
+<a name="1257"><span class="lineNum">    1257 </span>            : /* Set the destination of the jump to this label. */</a>
+<a name="1258"><span class="lineNum">    1258 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_label(struct sljit_jump *jump, struct sljit_label* label);</a>
+<a name="1259"><span class="lineNum">    1259 </span>            : /* Set the destination address of the jump to this label. */</a>
+<a name="1260"><span class="lineNum">    1260 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_target(struct sljit_jump *jump, sljit_uw target);</a>
+<a name="1261"><span class="lineNum">    1261 </span>            : </a>
+<a name="1262"><span class="lineNum">    1262 </span>            : /* Emit an indirect jump or fast call.</a>
+<a name="1263"><span class="lineNum">    1263 </span>            :    Direct form: set src to SLJIT_IMM() and srcw to the address</a>
+<a name="1264"><span class="lineNum">    1264 </span>            :    Indirect form: any other valid addressing mode</a>
+<a name="1265"><span class="lineNum">    1265 </span>            :     type must be between SLJIT_JUMP and SLJIT_FAST_CALL</a>
+<a name="1266"><span class="lineNum">    1266 </span>            : </a>
+<a name="1267"><span class="lineNum">    1267 </span>            :    Flags: does not modify flags. */</a>
+<a name="1268"><span class="lineNum">    1268 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_ijump(struct sljit_compiler *compiler, sljit_s32 type, sljit_s32 src, sljit_sw srcw);</a>
+<a name="1269"><span class="lineNum">    1269 </span>            : </a>
+<a name="1270"><span class="lineNum">    1270 </span>            : /* Emit a C compiler (ABI) compatible function call.</a>
+<a name="1271"><span class="lineNum">    1271 </span>            :    Direct form: set src to SLJIT_IMM() and srcw to the address</a>
+<a name="1272"><span class="lineNum">    1272 </span>            :    Indirect form: any other valid addressing mode</a>
+<a name="1273"><span class="lineNum">    1273 </span>            :     type must be SLJIT_CALL or SLJIT_CALL_CDECL</a>
+<a name="1274"><span class="lineNum">    1274 </span>            :     arg_types is the combination of SLJIT_RET / SLJIT_ARGx (SLJIT_DEF_RET / SLJIT_DEF_ARGx) macros</a>
+<a name="1275"><span class="lineNum">    1275 </span>            : </a>
+<a name="1276"><span class="lineNum">    1276 </span>            :    Flags: destroy all flags. */</a>
+<a name="1277"><span class="lineNum">    1277 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_icall(struct sljit_compiler *compiler, sljit_s32 type, sljit_s32 arg_types, sljit_s32 src, sljit_sw srcw);</a>
+<a name="1278"><span class="lineNum">    1278 </span>            : </a>
+<a name="1279"><span class="lineNum">    1279 </span>            : /* Perform the operation using the conditional flags as the second argument.</a>
+<a name="1280"><span class="lineNum">    1280 </span>            :    Type must always be between SLJIT_EQUAL and SLJIT_ORDERED_F64. The value</a>
+<a name="1281"><span class="lineNum">    1281 </span>            :    represented by the type is 1, if the condition represented by the type</a>
+<a name="1282"><span class="lineNum">    1282 </span>            :    is fulfilled, and 0 otherwise.</a>
+<a name="1283"><span class="lineNum">    1283 </span>            : </a>
+<a name="1284"><span class="lineNum">    1284 </span>            :    If op == SLJIT_MOV, SLJIT_MOV32:</a>
+<a name="1285"><span class="lineNum">    1285 </span>            :      Set dst to the value represented by the type (0 or 1).</a>
+<a name="1286"><span class="lineNum">    1286 </span>            :      Flags: - (does not modify flags)</a>
+<a name="1287"><span class="lineNum">    1287 </span>            :    If op == SLJIT_OR, op == SLJIT_AND, op == SLJIT_XOR</a>
+<a name="1288"><span class="lineNum">    1288 </span>            :      Performs the binary operation using dst as the first, and the value</a>
+<a name="1289"><span class="lineNum">    1289 </span>            :      represented by type as the second argument. Result is written into dst.</a>
+<a name="1290"><span class="lineNum">    1290 </span>            :      Flags: Z (may destroy flags) */</a>
+<a name="1291"><span class="lineNum">    1291 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op_flags(struct sljit_compiler *compiler, sljit_s32 op,</a>
+<a name="1292"><span class="lineNum">    1292 </span>            :         sljit_s32 dst, sljit_sw dstw,</a>
+<a name="1293"><span class="lineNum">    1293 </span>            :         sljit_s32 type);</a>
+<a name="1294"><span class="lineNum">    1294 </span>            : </a>
+<a name="1295"><span class="lineNum">    1295 </span>            : /* Emit a conditional mov instruction which moves source to destination,</a>
+<a name="1296"><span class="lineNum">    1296 </span>            :    if the condition is satisfied. Unlike other arithmetic operations this</a>
+<a name="1297"><span class="lineNum">    1297 </span>            :    instruction does not support memory access.</a>
+<a name="1298"><span class="lineNum">    1298 </span>            : </a>
+<a name="1299"><span class="lineNum">    1299 </span>            :    type must be between SLJIT_EQUAL and SLJIT_ORDERED_F64</a>
+<a name="1300"><span class="lineNum">    1300 </span>            :    dst_reg must be a valid register and it can be combined</a>
+<a name="1301"><span class="lineNum">    1301 </span>            :       with SLJIT_I32_OP to perform a 32 bit arithmetic operation</a>
+<a name="1302"><span class="lineNum">    1302 </span>            :    src must be register or immediate (SLJIT_IMM)</a>
+<a name="1303"><span class="lineNum">    1303 </span>            : </a>
+<a name="1304"><span class="lineNum">    1304 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1305"><span class="lineNum">    1305 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_cmov(struct sljit_compiler *compiler, sljit_s32 type,</a>
+<a name="1306"><span class="lineNum">    1306 </span>            :         sljit_s32 dst_reg,</a>
+<a name="1307"><span class="lineNum">    1307 </span>            :         sljit_s32 src, sljit_sw srcw);</a>
+<a name="1308"><span class="lineNum">    1308 </span>            : </a>
+<a name="1309"><span class="lineNum">    1309 </span>            : /* The following flags are used by sljit_emit_mem() and sljit_emit_fmem(). */</a>
+<a name="1310"><span class="lineNum">    1310 </span>            : </a>
+<a name="1311"><span class="lineNum">    1311 </span>            : /* When SLJIT_MEM_SUPP is passed, no instructions are emitted.</a>
+<a name="1312"><span class="lineNum">    1312 </span>            :    Instead the function returns with SLJIT_SUCCESS if the instruction</a>
+<a name="1313"><span class="lineNum">    1313 </span>            :    form is supported and SLJIT_ERR_UNSUPPORTED otherwise. This flag</a>
+<a name="1314"><span class="lineNum">    1314 </span>            :    allows runtime checking of available instruction forms. */</a>
+<a name="1315"><span class="lineNum">    1315 </span>            : #define SLJIT_MEM_SUPP          0x0200</a>
+<a name="1316"><span class="lineNum">    1316 </span>            : /* Memory load operation. This is the default. */</a>
+<a name="1317"><span class="lineNum">    1317 </span>            : #define SLJIT_MEM_LOAD          0x0000</a>
+<a name="1318"><span class="lineNum">    1318 </span>            : /* Memory store operation. */</a>
+<a name="1319"><span class="lineNum">    1319 </span>            : #define SLJIT_MEM_STORE         0x0400</a>
+<a name="1320"><span class="lineNum">    1320 </span>            : /* Base register is updated before the memory access. */</a>
+<a name="1321"><span class="lineNum">    1321 </span>            : #define SLJIT_MEM_PRE           0x0800</a>
+<a name="1322"><span class="lineNum">    1322 </span>            : /* Base register is updated after the memory access. */</a>
+<a name="1323"><span class="lineNum">    1323 </span>            : #define SLJIT_MEM_POST          0x1000</a>
+<a name="1324"><span class="lineNum">    1324 </span>            : </a>
+<a name="1325"><span class="lineNum">    1325 </span>            : /* Emit a single memory load or store with update instruction. When the</a>
+<a name="1326"><span class="lineNum">    1326 </span>            :    requested instruction form is not supported by the CPU, it returns</a>
+<a name="1327"><span class="lineNum">    1327 </span>            :    with SLJIT_ERR_UNSUPPORTED instead of emulating the instruction. This</a>
+<a name="1328"><span class="lineNum">    1328 </span>            :    allows specializing tight loops based on the supported instruction</a>
+<a name="1329"><span class="lineNum">    1329 </span>            :    forms (see SLJIT_MEM_SUPP flag).</a>
+<a name="1330"><span class="lineNum">    1330 </span>            : </a>
+<a name="1331"><span class="lineNum">    1331 </span>            :    type must be between SLJIT_MOV and SLJIT_MOV_P and can be</a>
+<a name="1332"><span class="lineNum">    1332 </span>            :      combined with SLJIT_MEM_* flags. Either SLJIT_MEM_PRE</a>
+<a name="1333"><span class="lineNum">    1333 </span>            :      or SLJIT_MEM_POST must be specified.</a>
+<a name="1334"><span class="lineNum">    1334 </span>            :    reg is the source or destination register, and must be</a>
+<a name="1335"><span class="lineNum">    1335 </span>            :      different from the base register of the mem operand</a>
+<a name="1336"><span class="lineNum">    1336 </span>            :    mem must be a SLJIT_MEM1() or SLJIT_MEM2() operand</a>
+<a name="1337"><span class="lineNum">    1337 </span>            : </a>
+<a name="1338"><span class="lineNum">    1338 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1339"><span class="lineNum">    1339 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_mem(struct sljit_compiler *compiler, sljit_s32 type,</a>
+<a name="1340"><span class="lineNum">    1340 </span>            :         sljit_s32 reg,</a>
+<a name="1341"><span class="lineNum">    1341 </span>            :         sljit_s32 mem, sljit_sw memw);</a>
+<a name="1342"><span class="lineNum">    1342 </span>            : </a>
+<a name="1343"><span class="lineNum">    1343 </span>            : /* Same as sljit_emit_mem except the followings:</a>
+<a name="1344"><span class="lineNum">    1344 </span>            : </a>
+<a name="1345"><span class="lineNum">    1345 </span>            :    type must be SLJIT_MOV_F64 or SLJIT_MOV_F32 and can be</a>
+<a name="1346"><span class="lineNum">    1346 </span>            :      combined with SLJIT_MEM_* flags. Either SLJIT_MEM_PRE</a>
+<a name="1347"><span class="lineNum">    1347 </span>            :      or SLJIT_MEM_POST must be specified.</a>
+<a name="1348"><span class="lineNum">    1348 </span>            :    freg is the source or destination floating point register */</a>
+<a name="1349"><span class="lineNum">    1349 </span>            : </a>
+<a name="1350"><span class="lineNum">    1350 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fmem(struct sljit_compiler *compiler, sljit_s32 type,</a>
+<a name="1351"><span class="lineNum">    1351 </span>            :         sljit_s32 freg,</a>
+<a name="1352"><span class="lineNum">    1352 </span>            :         sljit_s32 mem, sljit_sw memw);</a>
+<a name="1353"><span class="lineNum">    1353 </span>            : </a>
+<a name="1354"><span class="lineNum">    1354 </span>            : /* Copies the base address of SLJIT_SP + offset to dst. The offset can be</a>
+<a name="1355"><span class="lineNum">    1355 </span>            :    anything to negate the effect of relative addressing. For example if an</a>
+<a name="1356"><span class="lineNum">    1356 </span>            :    array of sljit_sw values is stored on the stack from offset 0x40, and R0</a>
+<a name="1357"><span class="lineNum">    1357 </span>            :    contains the offset of an array item plus 0x120, this item can be</a>
+<a name="1358"><span class="lineNum">    1358 </span>            :    overwritten by two SLJIT instructions:</a>
+<a name="1359"><span class="lineNum">    1359 </span>            : </a>
+<a name="1360"><span class="lineNum">    1360 </span>            :    sljit_get_local_base(compiler, SLJIT_R1, 0, 0x40 - 0x120);</a>
+<a name="1361"><span class="lineNum">    1361 </span>            :    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_MEM2(SLJIT_R1, SLJIT_R0), 0, SLJIT_IMM, 0x5);</a>
+<a name="1362"><span class="lineNum">    1362 </span>            : </a>
+<a name="1363"><span class="lineNum">    1363 </span>            :    Flags: - (may destroy flags) */</a>
+<a name="1364"><span class="lineNum">    1364 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_get_local_base(struct sljit_compiler *compiler, sljit_s32 dst, sljit_sw dstw, sljit_sw offset);</a>
+<a name="1365"><span class="lineNum">    1365 </span>            : </a>
+<a name="1366"><span class="lineNum">    1366 </span>            : /* Store a value that can be changed runtime (see: sljit_get_const_addr / sljit_set_const)</a>
+<a name="1367"><span class="lineNum">    1367 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1368"><span class="lineNum">    1368 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_const* sljit_emit_const(struct sljit_compiler *compiler, sljit_s32 dst, sljit_sw dstw, sljit_sw init_value);</a>
+<a name="1369"><span class="lineNum">    1369 </span>            : </a>
+<a name="1370"><span class="lineNum">    1370 </span>            : /* Store the value of a label (see: sljit_set_put_label)</a>
+<a name="1371"><span class="lineNum">    1371 </span>            :    Flags: - (does not modify flags) */</a>
+<a name="1372"><span class="lineNum">    1372 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_put_label* sljit_emit_put_label(struct sljit_compiler *compiler, sljit_s32 dst, sljit_sw dstw);</a>
+<a name="1373"><span class="lineNum">    1373 </span>            : </a>
+<a name="1374"><span class="lineNum">    1374 </span>            : /* Set the value stored by put_label to this label. */</a>
+<a name="1375"><span class="lineNum">    1375 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_put_label(struct sljit_put_label *put_label, struct sljit_label *label);</a>
+<a name="1376"><span class="lineNum">    1376 </span>            : </a>
+<a name="1377"><span class="lineNum">    1377 </span>            : /* After the code generation the address for label, jump and const instructions</a>
+<a name="1378"><span class="lineNum">    1378 </span>            :    are computed. Since these structures are freed by sljit_free_compiler, the</a>
+<a name="1379"><span class="lineNum">    1379 </span>            :    addresses must be preserved by the user program elsewere. */</a>
+<a name="1380"><span class="lineNum">    1380 </span>            : static SLJIT_INLINE sljit_uw sljit_get_label_addr(struct sljit_label *label) { return label-&gt;addr; }</a>
+<a name="1381"><span class="lineNum">    1381 </span>            : static SLJIT_INLINE sljit_uw sljit_get_jump_addr(struct sljit_jump *jump) { return jump-&gt;addr; }</a>
+<a name="1382"><span class="lineNum">    1382 </span>            : static SLJIT_INLINE sljit_uw sljit_get_const_addr(struct sljit_const *const_) { return const_-&gt;addr; }</a>
+<a name="1383"><span class="lineNum">    1383 </span>            : </a>
+<a name="1384"><span class="lineNum">    1384 </span>            : /* Only the address and executable offset are required to perform dynamic</a>
+<a name="1385"><span class="lineNum">    1385 </span>            :    code modifications. See sljit_get_executable_offset function. */</a>
+<a name="1386"><span class="lineNum">    1386 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_jump_addr(sljit_uw addr, sljit_uw new_target, sljit_sw executable_offset);</a>
+<a name="1387"><span class="lineNum">    1387 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_const(sljit_uw addr, sljit_sw new_constant, sljit_sw executable_offset);</a>
+<a name="1388"><span class="lineNum">    1388 </span>            : </a>
+<a name="1389"><span class="lineNum">    1389 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="1390"><span class="lineNum">    1390 </span>            : /*  Miscellaneous utility functions                                      */</a>
+<a name="1391"><span class="lineNum">    1391 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="1392"><span class="lineNum">    1392 </span>            : </a>
+<a name="1393"><span class="lineNum">    1393 </span>            : #define SLJIT_MAJOR_VERSION     0</a>
+<a name="1394"><span class="lineNum">    1394 </span>            : #define SLJIT_MINOR_VERSION     94</a>
+<a name="1395"><span class="lineNum">    1395 </span>            : </a>
+<a name="1396"><span class="lineNum">    1396 </span>            : /* Get the human readable name of the platform. Can be useful on platforms</a>
+<a name="1397"><span class="lineNum">    1397 </span>            :    like ARM, where ARM and Thumb2 functions can be mixed, and</a>
+<a name="1398"><span class="lineNum">    1398 </span>            :    it is useful to know the type of the code generator. */</a>
+<a name="1399"><span class="lineNum">    1399 </span>            : SLJIT_API_FUNC_ATTRIBUTE const char* sljit_get_platform_name(void);</a>
+<a name="1400"><span class="lineNum">    1400 </span>            : </a>
+<a name="1401"><span class="lineNum">    1401 </span>            : /* Portable helper function to get an offset of a member. */</a>
+<a name="1402"><span class="lineNum">    1402 </span>            : #define SLJIT_OFFSETOF(base, member) ((sljit_sw)(&amp;((base*)0x10)-&gt;member) - 0x10)</a>
+<a name="1403"><span class="lineNum">    1403 </span>            : </a>
+<a name="1404"><span class="lineNum">    1404 </span>            : #if (defined SLJIT_UTIL_STACK &amp;&amp; SLJIT_UTIL_STACK)</a>
+<a name="1405"><span class="lineNum">    1405 </span>            : </a>
+<a name="1406"><span class="lineNum">    1406 </span>            : /* The sljit_stack structure and its manipulation functions provides</a>
+<a name="1407"><span class="lineNum">    1407 </span>            :    an implementation for a top-down stack. The stack top is stored</a>
+<a name="1408"><span class="lineNum">    1408 </span>            :    in the end field of the sljit_stack structure and the stack goes</a>
+<a name="1409"><span class="lineNum">    1409 </span>            :    down to the min_start field, so the memory region reserved for</a>
+<a name="1410"><span class="lineNum">    1410 </span>            :    this stack is between min_start (inclusive) and end (exclusive)</a>
+<a name="1411"><span class="lineNum">    1411 </span>            :    fields. However the application can only use the region between</a>
+<a name="1412"><span class="lineNum">    1412 </span>            :    start (inclusive) and end (exclusive) fields. The sljit_stack_resize</a>
+<a name="1413"><span class="lineNum">    1413 </span>            :    function can be used to extend this region up to min_start.</a>
+<a name="1414"><span class="lineNum">    1414 </span>            : </a>
+<a name="1415"><span class="lineNum">    1415 </span>            :    This feature uses the &quot;address space reserve&quot; feature of modern</a>
+<a name="1416"><span class="lineNum">    1416 </span>            :    operating systems. Instead of allocating a large memory block</a>
+<a name="1417"><span class="lineNum">    1417 </span>            :    applications can allocate a small memory region and extend it</a>
+<a name="1418"><span class="lineNum">    1418 </span>            :    later without moving the content of the memory area. Therefore</a>
+<a name="1419"><span class="lineNum">    1419 </span>            :    after a successful resize by sljit_stack_resize all pointers into</a>
+<a name="1420"><span class="lineNum">    1420 </span>            :    this region are still valid.</a>
+<a name="1421"><span class="lineNum">    1421 </span>            : </a>
+<a name="1422"><span class="lineNum">    1422 </span>            :    Note:</a>
+<a name="1423"><span class="lineNum">    1423 </span>            :      this structure may not be supported by all operating systems.</a>
+<a name="1424"><span class="lineNum">    1424 </span>            :      end and max_limit fields are aligned to PAGE_SIZE bytes (usually</a>
+<a name="1425"><span class="lineNum">    1425 </span>            :          4 Kbyte or more).</a>
+<a name="1426"><span class="lineNum">    1426 </span>            :      stack should grow in larger steps, e.g. 4Kbyte, 16Kbyte or more. */</a>
+<a name="1427"><span class="lineNum">    1427 </span>            : </a>
+<a name="1428"><span class="lineNum">    1428 </span>            : struct sljit_stack {</a>
+<a name="1429"><span class="lineNum">    1429 </span>            :         /* User data, anything can be stored here.</a>
+<a name="1430"><span class="lineNum">    1430 </span>            :            Initialized to the same value as the end field. */</a>
+<a name="1431"><span class="lineNum">    1431 </span>            :         sljit_u8 *top;</a>
+<a name="1432"><span class="lineNum">    1432 </span>            : /* These members are read only. */</a>
+<a name="1433"><span class="lineNum">    1433 </span>            :         /* End address of the stack */</a>
+<a name="1434"><span class="lineNum">    1434 </span>            :         sljit_u8 *end;</a>
+<a name="1435"><span class="lineNum">    1435 </span>            :         /* Current start address of the stack. */</a>
+<a name="1436"><span class="lineNum">    1436 </span>            :         sljit_u8 *start;</a>
+<a name="1437"><span class="lineNum">    1437 </span>            :         /* Lowest start address of the stack. */</a>
+<a name="1438"><span class="lineNum">    1438 </span>            :         sljit_u8 *min_start;</a>
+<a name="1439"><span class="lineNum">    1439 </span>            : };</a>
+<a name="1440"><span class="lineNum">    1440 </span>            : </a>
+<a name="1441"><span class="lineNum">    1441 </span>            : /* Allocates a new stack. Returns NULL if unsuccessful.</a>
+<a name="1442"><span class="lineNum">    1442 </span>            :    Note: see sljit_create_compiler for the explanation of allocator_data. */</a>
+<a name="1443"><span class="lineNum">    1443 </span>            : SLJIT_API_FUNC_ATTRIBUTE struct sljit_stack* SLJIT_FUNC sljit_allocate_stack(sljit_uw start_size, sljit_uw max_size, void *allocator_data);</a>
+<a name="1444"><span class="lineNum">    1444 </span>            : SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_free_stack(struct sljit_stack *stack, void *allocator_data);</a>
+<a name="1445"><span class="lineNum">    1445 </span>            : </a>
+<a name="1446"><span class="lineNum">    1446 </span>            : /* Can be used to increase (extend) or decrease (shrink) the stack</a>
+<a name="1447"><span class="lineNum">    1447 </span>            :    memory area. Returns with new_start if successful and NULL otherwise.</a>
+<a name="1448"><span class="lineNum">    1448 </span>            :    It always fails if new_start is less than min_start or greater or equal</a>
+<a name="1449"><span class="lineNum">    1449 </span>            :    than end fields. The fields of the stack are not changed if the returned</a>
+<a name="1450"><span class="lineNum">    1450 </span>            :    value is NULL (the current memory content is never lost). */</a>
+<a name="1451"><span class="lineNum">    1451 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_u8 *SLJIT_FUNC sljit_stack_resize(struct sljit_stack *stack, sljit_u8 *new_start);</a>
+<a name="1452"><span class="lineNum">    1452 </span>            : </a>
+<a name="1453"><span class="lineNum">    1453 </span>            : #endif /* (defined SLJIT_UTIL_STACK &amp;&amp; SLJIT_UTIL_STACK) */</a>
+<a name="1454"><span class="lineNum">    1454 </span>            : </a>
+<a name="1455"><span class="lineNum">    1455 </span>            : #if !(defined SLJIT_INDIRECT_CALL &amp;&amp; SLJIT_INDIRECT_CALL)</a>
+<a name="1456"><span class="lineNum">    1456 </span>            : </a>
+<a name="1457"><span class="lineNum">    1457 </span>            : /* Get the entry address of a given function. */</a>
+<a name="1458"><span class="lineNum">    1458 </span>            : #define SLJIT_FUNC_OFFSET(func_name)    ((sljit_sw)func_name)</a>
+<a name="1459"><span class="lineNum">    1459 </span>            : </a>
+<a name="1460"><span class="lineNum">    1460 </span>            : #else /* !(defined SLJIT_INDIRECT_CALL &amp;&amp; SLJIT_INDIRECT_CALL) */</a>
+<a name="1461"><span class="lineNum">    1461 </span>            : </a>
+<a name="1462"><span class="lineNum">    1462 </span>            : /* All JIT related code should be placed in the same context (library, binary, etc.). */</a>
+<a name="1463"><span class="lineNum">    1463 </span>            : </a>
+<a name="1464"><span class="lineNum">    1464 </span>            : #define SLJIT_FUNC_OFFSET(func_name)    (*(sljit_sw*)(void*)func_name)</a>
+<a name="1465"><span class="lineNum">    1465 </span>            : </a>
+<a name="1466"><span class="lineNum">    1466 </span>            : /* For powerpc64, the function pointers point to a context descriptor. */</a>
+<a name="1467"><span class="lineNum">    1467 </span>            : struct sljit_function_context {</a>
+<a name="1468"><span class="lineNum">    1468 </span>            :         sljit_sw addr;</a>
+<a name="1469"><span class="lineNum">    1469 </span>            :         sljit_sw r2;</a>
+<a name="1470"><span class="lineNum">    1470 </span>            :         sljit_sw r11;</a>
+<a name="1471"><span class="lineNum">    1471 </span>            : };</a>
+<a name="1472"><span class="lineNum">    1472 </span>            : </a>
+<a name="1473"><span class="lineNum">    1473 </span>            : /* Fill the context arguments using the addr and the function.</a>
+<a name="1474"><span class="lineNum">    1474 </span>            :    If func_ptr is NULL, it will not be set to the address of context</a>
+<a name="1475"><span class="lineNum">    1475 </span>            :    If addr is NULL, the function address also comes from the func pointer. */</a>
+<a name="1476"><span class="lineNum">    1476 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_function_context(void** func_ptr, struct sljit_function_context* context, sljit_sw addr, void* func);</a>
+<a name="1477"><span class="lineNum">    1477 </span>            : </a>
+<a name="1478"><span class="lineNum">    1478 </span>            : #endif /* !(defined SLJIT_INDIRECT_CALL &amp;&amp; SLJIT_INDIRECT_CALL) */</a>
+<a name="1479"><span class="lineNum">    1479 </span>            : </a>
+<a name="1480"><span class="lineNum">    1480 </span>            : #if (defined SLJIT_EXECUTABLE_ALLOCATOR &amp;&amp; SLJIT_EXECUTABLE_ALLOCATOR)</a>
+<a name="1481"><span class="lineNum">    1481 </span>            : /* Free unused executable memory. The allocator keeps some free memory</a>
+<a name="1482"><span class="lineNum">    1482 </span>            :    around to reduce the number of OS executable memory allocations.</a>
+<a name="1483"><span class="lineNum">    1483 </span>            :    This improves performance since these calls are costly. However</a>
+<a name="1484"><span class="lineNum">    1484 </span>            :    it is sometimes desired to free all unused memory regions, e.g.</a>
+<a name="1485"><span class="lineNum">    1485 </span>            :    before the application terminates. */</a>
+<a name="1486"><span class="lineNum">    1486 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_free_unused_memory_exec(void);</a>
+<a name="1487"><span class="lineNum">    1487 </span>            : #endif</a>
+<a name="1488"><span class="lineNum">    1488 </span>            : </a>
+<a name="1489"><span class="lineNum">    1489 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="1490"><span class="lineNum">    1490 </span>            : /*  CPU specific functions                                               */</a>
+<a name="1491"><span class="lineNum">    1491 </span>            : /* --------------------------------------------------------------------- */</a>
+<a name="1492"><span class="lineNum">    1492 </span>            : </a>
+<a name="1493"><span class="lineNum">    1493 </span>            : /* The following function is a helper function for sljit_emit_op_custom.</a>
+<a name="1494"><span class="lineNum">    1494 </span>            :    It returns with the real machine register index ( &gt;=0 ) of any SLJIT_R,</a>
+<a name="1495"><span class="lineNum">    1495 </span>            :    SLJIT_S and SLJIT_SP registers.</a>
+<a name="1496"><span class="lineNum">    1496 </span>            : </a>
+<a name="1497"><span class="lineNum">    1497 </span>            :    Note: it returns with -1 for virtual registers (only on x86-32). */</a>
+<a name="1498"><span class="lineNum">    1498 </span>            : </a>
+<a name="1499"><span class="lineNum">    1499 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_get_register_index(sljit_s32 reg);</a>
+<a name="1500"><span class="lineNum">    1500 </span>            : </a>
+<a name="1501"><span class="lineNum">    1501 </span>            : /* The following function is a helper function for sljit_emit_op_custom.</a>
+<a name="1502"><span class="lineNum">    1502 </span>            :    It returns with the real machine register index of any SLJIT_FLOAT register.</a>
+<a name="1503"><span class="lineNum">    1503 </span>            : </a>
+<a name="1504"><span class="lineNum">    1504 </span>            :    Note: the index is always an even number on ARM (except ARM-64), MIPS, and SPARC. */</a>
+<a name="1505"><span class="lineNum">    1505 </span>            : </a>
+<a name="1506"><span class="lineNum">    1506 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_get_float_register_index(sljit_s32 reg);</a>
+<a name="1507"><span class="lineNum">    1507 </span>            : </a>
+<a name="1508"><span class="lineNum">    1508 </span>            : /* Any instruction can be inserted into the instruction stream by</a>
+<a name="1509"><span class="lineNum">    1509 </span>            :    sljit_emit_op_custom. It has a similar purpose as inline assembly.</a>
+<a name="1510"><span class="lineNum">    1510 </span>            :    The size parameter must match to the instruction size of the target</a>
+<a name="1511"><span class="lineNum">    1511 </span>            :    architecture:</a>
+<a name="1512"><span class="lineNum">    1512 </span>            : </a>
+<a name="1513"><span class="lineNum">    1513 </span>            :          x86: 0 &lt; size &lt;= 15. The instruction argument can be byte aligned.</a>
+<a name="1514"><span class="lineNum">    1514 </span>            :       Thumb2: if size == 2, the instruction argument must be 2 byte aligned.</a>
+<a name="1515"><span class="lineNum">    1515 </span>            :               if size == 4, the instruction argument must be 4 byte aligned.</a>
+<a name="1516"><span class="lineNum">    1516 </span>            :    Otherwise: size must be 4 and instruction argument must be 4 byte aligned. */</a>
+<a name="1517"><span class="lineNum">    1517 </span>            : </a>
+<a name="1518"><span class="lineNum">    1518 </span>            : SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op_custom(struct sljit_compiler *compiler,</a>
+<a name="1519"><span class="lineNum">    1519 </span>            :         void *instruction, sljit_s32 size);</a>
+<a name="1520"><span class="lineNum">    1520 </span>            : </a>
+<a name="1521"><span class="lineNum">    1521 </span>            : /* Flags were set by a 32 bit operation. */</a>
+<a name="1522"><span class="lineNum">    1522 </span>            : #define SLJIT_CURRENT_FLAGS_I32_OP              SLJIT_I32_OP</a>
+<a name="1523"><span class="lineNum">    1523 </span>            : </a>
+<a name="1524"><span class="lineNum">    1524 </span>            : /* Flags were set by an ADD, ADDC, SUB, SUBC, or NEG operation. */</a>
+<a name="1525"><span class="lineNum">    1525 </span>            : #define SLJIT_CURRENT_FLAGS_ADD_SUB             0x01</a>
+<a name="1526"><span class="lineNum">    1526 </span>            : </a>
+<a name="1527"><span class="lineNum">    1527 </span>            : /* Flags were set by a SUB with unused destination.</a>
+<a name="1528"><span class="lineNum">    1528 </span>            :    Must be combined with SLJIT_CURRENT_FLAGS_ADD_SUB. */</a>
+<a name="1529"><span class="lineNum">    1529 </span>            : #define SLJIT_CURRENT_FLAGS_COMPARE             0x02</a>
+<a name="1530"><span class="lineNum">    1530 </span>            : </a>
+<a name="1531"><span class="lineNum">    1531 </span>            : /* Define the currently available CPU status flags. It is usually used after</a>
+<a name="1532"><span class="lineNum">    1532 </span>            :    an sljit_emit_label or sljit_emit_op_custom operations to define which CPU</a>
+<a name="1533"><span class="lineNum">    1533 </span>            :    status flags are available.</a>
+<a name="1534"><span class="lineNum">    1534 </span>            : </a>
+<a name="1535"><span class="lineNum">    1535 </span>            :    The current_flags must be a valid combination of SLJIT_SET_* and</a>
+<a name="1536"><span class="lineNum">    1536 </span>            :    SLJIT_CURRENT_FLAGS_* constants. */</a>
+<a name="1537"><span class="lineNum">    1537 </span>            : </a>
+<a name="1538"><span class="lineNum">    1538 </span>            : SLJIT_API_FUNC_ATTRIBUTE void sljit_set_current_flags(struct sljit_compiler *compiler,</a>
+<a name="1539"><span class="lineNum">    1539 </span>            :         sljit_s32 current_flags);</a>
+<a name="1540"><span class="lineNum">    1540 </span>            : </a>
+<a name="1541"><span class="lineNum">    1541 </span>            : #ifdef __cplusplus</a>
+<a name="1542"><span class="lineNum">    1542 </span>            : } /* extern &quot;C&quot; */</a>
+<a name="1543"><span class="lineNum">    1543 </span>            : #endif</a>
+<a name="1544"><span class="lineNum">    1544 </span>            : </a>
+<a name="1545"><span class="lineNum">    1545 </span>            : #endif /* SLJIT_LIR_H_ */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - pcre/pcre2lib/pcre2_auto_possess.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">pcre/pcre2lib</a> - pcre2_auto_possess.c<span style="font-size: 80%;"> (source / <a href="pcre2_auto_possess.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">284</td>
+            <td class="headerCovTableEntry">448</td>
+            <td class="headerCovTableEntryLo">63.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryMed">80.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>            : *      Perl-Compatible Regular Expressions       *</a>
+<a name="3"><span class="lineNum">       3 </span>            : *************************************************/</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            : /* PCRE is a library of functions to support regular expressions whose syntax</a>
+<a name="6"><span class="lineNum">       6 </span>            : and semantics are as close as possible to those of the Perl 5 language.</a>
+<a name="7"><span class="lineNum">       7 </span>            : </a>
+<a name="8"><span class="lineNum">       8 </span>            :                        Written by Philip Hazel</a>
+<a name="9"><span class="lineNum">       9 </span>            :      Original API code Copyright (c) 1997-2012 University of Cambridge</a>
+<a name="10"><span class="lineNum">      10 </span>            :           New API code Copyright (c) 2016-2021 University of Cambridge</a>
+<a name="11"><span class="lineNum">      11 </span>            : </a>
+<a name="12"><span class="lineNum">      12 </span>            : -----------------------------------------------------------------------------</a>
+<a name="13"><span class="lineNum">      13 </span>            : Redistribution and use in source and binary forms, with or without</a>
+<a name="14"><span class="lineNum">      14 </span>            : modification, are permitted provided that the following conditions are met:</a>
+<a name="15"><span class="lineNum">      15 </span>            : </a>
+<a name="16"><span class="lineNum">      16 </span>            :     * Redistributions of source code must retain the above copyright notice,</a>
+<a name="17"><span class="lineNum">      17 </span>            :       this list of conditions and the following disclaimer.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :     * Redistributions in binary form must reproduce the above copyright</a>
+<a name="20"><span class="lineNum">      20 </span>            :       notice, this list of conditions and the following disclaimer in the</a>
+<a name="21"><span class="lineNum">      21 </span>            :       documentation and/or other materials provided with the distribution.</a>
+<a name="22"><span class="lineNum">      22 </span>            : </a>
+<a name="23"><span class="lineNum">      23 </span>            :     * Neither the name of the University of Cambridge nor the names of its</a>
+<a name="24"><span class="lineNum">      24 </span>            :       contributors may be used to endorse or promote products derived from</a>
+<a name="25"><span class="lineNum">      25 </span>            :       this software without specific prior written permission.</a>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<a name="27"><span class="lineNum">      27 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>            : AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</a>
+<a name="29"><span class="lineNum">      29 </span>            : IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</a>
+<a name="30"><span class="lineNum">      30 </span>            : ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</a>
+<a name="31"><span class="lineNum">      31 </span>            : LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</a>
+<a name="32"><span class="lineNum">      32 </span>            : CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</a>
+<a name="33"><span class="lineNum">      33 </span>            : SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</a>
+<a name="34"><span class="lineNum">      34 </span>            : INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</a>
+<a name="35"><span class="lineNum">      35 </span>            : CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</a>
+<a name="36"><span class="lineNum">      36 </span>            : ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</a>
+<a name="37"><span class="lineNum">      37 </span>            : POSSIBILITY OF SUCH DAMAGE.</a>
+<a name="38"><span class="lineNum">      38 </span>            : -----------------------------------------------------------------------------</a>
+<a name="39"><span class="lineNum">      39 </span>            : */</a>
+<a name="40"><span class="lineNum">      40 </span>            : </a>
+<a name="41"><span class="lineNum">      41 </span>            : /* This module contains functions that scan a compiled pattern and change</a>
+<a name="42"><span class="lineNum">      42 </span>            : repeats into possessive repeats where possible. */</a>
+<a name="43"><span class="lineNum">      43 </span>            : </a>
+<a name="44"><span class="lineNum">      44 </span>            : </a>
+<a name="45"><span class="lineNum">      45 </span>            : #ifdef HAVE_CONFIG_H</a>
+<a name="46"><span class="lineNum">      46 </span>            : #include &quot;config.h&quot;</a>
+<a name="47"><span class="lineNum">      47 </span>            : #endif</a>
+<a name="48"><span class="lineNum">      48 </span>            : </a>
+<a name="49"><span class="lineNum">      49 </span>            : </a>
+<a name="50"><span class="lineNum">      50 </span>            : #include &quot;pcre2_internal.h&quot;</a>
+<a name="51"><span class="lineNum">      51 </span>            : </a>
+<a name="52"><span class="lineNum">      52 </span>            : </a>
+<a name="53"><span class="lineNum">      53 </span>            : /*************************************************</a>
+<a name="54"><span class="lineNum">      54 </span>            : *        Tables for auto-possessification        *</a>
+<a name="55"><span class="lineNum">      55 </span>            : *************************************************/</a>
+<a name="56"><span class="lineNum">      56 </span>            : </a>
+<a name="57"><span class="lineNum">      57 </span>            : /* This table is used to check whether auto-possessification is possible</a>
+<a name="58"><span class="lineNum">      58 </span>            : between adjacent character-type opcodes. The left-hand (repeated) opcode is</a>
+<a name="59"><span class="lineNum">      59 </span>            : used to select the row, and the right-hand opcode is use to select the column.</a>
+<a name="60"><span class="lineNum">      60 </span>            : A value of 1 means that auto-possessification is OK. For example, the second</a>
+<a name="61"><span class="lineNum">      61 </span>            : value in the first row means that \D+\d can be turned into \D++\d.</a>
+<a name="62"><span class="lineNum">      62 </span>            : </a>
+<a name="63"><span class="lineNum">      63 </span>            : The Unicode property types (\P and \p) have to be present to fill out the table</a>
+<a name="64"><span class="lineNum">      64 </span>            : because of what their opcode values are, but the table values should always be</a>
+<a name="65"><span class="lineNum">      65 </span>            : zero because property types are handled separately in the code. The last four</a>
+<a name="66"><span class="lineNum">      66 </span>            : columns apply to items that cannot be repeated, so there is no need to have</a>
+<a name="67"><span class="lineNum">      67 </span>            : rows for them. Note that OP_DIGIT etc. are generated only when PCRE_UCP is</a>
+<a name="68"><span class="lineNum">      68 </span>            : *not* set. When it is set, \d etc. are converted into OP_(NOT_)PROP codes. */</a>
+<a name="69"><span class="lineNum">      69 </span>            : </a>
+<a name="70"><span class="lineNum">      70 </span>            : #define APTROWS (LAST_AUTOTAB_LEFT_OP - FIRST_AUTOTAB_OP + 1)</a>
+<a name="71"><span class="lineNum">      71 </span>            : #define APTCOLS (LAST_AUTOTAB_RIGHT_OP - FIRST_AUTOTAB_OP + 1)</a>
+<a name="72"><span class="lineNum">      72 </span>            : </a>
+<a name="73"><span class="lineNum">      73 </span>            : static const uint8_t autoposstab[APTROWS][APTCOLS] = {</a>
+<a name="74"><span class="lineNum">      74 </span>            : /* \D \d \S \s \W \w  . .+ \C \P \p \R \H \h \V \v \X \Z \z  $ $M */</a>
+<a name="75"><span class="lineNum">      75 </span>            :   { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* \D */</a>
+<a name="76"><span class="lineNum">      76 </span>            :   { 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1 },  /* \d */</a>
+<a name="77"><span class="lineNum">      77 </span>            :   { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1 },  /* \S */</a>
+<a name="78"><span class="lineNum">      78 </span>            :   { 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* \s */</a>
+<a name="79"><span class="lineNum">      79 </span>            :   { 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* \W */</a>
+<a name="80"><span class="lineNum">      80 </span>            :   { 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1 },  /* \w */</a>
+<a name="81"><span class="lineNum">      81 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* .  */</a>
+<a name="82"><span class="lineNum">      82 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* .+ */</a>
+<a name="83"><span class="lineNum">      83 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },  /* \C */</a>
+<a name="84"><span class="lineNum">      84 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },  /* \P */</a>
+<a name="85"><span class="lineNum">      85 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },  /* \p */</a>
+<a name="86"><span class="lineNum">      86 </span>            :   { 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 },  /* \R */</a>
+<a name="87"><span class="lineNum">      87 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 },  /* \H */</a>
+<a name="88"><span class="lineNum">      88 </span>            :   { 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0 },  /* \h */</a>
+<a name="89"><span class="lineNum">      89 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0 },  /* \V */</a>
+<a name="90"><span class="lineNum">      90 </span>            :   { 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0 },  /* \v */</a>
+<a name="91"><span class="lineNum">      91 </span>            :   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }   /* \X */</a>
+<a name="92"><span class="lineNum">      92 </span>            : };</a>
+<a name="93"><span class="lineNum">      93 </span>            : </a>
+<a name="94"><span class="lineNum">      94 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="95"><span class="lineNum">      95 </span>            : /* This table is used to check whether auto-possessification is possible</a>
+<a name="96"><span class="lineNum">      96 </span>            : between adjacent Unicode property opcodes (OP_PROP and OP_NOTPROP). The</a>
+<a name="97"><span class="lineNum">      97 </span>            : left-hand (repeated) opcode is used to select the row, and the right-hand</a>
+<a name="98"><span class="lineNum">      98 </span>            : opcode is used to select the column. The values are as follows:</a>
+<a name="99"><span class="lineNum">      99 </span>            : </a>
+<a name="100"><span class="lineNum">     100 </span>            :   0   Always return FALSE (never auto-possessify)</a>
+<a name="101"><span class="lineNum">     101 </span>            :   1   Character groups are distinct (possessify if both are OP_PROP)</a>
+<a name="102"><span class="lineNum">     102 </span>            :   2   Check character categories in the same group (general or particular)</a>
+<a name="103"><span class="lineNum">     103 </span>            :   3   TRUE if the two opcodes are not the same (PROP vs NOTPROP)</a>
+<a name="104"><span class="lineNum">     104 </span>            : </a>
+<a name="105"><span class="lineNum">     105 </span>            :   4   Check left general category vs right particular category</a>
+<a name="106"><span class="lineNum">     106 </span>            :   5   Check right general category vs left particular category</a>
+<a name="107"><span class="lineNum">     107 </span>            : </a>
+<a name="108"><span class="lineNum">     108 </span>            :   6   Left alphanum vs right general category</a>
+<a name="109"><span class="lineNum">     109 </span>            :   7   Left space vs right general category</a>
+<a name="110"><span class="lineNum">     110 </span>            :   8   Left word vs right general category</a>
+<a name="111"><span class="lineNum">     111 </span>            : </a>
+<a name="112"><span class="lineNum">     112 </span>            :   9   Right alphanum vs left general category</a>
+<a name="113"><span class="lineNum">     113 </span>            :  10   Right space vs left general category</a>
+<a name="114"><span class="lineNum">     114 </span>            :  11   Right word vs left general category</a>
+<a name="115"><span class="lineNum">     115 </span>            : </a>
+<a name="116"><span class="lineNum">     116 </span>            :  12   Left alphanum vs right particular category</a>
+<a name="117"><span class="lineNum">     117 </span>            :  13   Left space vs right particular category</a>
+<a name="118"><span class="lineNum">     118 </span>            :  14   Left word vs right particular category</a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span>            :  15   Right alphanum vs left particular category</a>
+<a name="121"><span class="lineNum">     121 </span>            :  16   Right space vs left particular category</a>
+<a name="122"><span class="lineNum">     122 </span>            :  17   Right word vs left particular category</a>
+<a name="123"><span class="lineNum">     123 </span>            : */</a>
+<a name="124"><span class="lineNum">     124 </span>            : </a>
+<a name="125"><span class="lineNum">     125 </span>            : static const uint8_t propposstab[PT_TABSIZE][PT_TABSIZE] = {</a>
+<a name="126"><span class="lineNum">     126 </span>            : /* ANY LAMP GC  PC  SC ALNUM SPACE PXSPACE WORD CLIST UCNC */</a>
+<a name="127"><span class="lineNum">     127 </span>            :   { 0,  0,  0,  0,  0,    0,    0,      0,   0,    0,   0 },  /* PT_ANY */</a>
+<a name="128"><span class="lineNum">     128 </span>            :   { 0,  3,  0,  0,  0,    3,    1,      1,   0,    0,   0 },  /* PT_LAMP */</a>
+<a name="129"><span class="lineNum">     129 </span>            :   { 0,  0,  2,  4,  0,    9,   10,     10,  11,    0,   0 },  /* PT_GC */</a>
+<a name="130"><span class="lineNum">     130 </span>            :   { 0,  0,  5,  2,  0,   15,   16,     16,  17,    0,   0 },  /* PT_PC */</a>
+<a name="131"><span class="lineNum">     131 </span>            :   { 0,  0,  0,  0,  2,    0,    0,      0,   0,    0,   0 },  /* PT_SC */</a>
+<a name="132"><span class="lineNum">     132 </span>            :   { 0,  3,  6, 12,  0,    3,    1,      1,   0,    0,   0 },  /* PT_ALNUM */</a>
+<a name="133"><span class="lineNum">     133 </span>            :   { 0,  1,  7, 13,  0,    1,    3,      3,   1,    0,   0 },  /* PT_SPACE */</a>
+<a name="134"><span class="lineNum">     134 </span>            :   { 0,  1,  7, 13,  0,    1,    3,      3,   1,    0,   0 },  /* PT_PXSPACE */</a>
+<a name="135"><span class="lineNum">     135 </span>            :   { 0,  0,  8, 14,  0,    0,    1,      1,   3,    0,   0 },  /* PT_WORD */</a>
+<a name="136"><span class="lineNum">     136 </span>            :   { 0,  0,  0,  0,  0,    0,    0,      0,   0,    0,   0 },  /* PT_CLIST */</a>
+<a name="137"><span class="lineNum">     137 </span>            :   { 0,  0,  0,  0,  0,    0,    0,      0,   0,    0,   3 }   /* PT_UCNC */</a>
+<a name="138"><span class="lineNum">     138 </span>            : };</a>
+<a name="139"><span class="lineNum">     139 </span>            : </a>
+<a name="140"><span class="lineNum">     140 </span>            : /* This table is used to check whether auto-possessification is possible</a>
+<a name="141"><span class="lineNum">     141 </span>            : between adjacent Unicode property opcodes (OP_PROP and OP_NOTPROP) when one</a>
+<a name="142"><span class="lineNum">     142 </span>            : specifies a general category and the other specifies a particular category. The</a>
+<a name="143"><span class="lineNum">     143 </span>            : row is selected by the general category and the column by the particular</a>
+<a name="144"><span class="lineNum">     144 </span>            : category. The value is 1 if the particular category is not part of the general</a>
+<a name="145"><span class="lineNum">     145 </span>            : category. */</a>
+<a name="146"><span class="lineNum">     146 </span>            : </a>
+<a name="147"><span class="lineNum">     147 </span>            : static const uint8_t catposstab[7][30] = {</a>
+<a name="148"><span class="lineNum">     148 </span>            : /* Cc Cf Cn Co Cs Ll Lm Lo Lt Lu Mc Me Mn Nd Nl No Pc Pd Pe Pf Pi Po Ps Sc Sk Sm So Zl Zp Zs */</a>
+<a name="149"><span class="lineNum">     149 </span>            :   { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  /* C */</a>
+<a name="150"><span class="lineNum">     150 </span>            :   { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  /* L */</a>
+<a name="151"><span class="lineNum">     151 </span>            :   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  /* M */</a>
+<a name="152"><span class="lineNum">     152 </span>            :   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  /* N */</a>
+<a name="153"><span class="lineNum">     153 </span>            :   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },  /* P */</a>
+<a name="154"><span class="lineNum">     154 </span>            :   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 },  /* S */</a>
+<a name="155"><span class="lineNum">     155 </span>            :   { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 }   /* Z */</a>
+<a name="156"><span class="lineNum">     156 </span>            : };</a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            : /* This table is used when checking ALNUM, (PX)SPACE, SPACE, and WORD against</a>
+<a name="159"><span class="lineNum">     159 </span>            : a general or particular category. The properties in each row are those</a>
+<a name="160"><span class="lineNum">     160 </span>            : that apply to the character set in question. Duplication means that a little</a>
+<a name="161"><span class="lineNum">     161 </span>            : unnecessary work is done when checking, but this keeps things much simpler</a>
+<a name="162"><span class="lineNum">     162 </span>            : because they can all use the same code. For more details see the comment where</a>
+<a name="163"><span class="lineNum">     163 </span>            : this table is used.</a>
+<a name="164"><span class="lineNum">     164 </span>            : </a>
+<a name="165"><span class="lineNum">     165 </span>            : Note: SPACE and PXSPACE used to be different because Perl excluded VT from</a>
+<a name="166"><span class="lineNum">     166 </span>            : &quot;space&quot;, but from Perl 5.18 it's included, so both categories are treated the</a>
+<a name="167"><span class="lineNum">     167 </span>            : same here. */</a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span>            : static const uint8_t posspropstab[3][4] = {</a>
+<a name="170"><span class="lineNum">     170 </span>            :   { ucp_L, ucp_N, ucp_N, ucp_Nl },  /* ALNUM, 3rd and 4th values redundant */</a>
+<a name="171"><span class="lineNum">     171 </span>            :   { ucp_Z, ucp_Z, ucp_C, ucp_Cc },  /* SPACE and PXSPACE, 2nd value redundant */</a>
+<a name="172"><span class="lineNum">     172 </span>            :   { ucp_L, ucp_N, ucp_P, ucp_Po }   /* WORD */</a>
+<a name="173"><span class="lineNum">     173 </span>            : };</a>
+<a name="174"><span class="lineNum">     174 </span>            : #endif  /* SUPPORT_UNICODE */</a>
+<a name="175"><span class="lineNum">     175 </span>            : </a>
+<a name="176"><span class="lineNum">     176 </span>            : </a>
+<a name="177"><span class="lineNum">     177 </span>            : </a>
+<a name="178"><span class="lineNum">     178 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="179"><span class="lineNum">     179 </span>            : /*************************************************</a>
+<a name="180"><span class="lineNum">     180 </span>            : *        Check a character and a property        *</a>
+<a name="181"><span class="lineNum">     181 </span>            : *************************************************/</a>
+<a name="182"><span class="lineNum">     182 </span>            : </a>
+<a name="183"><span class="lineNum">     183 </span>            : /* This function is called by compare_opcodes() when a property item is</a>
+<a name="184"><span class="lineNum">     184 </span>            : adjacent to a fixed character.</a>
+<a name="185"><span class="lineNum">     185 </span>            : </a>
+<a name="186"><span class="lineNum">     186 </span>            : Arguments:</a>
+<a name="187"><span class="lineNum">     187 </span>            :   c            the character</a>
+<a name="188"><span class="lineNum">     188 </span>            :   ptype        the property type</a>
+<a name="189"><span class="lineNum">     189 </span>            :   pdata        the data for the type</a>
+<a name="190"><span class="lineNum">     190 </span>            :   negated      TRUE if it's a negated property (\P or \p{^)</a>
+<a name="191"><span class="lineNum">     191 </span>            : </a>
+<a name="192"><span class="lineNum">     192 </span>            : Returns:       TRUE if auto-possessifying is OK</a>
+<a name="193"><span class="lineNum">     193 </span>            : */</a>
+<a name="194"><span class="lineNum">     194 </span>            : </a>
+<a name="195"><span class="lineNum">     195 </span>            : static BOOL</a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 : check_char_prop(uint32_t c, unsigned int ptype, unsigned int pdata,</span></a>
+<a name="197"><span class="lineNum">     197 </span>            :   BOOL negated)</a>
+<a name="198"><span class="lineNum">     198 </span>            : {</a>
+<a name="199"><span class="lineNum">     199 </span>            : const uint32_t *p;</a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineNoCov">          0 : const ucd_record *prop = GET_UCD(c);</span></a>
+<a name="201"><span class="lineNum">     201 </span>            : </a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineNoCov">          0 : switch(ptype)</span></a>
+<a name="203"><span class="lineNum">     203 </span>            :   {</a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :   case PT_LAMP:</span></a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineNoCov">          0 :   return (prop-&gt;chartype == ucp_Lu ||</span></a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 :           prop-&gt;chartype == ucp_Ll ||</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineNoCov">          0 :           prop-&gt;chartype == ucp_Lt) == negated;</span></a>
+<a name="208"><span class="lineNum">     208 </span>            : </a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :   case PT_GC:</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :   return (pdata == PRIV(ucp_gentype)[prop-&gt;chartype]) == negated;</span></a>
+<a name="211"><span class="lineNum">     211 </span>            : </a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :   case PT_PC:</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :   return (pdata == prop-&gt;chartype) == negated;</span></a>
+<a name="214"><span class="lineNum">     214 </span>            : </a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineNoCov">          0 :   case PT_SC:</span></a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineNoCov">          0 :   return (pdata == prop-&gt;script) == negated;</span></a>
+<a name="217"><span class="lineNum">     217 </span>            : </a>
+<a name="218"><span class="lineNum">     218 </span>            :   /* These are specials */</a>
+<a name="219"><span class="lineNum">     219 </span>            : </a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 :   case PT_ALNUM:</span></a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineNoCov">          0 :   return (PRIV(ucp_gentype)[prop-&gt;chartype] == ucp_L ||</span></a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineNoCov">          0 :           PRIV(ucp_gentype)[prop-&gt;chartype] == ucp_N) == negated;</span></a>
+<a name="223"><span class="lineNum">     223 </span>            : </a>
+<a name="224"><span class="lineNum">     224 </span>            :   /* Perl space used to exclude VT, but from Perl 5.18 it is included, which</a>
+<a name="225"><span class="lineNum">     225 </span>            :   means that Perl space and POSIX space are now identical. PCRE was changed</a>
+<a name="226"><span class="lineNum">     226 </span>            :   at release 8.34. */</a>
+<a name="227"><span class="lineNum">     227 </span>            : </a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :   case PT_SPACE:    /* Perl space */</span></a>
+<a name="229"><span class="lineNum">     229 </span>            :   case PT_PXSPACE:  /* POSIX space */</a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineNoCov">          0 :   switch(c)</span></a>
+<a name="231"><span class="lineNum">     231 </span>            :     {</a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineNoCov">          0 :     HSPACE_CASES:</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :     VSPACE_CASES:</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineNoCov">          0 :     return negated;</span></a>
+<a name="235"><span class="lineNum">     235 </span>            : </a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineNoCov">          0 :     default:</span></a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineNoCov">          0 :     return (PRIV(ucp_gentype)[prop-&gt;chartype] == ucp_Z) == negated;</span></a>
+<a name="238"><span class="lineNum">     238 </span>            :     }</a>
+<a name="239"><span class="lineNum">     239 </span>            :   break;  /* Control never reaches here */</a>
+<a name="240"><span class="lineNum">     240 </span>            : </a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 :   case PT_WORD:</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineNoCov">          0 :   return (PRIV(ucp_gentype)[prop-&gt;chartype] == ucp_L ||</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineNoCov">          0 :           PRIV(ucp_gentype)[prop-&gt;chartype] == ucp_N ||</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineNoCov">          0 :           c == CHAR_UNDERSCORE) == negated;</span></a>
+<a name="245"><span class="lineNum">     245 </span>            : </a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineNoCov">          0 :   case PT_CLIST:</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineNoCov">          0 :   p = PRIV(ucd_caseless_sets) + prop-&gt;caseset;</span></a>
+<a name="248"><span class="lineNum">     248 </span>            :   for (;;)</a>
+<a name="249"><span class="lineNum">     249 </span>            :     {</a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineNoCov">          0 :     if (c &lt; *p) return !negated;</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineNoCov">          0 :     if (c == *p++) return negated;</span></a>
+<a name="252"><span class="lineNum">     252 </span>            :     }</a>
+<a name="253"><span class="lineNum">     253 </span>            :   break;  /* Control never reaches here */</a>
+<a name="254"><span class="lineNum">     254 </span>            :   }</a>
+<a name="255"><span class="lineNum">     255 </span>            : </a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineNoCov">          0 : return FALSE;</span></a>
+<a name="257"><span class="lineNum">     257 </span>            : }</a>
+<a name="258"><span class="lineNum">     258 </span>            : #endif  /* SUPPORT_UNICODE */</a>
+<a name="259"><span class="lineNum">     259 </span>            : </a>
+<a name="260"><span class="lineNum">     260 </span>            : </a>
+<a name="261"><span class="lineNum">     261 </span>            : </a>
+<a name="262"><span class="lineNum">     262 </span>            : /*************************************************</a>
+<a name="263"><span class="lineNum">     263 </span>            : *        Base opcode of repeated opcodes         *</a>
+<a name="264"><span class="lineNum">     264 </span>            : *************************************************/</a>
+<a name="265"><span class="lineNum">     265 </span>            : </a>
+<a name="266"><span class="lineNum">     266 </span>            : /* Returns the base opcode for repeated single character type opcodes. If the</a>
+<a name="267"><span class="lineNum">     267 </span>            : opcode is not a repeated character type, it returns with the original value.</a>
+<a name="268"><span class="lineNum">     268 </span>            : </a>
+<a name="269"><span class="lineNum">     269 </span>            : Arguments:  c opcode</a>
+<a name="270"><span class="lineNum">     270 </span>            : Returns:    base opcode for the type</a>
+<a name="271"><span class="lineNum">     271 </span>            : */</a>
+<a name="272"><span class="lineNum">     272 </span>            : </a>
+<a name="273"><span class="lineNum">     273 </span>            : static PCRE2_UCHAR</a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">     129723 : get_repeat_base(PCRE2_UCHAR c)</span></a>
+<a name="275"><span class="lineNum">     275 </span>            : {</a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineCov">     129723 : return (c &gt; OP_TYPEPOSUPTO)? c :</span></a>
+<a name="277"><span class="lineNum">     277 </span>            :        (c &gt;= OP_TYPESTAR)?   OP_TYPESTAR :</a>
+<a name="278"><span class="lineNum">     278 </span>            :        (c &gt;= OP_NOTSTARI)?   OP_NOTSTARI :</a>
+<a name="279"><span class="lineNum">     279 </span>            :        (c &gt;= OP_NOTSTAR)?    OP_NOTSTAR :</a>
+<a name="280"><span class="lineNum">     280 </span>            :        (c &gt;= OP_STARI)?      OP_STARI :</a>
+<a name="281"><span class="lineNum">     281 </span>            :                              OP_STAR;</a>
+<a name="282"><span class="lineNum">     282 </span>            : }</a>
+<a name="283"><span class="lineNum">     283 </span>            : </a>
+<a name="284"><span class="lineNum">     284 </span>            : </a>
+<a name="285"><span class="lineNum">     285 </span>            : /*************************************************</a>
+<a name="286"><span class="lineNum">     286 </span>            : *        Fill the character property list        *</a>
+<a name="287"><span class="lineNum">     287 </span>            : *************************************************/</a>
+<a name="288"><span class="lineNum">     288 </span>            : </a>
+<a name="289"><span class="lineNum">     289 </span>            : /* Checks whether the code points to an opcode that can take part in auto-</a>
+<a name="290"><span class="lineNum">     290 </span>            : possessification, and if so, fills a list with its properties.</a>
+<a name="291"><span class="lineNum">     291 </span>            : </a>
+<a name="292"><span class="lineNum">     292 </span>            : Arguments:</a>
+<a name="293"><span class="lineNum">     293 </span>            :   code        points to start of expression</a>
+<a name="294"><span class="lineNum">     294 </span>            :   utf         TRUE if in UTF mode</a>
+<a name="295"><span class="lineNum">     295 </span>            :   ucp         TRUE if in UCP mode</a>
+<a name="296"><span class="lineNum">     296 </span>            :   fcc         points to the case-flipping table</a>
+<a name="297"><span class="lineNum">     297 </span>            :   list        points to output list</a>
+<a name="298"><span class="lineNum">     298 </span>            :               list[0] will be filled with the opcode</a>
+<a name="299"><span class="lineNum">     299 </span>            :               list[1] will be non-zero if this opcode</a>
+<a name="300"><span class="lineNum">     300 </span>            :                 can match an empty character string</a>
+<a name="301"><span class="lineNum">     301 </span>            :               list[2..7] depends on the opcode</a>
+<a name="302"><span class="lineNum">     302 </span>            : </a>
+<a name="303"><span class="lineNum">     303 </span>            : Returns:      points to the start of the next opcode if *code is accepted</a>
+<a name="304"><span class="lineNum">     304 </span>            :               NULL if *code is not accepted</a>
+<a name="305"><span class="lineNum">     305 </span>            : */</a>
+<a name="306"><span class="lineNum">     306 </span>            : </a>
+<a name="307"><span class="lineNum">     307 </span>            : static PCRE2_SPTR</a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">     121613 : get_chr_property_list(PCRE2_SPTR code, BOOL utf, BOOL ucp, const uint8_t *fcc,</span></a>
+<a name="309"><span class="lineNum">     309 </span>            :   uint32_t *list)</a>
+<a name="310"><span class="lineNum">     310 </span>            : {</a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">     121613 : PCRE2_UCHAR c = *code;</span></a>
+<a name="312"><span class="lineNum">     312 </span>            : PCRE2_UCHAR base;</a>
+<a name="313"><span class="lineNum">     313 </span>            : PCRE2_SPTR end;</a>
+<a name="314"><span class="lineNum">     314 </span>            : uint32_t chr;</a>
+<a name="315"><span class="lineNum">     315 </span>            : </a>
+<a name="316"><span class="lineNum">     316 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="317"><span class="lineNum">     317 </span>            : uint32_t *clist_dest;</a>
+<a name="318"><span class="lineNum">     318 </span>            : const uint32_t *clist_src;</a>
+<a name="319"><span class="lineNum">     319 </span>            : #else</a>
+<a name="320"><span class="lineNum">     320 </span>            : (void)utf;    /* Suppress &quot;unused parameter&quot; compiler warnings */</a>
+<a name="321"><span class="lineNum">     321 </span>            : (void)ucp;</a>
+<a name="322"><span class="lineNum">     322 </span>            : #endif</a>
+<a name="323"><span class="lineNum">     323 </span>            : </a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineCov">     121613 : list[0] = c;</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">     121613 : list[1] = FALSE;</span></a>
+<a name="326"><span class="lineNum">     326 </span><span class="lineCov">     121613 : code++;</span></a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">     121613 : if (c &gt;= OP_STAR &amp;&amp; c &lt;= OP_TYPEPOSUPTO)</span></a>
+<a name="329"><span class="lineNum">     329 </span>            :   {</a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineCov">      69453 :   base = get_repeat_base(c);</span></a>
+<a name="331"><span class="lineNum">     331 </span><span class="lineCov">      69453 :   c -= (base - OP_STAR);</span></a>
+<a name="332"><span class="lineNum">     332 </span>            : </a>
+<a name="333"><span class="lineNum">     333 </span><span class="lineCov">      69453 :   if (c == OP_UPTO || c == OP_MINUPTO || c == OP_EXACT || c == OP_POSUPTO)</span></a>
+<a name="334"><span class="lineNum">     334 </span><span class="lineCov">        378 :     code += IMM2_SIZE;</span></a>
+<a name="335"><span class="lineNum">     335 </span>            : </a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineCov">      69453 :   list[1] = (c != OP_PLUS &amp;&amp; c != OP_MINPLUS &amp;&amp; c != OP_EXACT &amp;&amp;</span></a>
+<a name="337"><span class="lineNum">     337 </span>            :              c != OP_POSPLUS);</a>
+<a name="338"><span class="lineNum">     338 </span>            : </a>
+<a name="339"><span class="lineNum">     339 </span><span class="lineCov">      69453 :   switch(base)</span></a>
+<a name="340"><span class="lineNum">     340 </span>            :     {</a>
+<a name="341"><span class="lineNum">     341 </span><span class="lineCov">       1128 :     case OP_STAR:</span></a>
+<a name="342"><span class="lineNum">     342 </span><span class="lineCov">       1128 :     list[0] = OP_CHAR;</span></a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineCov">       1128 :     break;</span></a>
+<a name="344"><span class="lineNum">     344 </span>            : </a>
+<a name="345"><span class="lineNum">     345 </span><span class="lineCov">      46995 :     case OP_STARI:</span></a>
+<a name="346"><span class="lineNum">     346 </span><span class="lineCov">      46995 :     list[0] = OP_CHARI;</span></a>
+<a name="347"><span class="lineNum">     347 </span><span class="lineCov">      46995 :     break;</span></a>
+<a name="348"><span class="lineNum">     348 </span>            : </a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineCov">       2649 :     case OP_NOTSTAR:</span></a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineCov">       2649 :     list[0] = OP_NOT;</span></a>
+<a name="351"><span class="lineNum">     351 </span><span class="lineCov">       2649 :     break;</span></a>
+<a name="352"><span class="lineNum">     352 </span>            : </a>
+<a name="353"><span class="lineNum">     353 </span><span class="lineCov">         33 :     case OP_NOTSTARI:</span></a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineCov">         33 :     list[0] = OP_NOTI;</span></a>
+<a name="355"><span class="lineNum">     355 </span><span class="lineCov">         33 :     break;</span></a>
+<a name="356"><span class="lineNum">     356 </span>            : </a>
+<a name="357"><span class="lineNum">     357 </span><span class="lineCov">      18648 :     case OP_TYPESTAR:</span></a>
+<a name="358"><span class="lineNum">     358 </span><span class="lineCov">      18648 :     list[0] = *code;</span></a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">      18648 :     code++;</span></a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">      18648 :     break;</span></a>
+<a name="361"><span class="lineNum">     361 </span>            :     }</a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineCov">      69453 :   c = list[0];</span></a>
+<a name="363"><span class="lineNum">     363 </span>            :   }</a>
+<a name="364"><span class="lineNum">     364 </span>            : </a>
+<a name="365"><span class="lineNum">     365 </span><span class="lineCov">     121613 : switch(c)</span></a>
+<a name="366"><span class="lineNum">     366 </span>            :   {</a>
+<a name="367"><span class="lineNum">     367 </span><span class="lineCov">      21927 :   case OP_NOT_DIGIT:</span></a>
+<a name="368"><span class="lineNum">     368 </span>            :   case OP_DIGIT:</a>
+<a name="369"><span class="lineNum">     369 </span>            :   case OP_NOT_WHITESPACE:</a>
+<a name="370"><span class="lineNum">     370 </span>            :   case OP_WHITESPACE:</a>
+<a name="371"><span class="lineNum">     371 </span>            :   case OP_NOT_WORDCHAR:</a>
+<a name="372"><span class="lineNum">     372 </span>            :   case OP_WORDCHAR:</a>
+<a name="373"><span class="lineNum">     373 </span>            :   case OP_ANY:</a>
+<a name="374"><span class="lineNum">     374 </span>            :   case OP_ALLANY:</a>
+<a name="375"><span class="lineNum">     375 </span>            :   case OP_ANYNL:</a>
+<a name="376"><span class="lineNum">     376 </span>            :   case OP_NOT_HSPACE:</a>
+<a name="377"><span class="lineNum">     377 </span>            :   case OP_HSPACE:</a>
+<a name="378"><span class="lineNum">     378 </span>            :   case OP_NOT_VSPACE:</a>
+<a name="379"><span class="lineNum">     379 </span>            :   case OP_VSPACE:</a>
+<a name="380"><span class="lineNum">     380 </span>            :   case OP_EXTUNI:</a>
+<a name="381"><span class="lineNum">     381 </span>            :   case OP_EODN:</a>
+<a name="382"><span class="lineNum">     382 </span>            :   case OP_EOD:</a>
+<a name="383"><span class="lineNum">     383 </span>            :   case OP_DOLL:</a>
+<a name="384"><span class="lineNum">     384 </span>            :   case OP_DOLLM:</a>
+<a name="385"><span class="lineNum">     385 </span><span class="lineCov">      21927 :   return code;</span></a>
+<a name="386"><span class="lineNum">     386 </span>            : </a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">      25222 :   case OP_CHAR:</span></a>
+<a name="388"><span class="lineNum">     388 </span>            :   case OP_NOT:</a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">      25222 :   GETCHARINCTEST(chr, code);</span></a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">      25222 :   list[2] = chr;</span></a>
+<a name="391"><span class="lineNum">     391 </span><span class="lineCov">      25222 :   list[3] = NOTACHAR;</span></a>
+<a name="392"><span class="lineNum">     392 </span><span class="lineCov">      25222 :   return code;</span></a>
+<a name="393"><span class="lineNum">     393 </span>            : </a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineCov">      51633 :   case OP_CHARI:</span></a>
+<a name="395"><span class="lineNum">     395 </span>            :   case OP_NOTI:</a>
+<a name="396"><span class="lineNum">     396 </span><span class="lineCov">      51633 :   list[0] = (c == OP_CHARI) ? OP_CHAR : OP_NOT;</span></a>
+<a name="397"><span class="lineNum">     397 </span><span class="lineCov">      51633 :   GETCHARINCTEST(chr, code);</span></a>
+<a name="398"><span class="lineNum">     398 </span><span class="lineCov">      51633 :   list[2] = chr;</span></a>
+<a name="399"><span class="lineNum">     399 </span>            : </a>
+<a name="400"><span class="lineNum">     400 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="401"><span class="lineNum">     401 </span><span class="lineCov">      51633 :   if (chr &lt; 128 || (chr &lt; 256 &amp;&amp; !utf &amp;&amp; !ucp))</span></a>
+<a name="402"><span class="lineNum">     402 </span><span class="lineCov">      51633 :     list[3] = fcc[chr];</span></a>
+<a name="403"><span class="lineNum">     403 </span>            :   else</a>
+<a name="404"><span class="lineNum">     404 </span><span class="lineNoCov">          0 :     list[3] = UCD_OTHERCASE(chr);</span></a>
+<a name="405"><span class="lineNum">     405 </span>            : #elif defined SUPPORT_WIDE_CHARS</a>
+<a name="406"><span class="lineNum">     406 </span>            :   list[3] = (chr &lt; 256) ? fcc[chr] : chr;</a>
+<a name="407"><span class="lineNum">     407 </span>            : #else</a>
+<a name="408"><span class="lineNum">     408 </span>            :   list[3] = fcc[chr];</a>
+<a name="409"><span class="lineNum">     409 </span>            : #endif</a>
+<a name="410"><span class="lineNum">     410 </span>            : </a>
+<a name="411"><span class="lineNum">     411 </span>            :   /* The othercase might be the same value. */</a>
+<a name="412"><span class="lineNum">     412 </span>            : </a>
+<a name="413"><span class="lineNum">     413 </span><span class="lineCov">      51633 :   if (chr == list[3])</span></a>
+<a name="414"><span class="lineNum">     414 </span><span class="lineCov">      51576 :     list[3] = NOTACHAR;</span></a>
+<a name="415"><span class="lineNum">     415 </span>            :   else</a>
+<a name="416"><span class="lineNum">     416 </span><span class="lineCov">         57 :     list[4] = NOTACHAR;</span></a>
+<a name="417"><span class="lineNum">     417 </span><span class="lineCov">      51633 :   return code;</span></a>
+<a name="418"><span class="lineNum">     418 </span>            : </a>
+<a name="419"><span class="lineNum">     419 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="420"><span class="lineNum">     420 </span><span class="lineCov">         18 :   case OP_PROP:</span></a>
+<a name="421"><span class="lineNum">     421 </span>            :   case OP_NOTPROP:</a>
+<a name="422"><span class="lineNum">     422 </span><span class="lineCov">         18 :   if (code[0] != PT_CLIST)</span></a>
+<a name="423"><span class="lineNum">     423 </span>            :     {</a>
+<a name="424"><span class="lineNum">     424 </span><span class="lineCov">         18 :     list[2] = code[0];</span></a>
+<a name="425"><span class="lineNum">     425 </span><span class="lineCov">         18 :     list[3] = code[1];</span></a>
+<a name="426"><span class="lineNum">     426 </span><span class="lineCov">         18 :     return code + 2;</span></a>
+<a name="427"><span class="lineNum">     427 </span>            :     }</a>
+<a name="428"><span class="lineNum">     428 </span>            : </a>
+<a name="429"><span class="lineNum">     429 </span>            :   /* Convert only if we have enough space. */</a>
+<a name="430"><span class="lineNum">     430 </span>            : </a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineNoCov">          0 :   clist_src = PRIV(ucd_caseless_sets) + code[1];</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineNoCov">          0 :   clist_dest = list + 2;</span></a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineNoCov">          0 :   code += 2;</span></a>
+<a name="434"><span class="lineNum">     434 </span>            : </a>
+<a name="435"><span class="lineNum">     435 </span>            :   do {</a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineNoCov">          0 :      if (clist_dest &gt;= list + 8)</span></a>
+<a name="437"><span class="lineNum">     437 </span>            :        {</a>
+<a name="438"><span class="lineNum">     438 </span>            :        /* Early return if there is not enough space. This should never</a>
+<a name="439"><span class="lineNum">     439 </span>            :        happen, since all clists are shorter than 5 character now. */</a>
+<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 :        list[2] = code[0];</span></a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :        list[3] = code[1];</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 :        return code;</span></a>
+<a name="443"><span class="lineNum">     443 </span>            :        }</a>
+<a name="444"><span class="lineNum">     444 </span><span class="lineNoCov">          0 :      *clist_dest++ = *clist_src;</span></a>
+<a name="445"><span class="lineNum">     445 </span>            :      }</a>
+<a name="446"><span class="lineNum">     446 </span><span class="lineNoCov">          0 :   while(*clist_src++ != NOTACHAR);</span></a>
+<a name="447"><span class="lineNum">     447 </span>            : </a>
+<a name="448"><span class="lineNum">     448 </span>            :   /* All characters are stored. The terminating NOTACHAR is copied from the</a>
+<a name="449"><span class="lineNum">     449 </span>            :   clist itself. */</a>
+<a name="450"><span class="lineNum">     450 </span>            : </a>
+<a name="451"><span class="lineNum">     451 </span><span class="lineNoCov">          0 :   list[0] = (c == OP_PROP) ? OP_CHAR : OP_NOT;</span></a>
+<a name="452"><span class="lineNum">     452 </span><span class="lineNoCov">          0 :   return code;</span></a>
+<a name="453"><span class="lineNum">     453 </span>            : #endif</a>
+<a name="454"><span class="lineNum">     454 </span>            : </a>
+<a name="455"><span class="lineNum">     455 </span><span class="lineCov">      22507 :   case OP_NCLASS:</span></a>
+<a name="456"><span class="lineNum">     456 </span>            :   case OP_CLASS:</a>
+<a name="457"><span class="lineNum">     457 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="458"><span class="lineNum">     458 </span>            :   case OP_XCLASS:</a>
+<a name="459"><span class="lineNum">     459 </span><span class="lineCov">      22507 :   if (c == OP_XCLASS)</span></a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineCov">        795 :     end = code + GET(code, 0) - 1;</span></a>
+<a name="461"><span class="lineNum">     461 </span>            :   else</a>
+<a name="462"><span class="lineNum">     462 </span>            : #endif</a>
+<a name="463"><span class="lineNum">     463 </span><span class="lineCov">      21712 :     end = code + 32 / sizeof(PCRE2_UCHAR);</span></a>
+<a name="464"><span class="lineNum">     464 </span>            : </a>
+<a name="465"><span class="lineNum">     465 </span><span class="lineCov">      22507 :   switch(*end)</span></a>
+<a name="466"><span class="lineNum">     466 </span>            :     {</a>
+<a name="467"><span class="lineNum">     467 </span><span class="lineCov">       3429 :     case OP_CRSTAR:</span></a>
+<a name="468"><span class="lineNum">     468 </span>            :     case OP_CRMINSTAR:</a>
+<a name="469"><span class="lineNum">     469 </span>            :     case OP_CRQUERY:</a>
+<a name="470"><span class="lineNum">     470 </span>            :     case OP_CRMINQUERY:</a>
+<a name="471"><span class="lineNum">     471 </span>            :     case OP_CRPOSSTAR:</a>
+<a name="472"><span class="lineNum">     472 </span>            :     case OP_CRPOSQUERY:</a>
+<a name="473"><span class="lineNum">     473 </span><span class="lineCov">       3429 :     list[1] = TRUE;</span></a>
+<a name="474"><span class="lineNum">     474 </span><span class="lineCov">       3429 :     end++;</span></a>
+<a name="475"><span class="lineNum">     475 </span><span class="lineCov">       3429 :     break;</span></a>
+<a name="476"><span class="lineNum">     476 </span>            : </a>
+<a name="477"><span class="lineNum">     477 </span><span class="lineCov">      10159 :     case OP_CRPLUS:</span></a>
+<a name="478"><span class="lineNum">     478 </span>            :     case OP_CRMINPLUS:</a>
+<a name="479"><span class="lineNum">     479 </span>            :     case OP_CRPOSPLUS:</a>
+<a name="480"><span class="lineNum">     480 </span><span class="lineCov">      10159 :     end++;</span></a>
+<a name="481"><span class="lineNum">     481 </span><span class="lineCov">      10159 :     break;</span></a>
+<a name="482"><span class="lineNum">     482 </span>            : </a>
+<a name="483"><span class="lineNum">     483 </span><span class="lineCov">       3492 :     case OP_CRRANGE:</span></a>
+<a name="484"><span class="lineNum">     484 </span>            :     case OP_CRMINRANGE:</a>
+<a name="485"><span class="lineNum">     485 </span>            :     case OP_CRPOSRANGE:</a>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">       3492 :     list[1] = (GET2(end, 1) == 0);</span></a>
+<a name="487"><span class="lineNum">     487 </span><span class="lineCov">       3492 :     end += 1 + 2 * IMM2_SIZE;</span></a>
+<a name="488"><span class="lineNum">     488 </span><span class="lineCov">       3492 :     break;</span></a>
+<a name="489"><span class="lineNum">     489 </span>            :     }</a>
+<a name="490"><span class="lineNum">     490 </span><span class="lineCov">      22507 :   list[2] = (uint32_t)(end - code);</span></a>
+<a name="491"><span class="lineNum">     491 </span><span class="lineCov">      22507 :   return end;</span></a>
+<a name="492"><span class="lineNum">     492 </span>            :   }</a>
+<a name="493"><span class="lineNum">     493 </span>            : </a>
+<a name="494"><span class="lineNum">     494 </span><span class="lineCov">        306 : return NULL;    /* Opcode not accepted */</span></a>
+<a name="495"><span class="lineNum">     495 </span>            : }</a>
+<a name="496"><span class="lineNum">     496 </span>            : </a>
+<a name="497"><span class="lineNum">     497 </span>            : </a>
+<a name="498"><span class="lineNum">     498 </span>            : </a>
+<a name="499"><span class="lineNum">     499 </span>            : /*************************************************</a>
+<a name="500"><span class="lineNum">     500 </span>            : *    Scan further character sets for match       *</a>
+<a name="501"><span class="lineNum">     501 </span>            : *************************************************/</a>
+<a name="502"><span class="lineNum">     502 </span>            : </a>
+<a name="503"><span class="lineNum">     503 </span>            : /* Checks whether the base and the current opcode have a common character, in</a>
+<a name="504"><span class="lineNum">     504 </span>            : which case the base cannot be possessified.</a>
+<a name="505"><span class="lineNum">     505 </span>            : </a>
+<a name="506"><span class="lineNum">     506 </span>            : Arguments:</a>
+<a name="507"><span class="lineNum">     507 </span>            :   code        points to the byte code</a>
+<a name="508"><span class="lineNum">     508 </span>            :   utf         TRUE in UTF mode</a>
+<a name="509"><span class="lineNum">     509 </span>            :   ucp         TRUE in UCP mode</a>
+<a name="510"><span class="lineNum">     510 </span>            :   cb          compile data block</a>
+<a name="511"><span class="lineNum">     511 </span>            :   base_list   the data list of the base opcode</a>
+<a name="512"><span class="lineNum">     512 </span>            :   base_end    the end of the base opcode</a>
+<a name="513"><span class="lineNum">     513 </span>            :   rec_limit   points to recursion depth counter</a>
+<a name="514"><span class="lineNum">     514 </span>            : </a>
+<a name="515"><span class="lineNum">     515 </span>            : Returns:      TRUE if the auto-possessification is possible</a>
+<a name="516"><span class="lineNum">     516 </span>            : */</a>
+<a name="517"><span class="lineNum">     517 </span>            : </a>
+<a name="518"><span class="lineNum">     518 </span>            : static BOOL</a>
+<a name="519"><span class="lineNum">     519 </span><span class="lineCov">      88612 : compare_opcodes(PCRE2_SPTR code, BOOL utf, BOOL ucp, const compile_block *cb,</span></a>
+<a name="520"><span class="lineNum">     520 </span>            :   const uint32_t *base_list, PCRE2_SPTR base_end, int *rec_limit)</a>
+<a name="521"><span class="lineNum">     521 </span>            : {</a>
+<a name="522"><span class="lineNum">     522 </span>            : PCRE2_UCHAR c;</a>
+<a name="523"><span class="lineNum">     523 </span>            : uint32_t list[8];</a>
+<a name="524"><span class="lineNum">     524 </span>            : const uint32_t *chr_ptr;</a>
+<a name="525"><span class="lineNum">     525 </span>            : const uint32_t *ochr_ptr;</a>
+<a name="526"><span class="lineNum">     526 </span>            : const uint32_t *list_ptr;</a>
+<a name="527"><span class="lineNum">     527 </span>            : PCRE2_SPTR next_code;</a>
+<a name="528"><span class="lineNum">     528 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="529"><span class="lineNum">     529 </span>            : PCRE2_SPTR xclass_flags;</a>
+<a name="530"><span class="lineNum">     530 </span>            : #endif</a>
+<a name="531"><span class="lineNum">     531 </span>            : const uint8_t *class_bitset;</a>
+<a name="532"><span class="lineNum">     532 </span>            : const uint8_t *set1, *set2, *set_end;</a>
+<a name="533"><span class="lineNum">     533 </span>            : uint32_t chr;</a>
+<a name="534"><span class="lineNum">     534 </span>            : BOOL accepted, invert_bits;</a>
+<a name="535"><span class="lineNum">     535 </span><span class="lineCov">      88612 : BOOL entered_a_group = FALSE;</span></a>
+<a name="536"><span class="lineNum">     536 </span>            : </a>
+<a name="537"><span class="lineNum">     537 </span><span class="lineCov">      88612 : if (--(*rec_limit) &lt;= 0) return FALSE;  /* Recursion has gone too deep */</span></a>
+<a name="538"><span class="lineNum">     538 </span>            : </a>
+<a name="539"><span class="lineNum">     539 </span>            : /* Note: the base_list[1] contains whether the current opcode has a greedy</a>
+<a name="540"><span class="lineNum">     540 </span>            : (represented by a non-zero value) quantifier. This is a different from</a>
+<a name="541"><span class="lineNum">     541 </span>            : other character type lists, which store here that the character iterator</a>
+<a name="542"><span class="lineNum">     542 </span>            : matches to an empty string (also represented by a non-zero value). */</a>
+<a name="543"><span class="lineNum">     543 </span>            : </a>
+<a name="544"><span class="lineNum">     544 </span>            : for(;;)</a>
+<a name="545"><span class="lineNum">     545 </span>            :   {</a>
+<a name="546"><span class="lineNum">     546 </span>            :   /* All operations move the code pointer forward.</a>
+<a name="547"><span class="lineNum">     547 </span>            :   Therefore infinite recursions are not possible. */</a>
+<a name="548"><span class="lineNum">     548 </span>            : </a>
+<a name="549"><span class="lineNum">     549 </span><span class="lineCov">      93071 :   c = *code;</span></a>
+<a name="550"><span class="lineNum">     550 </span>            : </a>
+<a name="551"><span class="lineNum">     551 </span>            :   /* Skip over callouts */</a>
+<a name="552"><span class="lineNum">     552 </span>            : </a>
+<a name="553"><span class="lineNum">     553 </span><span class="lineCov">      93071 :   if (c == OP_CALLOUT)</span></a>
+<a name="554"><span class="lineNum">     554 </span>            :     {</a>
+<a name="555"><span class="lineNum">     555 </span><span class="lineNoCov">          0 :     code += PRIV(OP_lengths)[c];</span></a>
+<a name="556"><span class="lineNum">     556 </span><span class="lineNoCov">          0 :     continue;</span></a>
+<a name="557"><span class="lineNum">     557 </span>            :     }</a>
+<a name="558"><span class="lineNum">     558 </span>            : </a>
+<a name="559"><span class="lineNum">     559 </span><span class="lineCov">      93071 :   if (c == OP_CALLOUT_STR)</span></a>
+<a name="560"><span class="lineNum">     560 </span>            :     {</a>
+<a name="561"><span class="lineNum">     561 </span><span class="lineNoCov">          0 :     code += GET(code, 1 + 2*LINK_SIZE);</span></a>
+<a name="562"><span class="lineNum">     562 </span><span class="lineNoCov">          0 :     continue;</span></a>
+<a name="563"><span class="lineNum">     563 </span>            :     }</a>
+<a name="564"><span class="lineNum">     564 </span>            : </a>
+<a name="565"><span class="lineNum">     565 </span>            :   /* At the end of a branch, skip to the end of the group. */</a>
+<a name="566"><span class="lineNum">     566 </span>            : </a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineCov">      93071 :   if (c == OP_ALT)</span></a>
+<a name="568"><span class="lineNum">     568 </span>            :     {</a>
+<a name="569"><span class="lineNum">     569 </span><span class="lineCov">       4713 :     do code += GET(code, 1); while (*code == OP_ALT);</span></a>
+<a name="570"><span class="lineNum">     570 </span><span class="lineCov">       4665 :     c = *code;</span></a>
+<a name="571"><span class="lineNum">     571 </span>            :     }</a>
+<a name="572"><span class="lineNum">     572 </span>            : </a>
+<a name="573"><span class="lineNum">     573 </span>            :   /* Inspect the next opcode. */</a>
+<a name="574"><span class="lineNum">     574 </span>            : </a>
+<a name="575"><span class="lineNum">     575 </span><span class="lineCov">      93071 :   switch(c)</span></a>
+<a name="576"><span class="lineNum">     576 </span>            :     {</a>
+<a name="577"><span class="lineNum">     577 </span>            :     /* We can always possessify a greedy iterator at the end of the pattern,</a>
+<a name="578"><span class="lineNum">     578 </span>            :     which is reached after skipping over the final OP_KET. A non-greedy</a>
+<a name="579"><span class="lineNum">     579 </span>            :     iterator must never be possessified. */</a>
+<a name="580"><span class="lineNum">     580 </span>            : </a>
+<a name="581"><span class="lineNum">     581 </span><span class="lineCov">       2370 :     case OP_END:</span></a>
+<a name="582"><span class="lineNum">     582 </span><span class="lineCov">       2370 :     return base_list[1] != 0;</span></a>
+<a name="583"><span class="lineNum">     583 </span>            : </a>
+<a name="584"><span class="lineNum">     584 </span>            :     /* When an iterator is at the end of certain kinds of group we can inspect</a>
+<a name="585"><span class="lineNum">     585 </span>            :     what follows the group by skipping over the closing ket. Note that this</a>
+<a name="586"><span class="lineNum">     586 </span>            :     does not apply to OP_KETRMAX or OP_KETRMIN because what follows any given</a>
+<a name="587"><span class="lineNum">     587 </span>            :     iteration is variable (could be another iteration or could be the next</a>
+<a name="588"><span class="lineNum">     588 </span>            :     item). As these two opcodes are not listed in the next switch, they will</a>
+<a name="589"><span class="lineNum">     589 </span>            :     end up as the next code to inspect, and return FALSE by virtue of being</a>
+<a name="590"><span class="lineNum">     590 </span>            :     unsupported. */</a>
+<a name="591"><span class="lineNum">     591 </span>            : </a>
+<a name="592"><span class="lineNum">     592 </span><span class="lineCov">      22684 :     case OP_KET:</span></a>
+<a name="593"><span class="lineNum">     593 </span>            :     case OP_KETRPOS:</a>
+<a name="594"><span class="lineNum">     594 </span>            :     /* The non-greedy case cannot be converted to a possessive form. */</a>
+<a name="595"><span class="lineNum">     595 </span>            : </a>
+<a name="596"><span class="lineNum">     596 </span><span class="lineCov">      22684 :     if (base_list[1] == 0) return FALSE;</span></a>
+<a name="597"><span class="lineNum">     597 </span>            : </a>
+<a name="598"><span class="lineNum">     598 </span>            :     /* If the bracket is capturing it might be referenced by an OP_RECURSE</a>
+<a name="599"><span class="lineNum">     599 </span>            :     so its last iterator can never be possessified if the pattern contains</a>
+<a name="600"><span class="lineNum">     600 </span>            :     recursions. (This could be improved by keeping a list of group numbers that</a>
+<a name="601"><span class="lineNum">     601 </span>            :     are called by recursion.) */</a>
+<a name="602"><span class="lineNum">     602 </span>            : </a>
+<a name="603"><span class="lineNum">     603 </span><span class="lineCov">      22669 :     switch(*(code - GET(code, 1)))</span></a>
+<a name="604"><span class="lineNum">     604 </span>            :       {</a>
+<a name="605"><span class="lineNum">     605 </span><span class="lineCov">       2188 :       case OP_CBRA:</span></a>
+<a name="606"><span class="lineNum">     606 </span>            :       case OP_SCBRA:</a>
+<a name="607"><span class="lineNum">     607 </span>            :       case OP_CBRAPOS:</a>
+<a name="608"><span class="lineNum">     608 </span>            :       case OP_SCBRAPOS:</a>
+<a name="609"><span class="lineNum">     609 </span><span class="lineCov">       2188 :       if (cb-&gt;had_recurse) return FALSE;</span></a>
+<a name="610"><span class="lineNum">     610 </span><span class="lineCov">       2167 :       break;</span></a>
+<a name="611"><span class="lineNum">     611 </span>            : </a>
+<a name="612"><span class="lineNum">     612 </span>            :       /* A script run might have to backtrack if the iterated item can match</a>
+<a name="613"><span class="lineNum">     613 </span>            :       characters from more than one script. So give up unless repeating an</a>
+<a name="614"><span class="lineNum">     614 </span>            :       explicit character. */</a>
+<a name="615"><span class="lineNum">     615 </span>            : </a>
+<a name="616"><span class="lineNum">     616 </span><span class="lineNoCov">          0 :       case OP_SCRIPT_RUN:</span></a>
+<a name="617"><span class="lineNum">     617 </span><span class="lineNoCov">          0 :       if (base_list[0] != OP_CHAR &amp;&amp; base_list[0] != OP_CHARI)</span></a>
+<a name="618"><span class="lineNum">     618 </span><span class="lineNoCov">          0 :         return FALSE;</span></a>
+<a name="619"><span class="lineNum">     619 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="620"><span class="lineNum">     620 </span>            : </a>
+<a name="621"><span class="lineNum">     621 </span>            :       /* Atomic sub-patterns and assertions can always auto-possessify their</a>
+<a name="622"><span class="lineNum">     622 </span>            :       last iterator. However, if the group was entered as a result of checking</a>
+<a name="623"><span class="lineNum">     623 </span>            :       a previous iterator, this is not possible. */</a>
+<a name="624"><span class="lineNum">     624 </span>            : </a>
+<a name="625"><span class="lineNum">     625 </span><span class="lineNoCov">          0 :       case OP_ASSERT:</span></a>
+<a name="626"><span class="lineNum">     626 </span>            :       case OP_ASSERT_NOT:</a>
+<a name="627"><span class="lineNum">     627 </span>            :       case OP_ASSERTBACK:</a>
+<a name="628"><span class="lineNum">     628 </span>            :       case OP_ASSERTBACK_NOT:</a>
+<a name="629"><span class="lineNum">     629 </span>            :       case OP_ONCE:</a>
+<a name="630"><span class="lineNum">     630 </span><span class="lineNoCov">          0 :       return !entered_a_group;</span></a>
+<a name="631"><span class="lineNum">     631 </span>            : </a>
+<a name="632"><span class="lineNum">     632 </span>            :       /* Non-atomic assertions - don't possessify last iterator. This needs</a>
+<a name="633"><span class="lineNum">     633 </span>            :       more thought. */</a>
+<a name="634"><span class="lineNum">     634 </span>            : </a>
+<a name="635"><span class="lineNum">     635 </span><span class="lineNoCov">          0 :       case OP_ASSERT_NA:</span></a>
+<a name="636"><span class="lineNum">     636 </span>            :       case OP_ASSERTBACK_NA:</a>
+<a name="637"><span class="lineNum">     637 </span><span class="lineNoCov">          0 :       return FALSE;</span></a>
+<a name="638"><span class="lineNum">     638 </span>            :       }</a>
+<a name="639"><span class="lineNum">     639 </span>            : </a>
+<a name="640"><span class="lineNum">     640 </span>            :     /* Skip over the bracket and inspect what comes next. */</a>
+<a name="641"><span class="lineNum">     641 </span>            : </a>
+<a name="642"><span class="lineNum">     642 </span><span class="lineCov">      22648 :     code += PRIV(OP_lengths)[c];</span></a>
+<a name="643"><span class="lineNum">     643 </span><span class="lineCov">      22648 :     continue;</span></a>
+<a name="644"><span class="lineNum">     644 </span>            : </a>
+<a name="645"><span class="lineNum">     645 </span>            :     /* Handle cases where the next item is a group. */</a>
+<a name="646"><span class="lineNum">     646 </span>            : </a>
+<a name="647"><span class="lineNum">     647 </span><span class="lineCov">      19473 :     case OP_ONCE:</span></a>
+<a name="648"><span class="lineNum">     648 </span>            :     case OP_BRA:</a>
+<a name="649"><span class="lineNum">     649 </span>            :     case OP_CBRA:</a>
+<a name="650"><span class="lineNum">     650 </span><span class="lineCov">      19473 :     next_code = code + GET(code, 1);</span></a>
+<a name="651"><span class="lineNum">     651 </span><span class="lineCov">      19473 :     code += PRIV(OP_lengths)[c];</span></a>
+<a name="652"><span class="lineNum">     652 </span>            : </a>
+<a name="653"><span class="lineNum">     653 </span>            :     /* Check each branch. We have to recurse a level for all but the last</a>
+<a name="654"><span class="lineNum">     654 </span>            :     branch. */</a>
+<a name="655"><span class="lineNum">     655 </span>            : </a>
+<a name="656"><span class="lineNum">     656 </span><span class="lineCov">      19692 :     while (*next_code == OP_ALT)</span></a>
+<a name="657"><span class="lineNum">     657 </span>            :       {</a>
+<a name="658"><span class="lineNum">     658 </span><span class="lineCov">       9213 :       if (!compare_opcodes(code, utf, ucp, cb, base_list, base_end, rec_limit))</span></a>
+<a name="659"><span class="lineNum">     659 </span><span class="lineCov">       8994 :         return FALSE;</span></a>
+<a name="660"><span class="lineNum">     660 </span><span class="lineCov">        219 :       code = next_code + 1 + LINK_SIZE;</span></a>
+<a name="661"><span class="lineNum">     661 </span><span class="lineCov">        219 :       next_code += GET(next_code, 1);</span></a>
+<a name="662"><span class="lineNum">     662 </span>            :       }</a>
+<a name="663"><span class="lineNum">     663 </span>            : </a>
+<a name="664"><span class="lineNum">     664 </span><span class="lineCov">      10479 :     entered_a_group = TRUE;</span></a>
+<a name="665"><span class="lineNum">     665 </span><span class="lineCov">      10479 :     continue;</span></a>
+<a name="666"><span class="lineNum">     666 </span>            : </a>
+<a name="667"><span class="lineNum">     667 </span><span class="lineCov">       3165 :     case OP_BRAZERO:</span></a>
+<a name="668"><span class="lineNum">     668 </span>            :     case OP_BRAMINZERO:</a>
+<a name="669"><span class="lineNum">     669 </span>            : </a>
+<a name="670"><span class="lineNum">     670 </span><span class="lineCov">       3165 :     next_code = code + 1;</span></a>
+<a name="671"><span class="lineNum">     671 </span><span class="lineCov">       3165 :     if (*next_code != OP_BRA &amp;&amp; *next_code != OP_CBRA &amp;&amp;</span></a>
+<a name="672"><span class="lineNum">     672 </span><span class="lineNoCov">          0 :         *next_code != OP_ONCE) return FALSE;</span></a>
+<a name="673"><span class="lineNum">     673 </span>            : </a>
+<a name="674"><span class="lineNum">     674 </span><span class="lineCov">       3165 :     do next_code += GET(next_code, 1); while (*next_code == OP_ALT);</span></a>
+<a name="675"><span class="lineNum">     675 </span>            : </a>
+<a name="676"><span class="lineNum">     676 </span>            :     /* The bracket content will be checked by the OP_BRA/OP_CBRA case above. */</a>
+<a name="677"><span class="lineNum">     677 </span>            : </a>
+<a name="678"><span class="lineNum">     678 </span><span class="lineCov">       3165 :     next_code += 1 + LINK_SIZE;</span></a>
+<a name="679"><span class="lineNum">     679 </span><span class="lineCov">       3165 :     if (!compare_opcodes(next_code, utf, ucp, cb, base_list, base_end,</span></a>
+<a name="680"><span class="lineNum">     680 </span>            :          rec_limit))</a>
+<a name="681"><span class="lineNum">     681 </span><span class="lineCov">       2985 :       return FALSE;</span></a>
+<a name="682"><span class="lineNum">     682 </span>            : </a>
+<a name="683"><span class="lineNum">     683 </span><span class="lineCov">        180 :     code += PRIV(OP_lengths)[c];</span></a>
+<a name="684"><span class="lineNum">     684 </span><span class="lineCov">        180 :     continue;</span></a>
+<a name="685"><span class="lineNum">     685 </span>            : </a>
+<a name="686"><span class="lineNum">     686 </span>            :     /* The next opcode does not need special handling; fall through and use it</a>
+<a name="687"><span class="lineNum">     687 </span>            :     to see if the base can be possessified. */</a>
+<a name="688"><span class="lineNum">     688 </span>            : </a>
+<a name="689"><span class="lineNum">     689 </span><span class="lineCov">      45379 :     default:</span></a>
+<a name="690"><span class="lineNum">     690 </span><span class="lineCov">      45379 :     break;</span></a>
+<a name="691"><span class="lineNum">     691 </span>            :     }</a>
+<a name="692"><span class="lineNum">     692 </span>            : </a>
+<a name="693"><span class="lineNum">     693 </span>            :   /* We now have the next appropriate opcode to compare with the base. Check</a>
+<a name="694"><span class="lineNum">     694 </span>            :   for a supported opcode, and load its properties. */</a>
+<a name="695"><span class="lineNum">     695 </span>            : </a>
+<a name="696"><span class="lineNum">     696 </span><span class="lineCov">      45379 :   code = get_chr_property_list(code, utf, ucp, cb-&gt;fcc, list);</span></a>
+<a name="697"><span class="lineNum">     697 </span><span class="lineCov">      45379 :   if (code == NULL) return FALSE;    /* Unsupported */</span></a>
+<a name="698"><span class="lineNum">     698 </span>            : </a>
+<a name="699"><span class="lineNum">     699 </span>            :   /* If either opcode is a small character list, set pointers for comparing</a>
+<a name="700"><span class="lineNum">     700 </span>            :   characters from that list with another list, or with a property. */</a>
+<a name="701"><span class="lineNum">     701 </span>            : </a>
+<a name="702"><span class="lineNum">     702 </span><span class="lineCov">      45073 :   if (base_list[0] == OP_CHAR)</span></a>
+<a name="703"><span class="lineNum">     703 </span>            :     {</a>
+<a name="704"><span class="lineNum">     704 </span><span class="lineCov">      19164 :     chr_ptr = base_list + 2;</span></a>
+<a name="705"><span class="lineNum">     705 </span><span class="lineCov">      19164 :     list_ptr = list;</span></a>
+<a name="706"><span class="lineNum">     706 </span>            :     }</a>
+<a name="707"><span class="lineNum">     707 </span><span class="lineCov">      25909 :   else if (list[0] == OP_CHAR)</span></a>
+<a name="708"><span class="lineNum">     708 </span>            :     {</a>
+<a name="709"><span class="lineNum">     709 </span><span class="lineCov">      21199 :     chr_ptr = list + 2;</span></a>
+<a name="710"><span class="lineNum">     710 </span><span class="lineCov">      21199 :     list_ptr = base_list;</span></a>
+<a name="711"><span class="lineNum">     711 </span>            :     }</a>
+<a name="712"><span class="lineNum">     712 </span>            : </a>
+<a name="713"><span class="lineNum">     713 </span>            :   /* Character bitsets can also be compared to certain opcodes. */</a>
+<a name="714"><span class="lineNum">     714 </span>            : </a>
+<a name="715"><span class="lineNum">     715 </span><span class="lineCov">       4710 :   else if (base_list[0] == OP_CLASS || list[0] == OP_CLASS</span></a>
+<a name="716"><span class="lineNum">     716 </span>            : #if PCRE2_CODE_UNIT_WIDTH == 8</a>
+<a name="717"><span class="lineNum">     717 </span>            :       /* In 8 bit, non-UTF mode, OP_CLASS and OP_NCLASS are the same. */</a>
+<a name="718"><span class="lineNum">     718 </span><span class="lineCov">       2658 :       || (!utf &amp;&amp; (base_list[0] == OP_NCLASS || list[0] == OP_NCLASS))</span></a>
+<a name="719"><span class="lineNum">     719 </span>            : #endif</a>
+<a name="720"><span class="lineNum">     720 </span>            :       )</a>
+<a name="721"><span class="lineNum">     721 </span>            :     {</a>
+<a name="722"><span class="lineNum">     722 </span>            : #if PCRE2_CODE_UNIT_WIDTH == 8</a>
+<a name="723"><span class="lineNum">     723 </span><span class="lineCov">       2061 :     if (base_list[0] == OP_CLASS || (!utf &amp;&amp; base_list[0] == OP_NCLASS))</span></a>
+<a name="724"><span class="lineNum">     724 </span>            : #else</a>
+<a name="725"><span class="lineNum">     725 </span>            :     if (base_list[0] == OP_CLASS)</a>
+<a name="726"><span class="lineNum">     726 </span>            : #endif</a>
+<a name="727"><span class="lineNum">     727 </span>            :       {</a>
+<a name="728"><span class="lineNum">     728 </span><span class="lineCov">       1623 :       set1 = (uint8_t *)(base_end - base_list[2]);</span></a>
+<a name="729"><span class="lineNum">     729 </span><span class="lineCov">       1623 :       list_ptr = list;</span></a>
+<a name="730"><span class="lineNum">     730 </span>            :       }</a>
+<a name="731"><span class="lineNum">     731 </span>            :     else</a>
+<a name="732"><span class="lineNum">     732 </span>            :       {</a>
+<a name="733"><span class="lineNum">     733 </span><span class="lineCov">        438 :       set1 = (uint8_t *)(code - list[2]);</span></a>
+<a name="734"><span class="lineNum">     734 </span><span class="lineCov">        438 :       list_ptr = base_list;</span></a>
+<a name="735"><span class="lineNum">     735 </span>            :       }</a>
+<a name="736"><span class="lineNum">     736 </span>            : </a>
+<a name="737"><span class="lineNum">     737 </span><span class="lineCov">       2061 :     invert_bits = FALSE;</span></a>
+<a name="738"><span class="lineNum">     738 </span><span class="lineCov">       2061 :     switch(list_ptr[0])</span></a>
+<a name="739"><span class="lineNum">     739 </span>            :       {</a>
+<a name="740"><span class="lineNum">     740 </span><span class="lineCov">        834 :       case OP_CLASS:</span></a>
+<a name="741"><span class="lineNum">     741 </span>            :       case OP_NCLASS:</a>
+<a name="742"><span class="lineNum">     742 </span><span class="lineCov">        834 :       set2 = (uint8_t *)</span></a>
+<a name="743"><span class="lineNum">     743 </span><span class="lineCov">        834 :         ((list_ptr == list ? code : base_end) - list_ptr[2]);</span></a>
+<a name="744"><span class="lineNum">     744 </span><span class="lineCov">        834 :       break;</span></a>
+<a name="745"><span class="lineNum">     745 </span>            : </a>
+<a name="746"><span class="lineNum">     746 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="747"><span class="lineNum">     747 </span><span class="lineCov">          6 :       case OP_XCLASS:</span></a>
+<a name="748"><span class="lineNum">     748 </span><span class="lineCov">          6 :       xclass_flags = (list_ptr == list ? code : base_end) - list_ptr[2] + LINK_SIZE;</span></a>
+<a name="749"><span class="lineNum">     749 </span><span class="lineCov">          6 :       if ((*xclass_flags &amp; XCL_HASPROP) != 0) return FALSE;</span></a>
+<a name="750"><span class="lineNum">     750 </span><span class="lineNoCov">          0 :       if ((*xclass_flags &amp; XCL_MAP) == 0)</span></a>
+<a name="751"><span class="lineNum">     751 </span>            :         {</a>
+<a name="752"><span class="lineNum">     752 </span>            :         /* No bits are set for characters &lt; 256. */</a>
+<a name="753"><span class="lineNum">     753 </span><span class="lineNoCov">          0 :         if (list[1] == 0) return (*xclass_flags &amp; XCL_NOT) == 0;</span></a>
+<a name="754"><span class="lineNum">     754 </span>            :         /* Might be an empty repeat. */</a>
+<a name="755"><span class="lineNum">     755 </span><span class="lineNoCov">          0 :         continue;</span></a>
+<a name="756"><span class="lineNum">     756 </span>            :         }</a>
+<a name="757"><span class="lineNum">     757 </span><span class="lineNoCov">          0 :       set2 = (uint8_t *)(xclass_flags + 1);</span></a>
+<a name="758"><span class="lineNum">     758 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="759"><span class="lineNum">     759 </span>            : #endif</a>
+<a name="760"><span class="lineNum">     760 </span>            : </a>
+<a name="761"><span class="lineNum">     761 </span><span class="lineNoCov">          0 :       case OP_NOT_DIGIT:</span></a>
+<a name="762"><span class="lineNum">     762 </span><span class="lineNoCov">          0 :       invert_bits = TRUE;</span></a>
+<a name="763"><span class="lineNum">     763 </span>            :       /* Fall through */</a>
+<a name="764"><span class="lineNum">     764 </span><span class="lineCov">         18 :       case OP_DIGIT:</span></a>
+<a name="765"><span class="lineNum">     765 </span><span class="lineCov">         18 :       set2 = (uint8_t *)(cb-&gt;cbits + cbit_digit);</span></a>
+<a name="766"><span class="lineNum">     766 </span><span class="lineCov">         18 :       break;</span></a>
+<a name="767"><span class="lineNum">     767 </span>            : </a>
+<a name="768"><span class="lineNum">     768 </span><span class="lineNoCov">          0 :       case OP_NOT_WHITESPACE:</span></a>
+<a name="769"><span class="lineNum">     769 </span><span class="lineNoCov">          0 :       invert_bits = TRUE;</span></a>
+<a name="770"><span class="lineNum">     770 </span>            :       /* Fall through */</a>
+<a name="771"><span class="lineNum">     771 </span><span class="lineCov">         21 :       case OP_WHITESPACE:</span></a>
+<a name="772"><span class="lineNum">     772 </span><span class="lineCov">         21 :       set2 = (uint8_t *)(cb-&gt;cbits + cbit_space);</span></a>
+<a name="773"><span class="lineNum">     773 </span><span class="lineCov">         21 :       break;</span></a>
+<a name="774"><span class="lineNum">     774 </span>            : </a>
+<a name="775"><span class="lineNum">     775 </span><span class="lineNoCov">          0 :       case OP_NOT_WORDCHAR:</span></a>
+<a name="776"><span class="lineNum">     776 </span><span class="lineNoCov">          0 :       invert_bits = TRUE;</span></a>
+<a name="777"><span class="lineNum">     777 </span>            :       /* Fall through */</a>
+<a name="778"><span class="lineNum">     778 </span><span class="lineNoCov">          0 :       case OP_WORDCHAR:</span></a>
+<a name="779"><span class="lineNum">     779 </span><span class="lineNoCov">          0 :       set2 = (uint8_t *)(cb-&gt;cbits + cbit_word);</span></a>
+<a name="780"><span class="lineNum">     780 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="781"><span class="lineNum">     781 </span>            : </a>
+<a name="782"><span class="lineNum">     782 </span><span class="lineCov">       1182 :       default:</span></a>
+<a name="783"><span class="lineNum">     783 </span><span class="lineCov">       1182 :       return FALSE;</span></a>
+<a name="784"><span class="lineNum">     784 </span>            :       }</a>
+<a name="785"><span class="lineNum">     785 </span>            : </a>
+<a name="786"><span class="lineNum">     786 </span>            :     /* Because the bit sets are unaligned bytes, we need to perform byte</a>
+<a name="787"><span class="lineNum">     787 </span>            :     comparison here. */</a>
+<a name="788"><span class="lineNum">     788 </span>            : </a>
+<a name="789"><span class="lineNum">     789 </span><span class="lineCov">        873 :     set_end = set1 + 32;</span></a>
+<a name="790"><span class="lineNum">     790 </span><span class="lineCov">        873 :     if (invert_bits)</span></a>
+<a name="791"><span class="lineNum">     791 </span>            :       {</a>
+<a name="792"><span class="lineNum">     792 </span>            :       do</a>
+<a name="793"><span class="lineNum">     793 </span>            :         {</a>
+<a name="794"><span class="lineNum">     794 </span><span class="lineNoCov">          0 :         if ((*set1++ &amp; ~(*set2++)) != 0) return FALSE;</span></a>
+<a name="795"><span class="lineNum">     795 </span>            :         }</a>
+<a name="796"><span class="lineNum">     796 </span><span class="lineNoCov">          0 :       while (set1 &lt; set_end);</span></a>
+<a name="797"><span class="lineNum">     797 </span>            :       }</a>
+<a name="798"><span class="lineNum">     798 </span>            :     else</a>
+<a name="799"><span class="lineNum">     799 </span>            :       {</a>
+<a name="800"><span class="lineNum">     800 </span>            :       do</a>
+<a name="801"><span class="lineNum">     801 </span>            :         {</a>
+<a name="802"><span class="lineNum">     802 </span><span class="lineCov">      27468 :         if ((*set1++ &amp; *set2++) != 0) return FALSE;</span></a>
+<a name="803"><span class="lineNum">     803 </span>            :         }</a>
+<a name="804"><span class="lineNum">     804 </span><span class="lineCov">      27450 :       while (set1 &lt; set_end);</span></a>
+<a name="805"><span class="lineNum">     805 </span>            :       }</a>
+<a name="806"><span class="lineNum">     806 </span>            : </a>
+<a name="807"><span class="lineNum">     807 </span><span class="lineCov">        855 :     if (list[1] == 0) return TRUE;</span></a>
+<a name="808"><span class="lineNum">     808 </span>            :     /* Might be an empty repeat. */</a>
+<a name="809"><span class="lineNum">     809 </span><span class="lineCov">        210 :     continue;</span></a>
+<a name="810"><span class="lineNum">     810 </span>            :     }</a>
+<a name="811"><span class="lineNum">     811 </span>            : </a>
+<a name="812"><span class="lineNum">     812 </span>            :   /* Some property combinations also acceptable. Unicode property opcodes are</a>
+<a name="813"><span class="lineNum">     813 </span>            :   processed specially; the rest can be handled with a lookup table. */</a>
+<a name="814"><span class="lineNum">     814 </span>            : </a>
+<a name="815"><span class="lineNum">     815 </span>            :   else</a>
+<a name="816"><span class="lineNum">     816 </span>            :     {</a>
+<a name="817"><span class="lineNum">     817 </span>            :     uint32_t leftop, rightop;</a>
+<a name="818"><span class="lineNum">     818 </span>            : </a>
+<a name="819"><span class="lineNum">     819 </span><span class="lineCov">       2649 :     leftop = base_list[0];</span></a>
+<a name="820"><span class="lineNum">     820 </span><span class="lineCov">       2649 :     rightop = list[0];</span></a>
+<a name="821"><span class="lineNum">     821 </span>            : </a>
+<a name="822"><span class="lineNum">     822 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="823"><span class="lineNum">     823 </span><span class="lineCov">       2649 :     accepted = FALSE; /* Always set in non-unicode case. */</span></a>
+<a name="824"><span class="lineNum">     824 </span><span class="lineCov">       2649 :     if (leftop == OP_PROP || leftop == OP_NOTPROP)</span></a>
+<a name="825"><span class="lineNum">     825 </span>            :       {</a>
+<a name="826"><span class="lineNum">     826 </span><span class="lineNoCov">          0 :       if (rightop == OP_EOD)</span></a>
+<a name="827"><span class="lineNum">     827 </span><span class="lineNoCov">          0 :         accepted = TRUE;</span></a>
+<a name="828"><span class="lineNum">     828 </span><span class="lineNoCov">          0 :       else if (rightop == OP_PROP || rightop == OP_NOTPROP)</span></a>
+<a name="829"><span class="lineNum">     829 </span>            :         {</a>
+<a name="830"><span class="lineNum">     830 </span>            :         int n;</a>
+<a name="831"><span class="lineNum">     831 </span>            :         const uint8_t *p;</a>
+<a name="832"><span class="lineNum">     832 </span><span class="lineNoCov">          0 :         BOOL same = leftop == rightop;</span></a>
+<a name="833"><span class="lineNum">     833 </span><span class="lineNoCov">          0 :         BOOL lisprop = leftop == OP_PROP;</span></a>
+<a name="834"><span class="lineNum">     834 </span><span class="lineNoCov">          0 :         BOOL risprop = rightop == OP_PROP;</span></a>
+<a name="835"><span class="lineNum">     835 </span><span class="lineNoCov">          0 :         BOOL bothprop = lisprop &amp;&amp; risprop;</span></a>
+<a name="836"><span class="lineNum">     836 </span>            : </a>
+<a name="837"><span class="lineNum">     837 </span>            :         /* There's a table that specifies how each combination is to be</a>
+<a name="838"><span class="lineNum">     838 </span>            :         processed:</a>
+<a name="839"><span class="lineNum">     839 </span>            :           0   Always return FALSE (never auto-possessify)</a>
+<a name="840"><span class="lineNum">     840 </span>            :           1   Character groups are distinct (possessify if both are OP_PROP)</a>
+<a name="841"><span class="lineNum">     841 </span>            :           2   Check character categories in the same group (general or particular)</a>
+<a name="842"><span class="lineNum">     842 </span>            :           3   Return TRUE if the two opcodes are not the same</a>
+<a name="843"><span class="lineNum">     843 </span>            :           ... see comments below</a>
+<a name="844"><span class="lineNum">     844 </span>            :         */</a>
+<a name="845"><span class="lineNum">     845 </span>            : </a>
+<a name="846"><span class="lineNum">     846 </span><span class="lineNoCov">          0 :         n = propposstab[base_list[2]][list[2]];</span></a>
+<a name="847"><span class="lineNum">     847 </span><span class="lineNoCov">          0 :         switch(n)</span></a>
+<a name="848"><span class="lineNum">     848 </span>            :           {</a>
+<a name="849"><span class="lineNum">     849 </span><span class="lineNoCov">          0 :           case 0: break;</span></a>
+<a name="850"><span class="lineNum">     850 </span><span class="lineNoCov">          0 :           case 1: accepted = bothprop; break;</span></a>
+<a name="851"><span class="lineNum">     851 </span><span class="lineNoCov">          0 :           case 2: accepted = (base_list[3] == list[3]) != same; break;</span></a>
+<a name="852"><span class="lineNum">     852 </span><span class="lineNoCov">          0 :           case 3: accepted = !same; break;</span></a>
+<a name="853"><span class="lineNum">     853 </span>            : </a>
+<a name="854"><span class="lineNum">     854 </span><span class="lineNoCov">          0 :           case 4:  /* Left general category, right particular category */</span></a>
+<a name="855"><span class="lineNum">     855 </span><span class="lineNoCov">          0 :           accepted = risprop &amp;&amp; catposstab[base_list[3]][list[3]] == same;</span></a>
+<a name="856"><span class="lineNum">     856 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="857"><span class="lineNum">     857 </span>            : </a>
+<a name="858"><span class="lineNum">     858 </span><span class="lineNoCov">          0 :           case 5:  /* Right general category, left particular category */</span></a>
+<a name="859"><span class="lineNum">     859 </span><span class="lineNoCov">          0 :           accepted = lisprop &amp;&amp; catposstab[list[3]][base_list[3]] == same;</span></a>
+<a name="860"><span class="lineNum">     860 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="861"><span class="lineNum">     861 </span>            : </a>
+<a name="862"><span class="lineNum">     862 </span>            :           /* This code is logically tricky. Think hard before fiddling with it.</a>
+<a name="863"><span class="lineNum">     863 </span>            :           The posspropstab table has four entries per row. Each row relates to</a>
+<a name="864"><span class="lineNum">     864 </span>            :           one of PCRE's special properties such as ALNUM or SPACE or WORD.</a>
+<a name="865"><span class="lineNum">     865 </span>            :           Only WORD actually needs all four entries, but using repeats for the</a>
+<a name="866"><span class="lineNum">     866 </span>            :           others means they can all use the same code below.</a>
+<a name="867"><span class="lineNum">     867 </span>            : </a>
+<a name="868"><span class="lineNum">     868 </span>            :           The first two entries in each row are Unicode general categories, and</a>
+<a name="869"><span class="lineNum">     869 </span>            :           apply always, because all the characters they include are part of the</a>
+<a name="870"><span class="lineNum">     870 </span>            :           PCRE character set. The third and fourth entries are a general and a</a>
+<a name="871"><span class="lineNum">     871 </span>            :           particular category, respectively, that include one or more relevant</a>
+<a name="872"><span class="lineNum">     872 </span>            :           characters. One or the other is used, depending on whether the check</a>
+<a name="873"><span class="lineNum">     873 </span>            :           is for a general or a particular category. However, in both cases the</a>
+<a name="874"><span class="lineNum">     874 </span>            :           category contains more characters than the specials that are defined</a>
+<a name="875"><span class="lineNum">     875 </span>            :           for the property being tested against. Therefore, it cannot be used</a>
+<a name="876"><span class="lineNum">     876 </span>            :           in a NOTPROP case.</a>
+<a name="877"><span class="lineNum">     877 </span>            : </a>
+<a name="878"><span class="lineNum">     878 </span>            :           Example: the row for WORD contains ucp_L, ucp_N, ucp_P, ucp_Po.</a>
+<a name="879"><span class="lineNum">     879 </span>            :           Underscore is covered by ucp_P or ucp_Po. */</a>
+<a name="880"><span class="lineNum">     880 </span>            : </a>
+<a name="881"><span class="lineNum">     881 </span><span class="lineNoCov">          0 :           case 6:  /* Left alphanum vs right general category */</span></a>
+<a name="882"><span class="lineNum">     882 </span>            :           case 7:  /* Left space vs right general category */</a>
+<a name="883"><span class="lineNum">     883 </span>            :           case 8:  /* Left word vs right general category */</a>
+<a name="884"><span class="lineNum">     884 </span><span class="lineNoCov">          0 :           p = posspropstab[n-6];</span></a>
+<a name="885"><span class="lineNum">     885 </span><span class="lineNoCov">          0 :           accepted = risprop &amp;&amp; lisprop ==</span></a>
+<a name="886"><span class="lineNum">     886 </span><span class="lineNoCov">          0 :             (list[3] != p[0] &amp;&amp;</span></a>
+<a name="887"><span class="lineNum">     887 </span><span class="lineNoCov">          0 :              list[3] != p[1] &amp;&amp;</span></a>
+<a name="888"><span class="lineNum">     888 </span><span class="lineNoCov">          0 :             (list[3] != p[2] || !lisprop));</span></a>
+<a name="889"><span class="lineNum">     889 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="890"><span class="lineNum">     890 </span>            : </a>
+<a name="891"><span class="lineNum">     891 </span><span class="lineNoCov">          0 :           case 9:   /* Right alphanum vs left general category */</span></a>
+<a name="892"><span class="lineNum">     892 </span>            :           case 10:  /* Right space vs left general category */</a>
+<a name="893"><span class="lineNum">     893 </span>            :           case 11:  /* Right word vs left general category */</a>
+<a name="894"><span class="lineNum">     894 </span><span class="lineNoCov">          0 :           p = posspropstab[n-9];</span></a>
+<a name="895"><span class="lineNum">     895 </span><span class="lineNoCov">          0 :           accepted = lisprop &amp;&amp; risprop ==</span></a>
+<a name="896"><span class="lineNum">     896 </span><span class="lineNoCov">          0 :             (base_list[3] != p[0] &amp;&amp;</span></a>
+<a name="897"><span class="lineNum">     897 </span><span class="lineNoCov">          0 :              base_list[3] != p[1] &amp;&amp;</span></a>
+<a name="898"><span class="lineNum">     898 </span><span class="lineNoCov">          0 :             (base_list[3] != p[2] || !risprop));</span></a>
+<a name="899"><span class="lineNum">     899 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="900"><span class="lineNum">     900 </span>            : </a>
+<a name="901"><span class="lineNum">     901 </span><span class="lineNoCov">          0 :           case 12:  /* Left alphanum vs right particular category */</span></a>
+<a name="902"><span class="lineNum">     902 </span>            :           case 13:  /* Left space vs right particular category */</a>
+<a name="903"><span class="lineNum">     903 </span>            :           case 14:  /* Left word vs right particular category */</a>
+<a name="904"><span class="lineNum">     904 </span><span class="lineNoCov">          0 :           p = posspropstab[n-12];</span></a>
+<a name="905"><span class="lineNum">     905 </span><span class="lineNoCov">          0 :           accepted = risprop &amp;&amp; lisprop ==</span></a>
+<a name="906"><span class="lineNum">     906 </span><span class="lineNoCov">          0 :             (catposstab[p[0]][list[3]] &amp;&amp;</span></a>
+<a name="907"><span class="lineNum">     907 </span><span class="lineNoCov">          0 :              catposstab[p[1]][list[3]] &amp;&amp;</span></a>
+<a name="908"><span class="lineNum">     908 </span><span class="lineNoCov">          0 :             (list[3] != p[3] || !lisprop));</span></a>
+<a name="909"><span class="lineNum">     909 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="910"><span class="lineNum">     910 </span>            : </a>
+<a name="911"><span class="lineNum">     911 </span><span class="lineNoCov">          0 :           case 15:  /* Right alphanum vs left particular category */</span></a>
+<a name="912"><span class="lineNum">     912 </span>            :           case 16:  /* Right space vs left particular category */</a>
+<a name="913"><span class="lineNum">     913 </span>            :           case 17:  /* Right word vs left particular category */</a>
+<a name="914"><span class="lineNum">     914 </span><span class="lineNoCov">          0 :           p = posspropstab[n-15];</span></a>
+<a name="915"><span class="lineNum">     915 </span><span class="lineNoCov">          0 :           accepted = lisprop &amp;&amp; risprop ==</span></a>
+<a name="916"><span class="lineNum">     916 </span><span class="lineNoCov">          0 :             (catposstab[p[0]][base_list[3]] &amp;&amp;</span></a>
+<a name="917"><span class="lineNum">     917 </span><span class="lineNoCov">          0 :              catposstab[p[1]][base_list[3]] &amp;&amp;</span></a>
+<a name="918"><span class="lineNum">     918 </span><span class="lineNoCov">          0 :             (base_list[3] != p[3] || !risprop));</span></a>
+<a name="919"><span class="lineNum">     919 </span><span class="lineNoCov">          0 :           break;</span></a>
+<a name="920"><span class="lineNum">     920 </span>            :           }</a>
+<a name="921"><span class="lineNum">     921 </span><span class="lineNoCov">          0 :         }</span></a>
+<a name="922"><span class="lineNum">     922 </span>            :       }</a>
+<a name="923"><span class="lineNum">     923 </span>            : </a>
+<a name="924"><span class="lineNum">     924 </span>            :     else</a>
+<a name="925"><span class="lineNum">     925 </span>            : #endif  /* SUPPORT_UNICODE */</a>
+<a name="926"><span class="lineNum">     926 </span>            : </a>
+<a name="927"><span class="lineNum">     927 </span><span class="lineCov">       5298 :     accepted = leftop &gt;= FIRST_AUTOTAB_OP &amp;&amp; leftop &lt;= LAST_AUTOTAB_LEFT_OP &amp;&amp;</span></a>
+<a name="928"><span class="lineNum">     928 </span><span class="lineCov">       7932 :            rightop &gt;= FIRST_AUTOTAB_OP &amp;&amp; rightop &lt;= LAST_AUTOTAB_RIGHT_OP &amp;&amp;</span></a>
+<a name="929"><span class="lineNum">     929 </span><span class="lineCov">       2634 :            autoposstab[leftop - FIRST_AUTOTAB_OP][rightop - FIRST_AUTOTAB_OP];</span></a>
+<a name="930"><span class="lineNum">     930 </span>            : </a>
+<a name="931"><span class="lineNum">     931 </span><span class="lineCov">       2649 :     if (!accepted) return FALSE;</span></a>
+<a name="932"><span class="lineNum">     932 </span>            : </a>
+<a name="933"><span class="lineNum">     933 </span><span class="lineCov">         87 :     if (list[1] == 0) return TRUE;</span></a>
+<a name="934"><span class="lineNum">     934 </span>            :     /* Might be an empty repeat. */</a>
+<a name="935"><span class="lineNum">     935 </span><span class="lineCov">         33 :     continue;</span></a>
+<a name="936"><span class="lineNum">     936 </span>            :     }</a>
+<a name="937"><span class="lineNum">     937 </span>            : </a>
+<a name="938"><span class="lineNum">     938 </span>            :   /* Control reaches here only if one of the items is a small character list.</a>
+<a name="939"><span class="lineNum">     939 </span>            :   All characters are checked against the other side. */</a>
+<a name="940"><span class="lineNum">     940 </span>            : </a>
+<a name="941"><span class="lineNum">     941 </span>            :   do</a>
+<a name="942"><span class="lineNum">     942 </span>            :     {</a>
+<a name="943"><span class="lineNum">     943 </span><span class="lineCov">      40375 :     chr = *chr_ptr;</span></a>
+<a name="944"><span class="lineNum">     944 </span>            : </a>
+<a name="945"><span class="lineNum">     945 </span><span class="lineCov">      40375 :     switch(list_ptr[0])</span></a>
+<a name="946"><span class="lineNum">     946 </span>            :       {</a>
+<a name="947"><span class="lineNum">     947 </span><span class="lineCov">      14028 :       case OP_CHAR:</span></a>
+<a name="948"><span class="lineNum">     948 </span><span class="lineCov">      14028 :       ochr_ptr = list_ptr + 2;</span></a>
+<a name="949"><span class="lineNum">     949 </span>            :       do</a>
+<a name="950"><span class="lineNum">     950 </span>            :         {</a>
+<a name="951"><span class="lineNum">     951 </span><span class="lineCov">      14028 :         if (chr == *ochr_ptr) return FALSE;</span></a>
+<a name="952"><span class="lineNum">     952 </span><span class="lineCov">       5034 :         ochr_ptr++;</span></a>
+<a name="953"><span class="lineNum">     953 </span>            :         }</a>
+<a name="954"><span class="lineNum">     954 </span><span class="lineCov">       5034 :       while(*ochr_ptr != NOTACHAR);</span></a>
+<a name="955"><span class="lineNum">     955 </span><span class="lineCov">       5034 :       break;</span></a>
+<a name="956"><span class="lineNum">     956 </span>            : </a>
+<a name="957"><span class="lineNum">     957 </span><span class="lineCov">       2268 :       case OP_NOT:</span></a>
+<a name="958"><span class="lineNum">     958 </span><span class="lineCov">       2268 :       ochr_ptr = list_ptr + 2;</span></a>
+<a name="959"><span class="lineNum">     959 </span>            :       do</a>
+<a name="960"><span class="lineNum">     960 </span>            :         {</a>
+<a name="961"><span class="lineNum">     961 </span><span class="lineCov">       2268 :         if (chr == *ochr_ptr)</span></a>
+<a name="962"><span class="lineNum">     962 </span><span class="lineCov">       2268 :           break;</span></a>
+<a name="963"><span class="lineNum">     963 </span><span class="lineNoCov">          0 :         ochr_ptr++;</span></a>
+<a name="964"><span class="lineNum">     964 </span>            :         }</a>
+<a name="965"><span class="lineNum">     965 </span><span class="lineNoCov">          0 :       while(*ochr_ptr != NOTACHAR);</span></a>
+<a name="966"><span class="lineNum">     966 </span><span class="lineCov">       2268 :       if (*ochr_ptr == NOTACHAR) return FALSE;   /* Not found */</span></a>
+<a name="967"><span class="lineNum">     967 </span><span class="lineCov">       2268 :       break;</span></a>
+<a name="968"><span class="lineNum">     968 </span>            : </a>
+<a name="969"><span class="lineNum">     969 </span>            :       /* Note that OP_DIGIT etc. are generated only when PCRE2_UCP is *not*</a>
+<a name="970"><span class="lineNum">     970 </span>            :       set. When it is set, \d etc. are converted into OP_(NOT_)PROP codes. */</a>
+<a name="971"><span class="lineNum">     971 </span>            : </a>
+<a name="972"><span class="lineNum">     972 </span><span class="lineCov">         54 :       case OP_DIGIT:</span></a>
+<a name="973"><span class="lineNum">     973 </span><span class="lineCov">         54 :       if (chr &lt; 256 &amp;&amp; (cb-&gt;ctypes[chr] &amp; ctype_digit) != 0) return FALSE;</span></a>
+<a name="974"><span class="lineNum">     974 </span><span class="lineCov">         54 :       break;</span></a>
+<a name="975"><span class="lineNum">     975 </span>            : </a>
+<a name="976"><span class="lineNum">     976 </span><span class="lineCov">          3 :       case OP_NOT_DIGIT:</span></a>
+<a name="977"><span class="lineNum">     977 </span><span class="lineCov">          3 :       if (chr &gt; 255 || (cb-&gt;ctypes[chr] &amp; ctype_digit) == 0) return FALSE;</span></a>
+<a name="978"><span class="lineNum">     978 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="979"><span class="lineNum">     979 </span>            : </a>
+<a name="980"><span class="lineNum">     980 </span><span class="lineCov">        147 :       case OP_WHITESPACE:</span></a>
+<a name="981"><span class="lineNum">     981 </span><span class="lineCov">        147 :       if (chr &lt; 256 &amp;&amp; (cb-&gt;ctypes[chr] &amp; ctype_space) != 0) return FALSE;</span></a>
+<a name="982"><span class="lineNum">     982 </span><span class="lineCov">        147 :       break;</span></a>
+<a name="983"><span class="lineNum">     983 </span>            : </a>
+<a name="984"><span class="lineNum">     984 </span><span class="lineNoCov">          0 :       case OP_NOT_WHITESPACE:</span></a>
+<a name="985"><span class="lineNum">     985 </span><span class="lineNoCov">          0 :       if (chr &gt; 255 || (cb-&gt;ctypes[chr] &amp; ctype_space) == 0) return FALSE;</span></a>
+<a name="986"><span class="lineNum">     986 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="987"><span class="lineNum">     987 </span>            : </a>
+<a name="988"><span class="lineNum">     988 </span><span class="lineCov">         72 :       case OP_WORDCHAR:</span></a>
+<a name="989"><span class="lineNum">     989 </span><span class="lineCov">         72 :       if (chr &lt; 255 &amp;&amp; (cb-&gt;ctypes[chr] &amp; ctype_word) != 0) return FALSE;</span></a>
+<a name="990"><span class="lineNum">     990 </span><span class="lineCov">         72 :       break;</span></a>
+<a name="991"><span class="lineNum">     991 </span>            : </a>
+<a name="992"><span class="lineNum">     992 </span><span class="lineNoCov">          0 :       case OP_NOT_WORDCHAR:</span></a>
+<a name="993"><span class="lineNum">     993 </span><span class="lineNoCov">          0 :       if (chr &gt; 255 || (cb-&gt;ctypes[chr] &amp; ctype_word) == 0) return FALSE;</span></a>
+<a name="994"><span class="lineNum">     994 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="995"><span class="lineNum">     995 </span>            : </a>
+<a name="996"><span class="lineNum">     996 </span><span class="lineNoCov">          0 :       case OP_HSPACE:</span></a>
+<a name="997"><span class="lineNum">     997 </span>            :       switch(chr)</a>
+<a name="998"><span class="lineNum">     998 </span>            :         {</a>
+<a name="999"><span class="lineNum">     999 </span><span class="lineNoCov">          0 :         HSPACE_CASES: return FALSE;</span></a>
+<a name="1000"><span class="lineNum">    1000 </span><span class="lineNoCov">          0 :         default: break;</span></a>
+<a name="1001"><span class="lineNum">    1001 </span>            :         }</a>
+<a name="1002"><span class="lineNum">    1002 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1003"><span class="lineNum">    1003 </span>            : </a>
+<a name="1004"><span class="lineNum">    1004 </span><span class="lineNoCov">          0 :       case OP_NOT_HSPACE:</span></a>
+<a name="1005"><span class="lineNum">    1005 </span>            :       switch(chr)</a>
+<a name="1006"><span class="lineNum">    1006 </span>            :         {</a>
+<a name="1007"><span class="lineNum">    1007 </span><span class="lineNoCov">          0 :         HSPACE_CASES: break;</span></a>
+<a name="1008"><span class="lineNum">    1008 </span><span class="lineNoCov">          0 :         default: return FALSE;</span></a>
+<a name="1009"><span class="lineNum">    1009 </span>            :         }</a>
+<a name="1010"><span class="lineNum">    1010 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1011"><span class="lineNum">    1011 </span>            : </a>
+<a name="1012"><span class="lineNum">    1012 </span><span class="lineNoCov">          0 :       case OP_ANYNL:</span></a>
+<a name="1013"><span class="lineNum">    1013 </span>            :       case OP_VSPACE:</a>
+<a name="1014"><span class="lineNum">    1014 </span>            :       switch(chr)</a>
+<a name="1015"><span class="lineNum">    1015 </span>            :         {</a>
+<a name="1016"><span class="lineNum">    1016 </span><span class="lineNoCov">          0 :         VSPACE_CASES: return FALSE;</span></a>
+<a name="1017"><span class="lineNum">    1017 </span><span class="lineNoCov">          0 :         default: break;</span></a>
+<a name="1018"><span class="lineNum">    1018 </span>            :         }</a>
+<a name="1019"><span class="lineNum">    1019 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1020"><span class="lineNum">    1020 </span>            : </a>
+<a name="1021"><span class="lineNum">    1021 </span><span class="lineNoCov">          0 :       case OP_NOT_VSPACE:</span></a>
+<a name="1022"><span class="lineNum">    1022 </span>            :       switch(chr)</a>
+<a name="1023"><span class="lineNum">    1023 </span>            :         {</a>
+<a name="1024"><span class="lineNum">    1024 </span><span class="lineNoCov">          0 :         VSPACE_CASES: break;</span></a>
+<a name="1025"><span class="lineNum">    1025 </span><span class="lineNoCov">          0 :         default: return FALSE;</span></a>
+<a name="1026"><span class="lineNum">    1026 </span>            :         }</a>
+<a name="1027"><span class="lineNum">    1027 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1028"><span class="lineNum">    1028 </span>            : </a>
+<a name="1029"><span class="lineNum">    1029 </span><span class="lineCov">        168 :       case OP_DOLL:</span></a>
+<a name="1030"><span class="lineNum">    1030 </span>            :       case OP_EODN:</a>
+<a name="1031"><span class="lineNum">    1031 </span>            :       switch (chr)</a>
+<a name="1032"><span class="lineNum">    1032 </span>            :         {</a>
+<a name="1033"><span class="lineNum">    1033 </span><span class="lineCov">        117 :         case CHAR_CR:</span></a>
+<a name="1034"><span class="lineNum">    1034 </span>            :         case CHAR_LF:</a>
+<a name="1035"><span class="lineNum">    1035 </span>            :         case CHAR_VT:</a>
+<a name="1036"><span class="lineNum">    1036 </span>            :         case CHAR_FF:</a>
+<a name="1037"><span class="lineNum">    1037 </span>            :         case CHAR_NEL:</a>
+<a name="1038"><span class="lineNum">    1038 </span>            : #ifndef EBCDIC</a>
+<a name="1039"><span class="lineNum">    1039 </span>            :         case 0x2028:</a>
+<a name="1040"><span class="lineNum">    1040 </span>            :         case 0x2029:</a>
+<a name="1041"><span class="lineNum">    1041 </span>            : #endif  /* Not EBCDIC */</a>
+<a name="1042"><span class="lineNum">    1042 </span><span class="lineCov">        117 :         return FALSE;</span></a>
+<a name="1043"><span class="lineNum">    1043 </span>            :         }</a>
+<a name="1044"><span class="lineNum">    1044 </span><span class="lineCov">         51 :       break;</span></a>
+<a name="1045"><span class="lineNum">    1045 </span>            : </a>
+<a name="1046"><span class="lineNum">    1046 </span><span class="lineNoCov">          0 :       case OP_EOD:    /* Can always possessify before \z */</span></a>
+<a name="1047"><span class="lineNum">    1047 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1048"><span class="lineNum">    1048 </span>            : </a>
+<a name="1049"><span class="lineNum">    1049 </span>            : #ifdef SUPPORT_UNICODE</a>
+<a name="1050"><span class="lineNum">    1050 </span><span class="lineNoCov">          0 :       case OP_PROP:</span></a>
+<a name="1051"><span class="lineNum">    1051 </span>            :       case OP_NOTPROP:</a>
+<a name="1052"><span class="lineNum">    1052 </span><span class="lineNoCov">          0 :       if (!check_char_prop(chr, list_ptr[2], list_ptr[3],</span></a>
+<a name="1053"><span class="lineNum">    1053 </span><span class="lineNoCov">          0 :             list_ptr[0] == OP_NOTPROP))</span></a>
+<a name="1054"><span class="lineNum">    1054 </span><span class="lineNoCov">          0 :         return FALSE;</span></a>
+<a name="1055"><span class="lineNum">    1055 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="1056"><span class="lineNum">    1056 </span>            : #endif</a>
+<a name="1057"><span class="lineNum">    1057 </span>            : </a>
+<a name="1058"><span class="lineNum">    1058 </span><span class="lineCov">       4539 :       case OP_NCLASS:</span></a>
+<a name="1059"><span class="lineNum">    1059 </span><span class="lineCov">       4539 :       if (chr &gt; 255) return FALSE;</span></a>
+<a name="1060"><span class="lineNum">    1060 </span>            :       /* Fall through */</a>
+<a name="1061"><span class="lineNum">    1061 </span>            : </a>
+<a name="1062"><span class="lineNum">    1062 </span>            :       case OP_CLASS:</a>
+<a name="1063"><span class="lineNum">    1063 </span><span class="lineCov">      10246 :       if (chr &gt; 255) break;</span></a>
+<a name="1064"><span class="lineNum">    1064 </span><span class="lineCov">      10246 :       class_bitset = (uint8_t *)</span></a>
+<a name="1065"><span class="lineNum">    1065 </span><span class="lineCov">      10246 :         ((list_ptr == list ? code : base_end) - list_ptr[2]);</span></a>
+<a name="1066"><span class="lineNum">    1066 </span><span class="lineCov">      10246 :       if ((class_bitset[chr &gt;&gt; 3] &amp; (1u &lt;&lt; (chr &amp; 7))) != 0) return FALSE;</span></a>
+<a name="1067"><span class="lineNum">    1067 </span><span class="lineCov">      10198 :       break;</span></a>
+<a name="1068"><span class="lineNum">    1068 </span>            : </a>
+<a name="1069"><span class="lineNum">    1069 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="1070"><span class="lineNum">    1070 </span><span class="lineCov">          6 :       case OP_XCLASS:</span></a>
+<a name="1071"><span class="lineNum">    1071 </span><span class="lineCov">         12 :       if (PRIV(xclass)(chr, (list_ptr == list ? code : base_end) -</span></a>
+<a name="1072"><span class="lineNum">    1072 </span><span class="lineCov">          6 :           list_ptr[2] + LINK_SIZE, utf)) return FALSE;</span></a>
+<a name="1073"><span class="lineNum">    1073 </span><span class="lineCov">          6 :       break;</span></a>
+<a name="1074"><span class="lineNum">    1074 </span>            : #endif</a>
+<a name="1075"><span class="lineNum">    1075 </span>            : </a>
+<a name="1076"><span class="lineNum">    1076 </span><span class="lineCov">      13383 :       default:</span></a>
+<a name="1077"><span class="lineNum">    1077 </span><span class="lineCov">      13383 :       return FALSE;</span></a>
+<a name="1078"><span class="lineNum">    1078 </span>            :       }</a>
+<a name="1079"><span class="lineNum">    1079 </span>            : </a>
+<a name="1080"><span class="lineNum">    1080 </span><span class="lineCov">      17830 :     chr_ptr++;</span></a>
+<a name="1081"><span class="lineNum">    1081 </span>            :     }</a>
+<a name="1082"><span class="lineNum">    1082 </span><span class="lineCov">      17830 :   while(*chr_ptr != NOTACHAR);</span></a>
+<a name="1083"><span class="lineNum">    1083 </span>            : </a>
+<a name="1084"><span class="lineNum">    1084 </span>            :   /* At least one character must be matched from this opcode. */</a>
+<a name="1085"><span class="lineNum">    1085 </span>            : </a>
+<a name="1086"><span class="lineNum">    1086 </span><span class="lineCov">      17818 :   if (list[1] == 0) return TRUE;</span></a>
+<a name="1087"><span class="lineNum">    1087 </span>            :   }</a>
+<a name="1088"><span class="lineNum">    1088 </span>            : </a>
+<a name="1089"><span class="lineNum">    1089 </span>            : /* Control never reaches here. There used to be a fail-save return FALSE; here,</a>
+<a name="1090"><span class="lineNum">    1090 </span>            : but some compilers complain about an unreachable statement. */</a>
+<a name="1091"><span class="lineNum">    1091 </span>            : }</a>
+<a name="1092"><span class="lineNum">    1092 </span>            : </a>
+<a name="1093"><span class="lineNum">    1093 </span>            : </a>
+<a name="1094"><span class="lineNum">    1094 </span>            : </a>
+<a name="1095"><span class="lineNum">    1095 </span>            : /*************************************************</a>
+<a name="1096"><span class="lineNum">    1096 </span>            : *    Scan compiled regex for auto-possession     *</a>
+<a name="1097"><span class="lineNum">    1097 </span>            : *************************************************/</a>
+<a name="1098"><span class="lineNum">    1098 </span>            : </a>
+<a name="1099"><span class="lineNum">    1099 </span>            : /* Replaces single character iterations with their possessive alternatives</a>
+<a name="1100"><span class="lineNum">    1100 </span>            : if appropriate. This function modifies the compiled opcode! Hitting a</a>
+<a name="1101"><span class="lineNum">    1101 </span>            : non-existent opcode may indicate a bug in PCRE2, but it can also be caused if a</a>
+<a name="1102"><span class="lineNum">    1102 </span>            : bad UTF string was compiled with PCRE2_NO_UTF_CHECK. The rec_limit catches</a>
+<a name="1103"><span class="lineNum">    1103 </span>            : overly complicated or large patterns. In these cases, the check just stops,</a>
+<a name="1104"><span class="lineNum">    1104 </span>            : leaving the remainder of the pattern unpossessified.</a>
+<a name="1105"><span class="lineNum">    1105 </span>            : </a>
+<a name="1106"><span class="lineNum">    1106 </span>            : Arguments:</a>
+<a name="1107"><span class="lineNum">    1107 </span>            :   code        points to start of the byte code</a>
+<a name="1108"><span class="lineNum">    1108 </span>            :   cb          compile data block</a>
+<a name="1109"><span class="lineNum">    1109 </span>            : </a>
+<a name="1110"><span class="lineNum">    1110 </span>            : Returns:      0 for success</a>
+<a name="1111"><span class="lineNum">    1111 </span>            :               -1 if a non-existant opcode is encountered</a>
+<a name="1112"><span class="lineNum">    1112 </span>            : */</a>
+<a name="1113"><span class="lineNum">    1113 </span>            : </a>
+<a name="1114"><span class="lineNum">    1114 </span>            : int</a>
+<a name="1115"><span class="lineNum">    1115 </span><span class="lineCov">     125026 : PRIV(auto_possessify)(PCRE2_UCHAR *code, const compile_block *cb)</span></a>
+<a name="1116"><span class="lineNum">    1116 </span>            : {</a>
+<a name="1117"><span class="lineNum">    1117 </span>            : PCRE2_UCHAR c;</a>
+<a name="1118"><span class="lineNum">    1118 </span>            : PCRE2_SPTR end;</a>
+<a name="1119"><span class="lineNum">    1119 </span>            : PCRE2_UCHAR *repeat_opcode;</a>
+<a name="1120"><span class="lineNum">    1120 </span>            : uint32_t list[8];</a>
+<a name="1121"><span class="lineNum">    1121 </span><span class="lineCov">     125026 : int rec_limit = 1000;  /* Was 10,000 but clang+ASAN uses a lot of stack. */</span></a>
+<a name="1122"><span class="lineNum">    1122 </span><span class="lineCov">     125026 : BOOL utf = (cb-&gt;external_options &amp; PCRE2_UTF) != 0;</span></a>
+<a name="1123"><span class="lineNum">    1123 </span><span class="lineCov">     125026 : BOOL ucp = (cb-&gt;external_options &amp; PCRE2_UCP) != 0;</span></a>
+<a name="1124"><span class="lineNum">    1124 </span>            : </a>
+<a name="1125"><span class="lineNum">    1125 </span>            : for (;;)</a>
+<a name="1126"><span class="lineNum">    1126 </span>            :   {</a>
+<a name="1127"><span class="lineNum">    1127 </span><span class="lineCov">   27092200 :   c = *code;</span></a>
+<a name="1128"><span class="lineNum">    1128 </span>            : </a>
+<a name="1129"><span class="lineNum">    1129 </span><span class="lineCov">   27092200 :   if (c &gt;= OP_TABLE_LENGTH) return -1;   /* Something gone wrong */</span></a>
+<a name="1130"><span class="lineNum">    1130 </span>            : </a>
+<a name="1131"><span class="lineNum">    1131 </span><span class="lineCov">   27092200 :   if (c &gt;= OP_STAR &amp;&amp; c &lt;= OP_TYPEPOSUPTO)</span></a>
+<a name="1132"><span class="lineNum">    1132 </span>            :     {</a>
+<a name="1133"><span class="lineNum">    1133 </span><span class="lineCov">      60270 :     c -= get_repeat_base(c) - OP_STAR;</span></a>
+<a name="1134"><span class="lineNum">    1134 </span><span class="lineCov">      60270 :     end = (c &lt;= OP_MINUPTO) ?</span></a>
+<a name="1135"><span class="lineNum">    1135 </span><span class="lineCov">      60270 :       get_chr_property_list(code, utf, ucp, cb-&gt;fcc, list) : NULL;</span></a>
+<a name="1136"><span class="lineNum">    1136 </span><span class="lineCov">      60270 :     list[1] = c == OP_STAR || c == OP_PLUS || c == OP_QUERY || c == OP_UPTO;</span></a>
+<a name="1137"><span class="lineNum">    1137 </span>            : </a>
+<a name="1138"><span class="lineNum">    1138 </span><span class="lineCov">      60270 :     if (end != NULL &amp;&amp; compare_opcodes(end, utf, ucp, cb, list, end,</span></a>
+<a name="1139"><span class="lineNum">    1139 </span>            :         &amp;rec_limit))</a>
+<a name="1140"><span class="lineNum">    1140 </span>            :       {</a>
+<a name="1141"><span class="lineNum">    1141 </span><span class="lineCov">      12774 :       switch(c)</span></a>
+<a name="1142"><span class="lineNum">    1142 </span>            :         {</a>
+<a name="1143"><span class="lineNum">    1143 </span><span class="lineCov">        456 :         case OP_STAR:</span></a>
+<a name="1144"><span class="lineNum">    1144 </span><span class="lineCov">        456 :         *code += OP_POSSTAR - OP_STAR;</span></a>
+<a name="1145"><span class="lineNum">    1145 </span><span class="lineCov">        456 :         break;</span></a>
+<a name="1146"><span class="lineNum">    1146 </span>            : </a>
+<a name="1147"><span class="lineNum">    1147 </span><span class="lineNoCov">          0 :         case OP_MINSTAR:</span></a>
+<a name="1148"><span class="lineNum">    1148 </span><span class="lineNoCov">          0 :         *code += OP_POSSTAR - OP_MINSTAR;</span></a>
+<a name="1149"><span class="lineNum">    1149 </span><span class="lineNoCov">          0 :         break;</span></a>
+<a name="1150"><span class="lineNum">    1150 </span>            : </a>
+<a name="1151"><span class="lineNum">    1151 </span><span class="lineCov">       2553 :         case OP_PLUS:</span></a>
+<a name="1152"><span class="lineNum">    1152 </span><span class="lineCov">       2553 :         *code += OP_POSPLUS - OP_PLUS;</span></a>
+<a name="1153"><span class="lineNum">    1153 </span><span class="lineCov">       2553 :         break;</span></a>
+<a name="1154"><span class="lineNum">    1154 </span>            : </a>
+<a name="1155"><span class="lineNum">    1155 </span><span class="lineNoCov">          0 :         case OP_MINPLUS:</span></a>
+<a name="1156"><span class="lineNum">    1156 </span><span class="lineNoCov">          0 :         *code += OP_POSPLUS - OP_MINPLUS;</span></a>
+<a name="1157"><span class="lineNum">    1157 </span><span class="lineNoCov">          0 :         break;</span></a>
+<a name="1158"><span class="lineNum">    1158 </span>            : </a>
+<a name="1159"><span class="lineNum">    1159 </span><span class="lineCov">       9468 :         case OP_QUERY:</span></a>
+<a name="1160"><span class="lineNum">    1160 </span><span class="lineCov">       9468 :         *code += OP_POSQUERY - OP_QUERY;</span></a>
+<a name="1161"><span class="lineNum">    1161 </span><span class="lineCov">       9468 :         break;</span></a>
+<a name="1162"><span class="lineNum">    1162 </span>            : </a>
+<a name="1163"><span class="lineNum">    1163 </span><span class="lineNoCov">          0 :         case OP_MINQUERY:</span></a>
+<a name="1164"><span class="lineNum">    1164 </span><span class="lineNoCov">          0 :         *code += OP_POSQUERY - OP_MINQUERY;</span></a>
+<a name="1165"><span class="lineNum">    1165 </span><span class="lineNoCov">          0 :         break;</span></a>
+<a name="1166"><span class="lineNum">    1166 </span>            : </a>
+<a name="1167"><span class="lineNum">    1167 </span><span class="lineCov">        294 :         case OP_UPTO:</span></a>
+<a name="1168"><span class="lineNum">    1168 </span><span class="lineCov">        294 :         *code += OP_POSUPTO - OP_UPTO;</span></a>
+<a name="1169"><span class="lineNum">    1169 </span><span class="lineCov">        294 :         break;</span></a>
+<a name="1170"><span class="lineNum">    1170 </span>            : </a>
+<a name="1171"><span class="lineNum">    1171 </span><span class="lineCov">          3 :         case OP_MINUPTO:</span></a>
+<a name="1172"><span class="lineNum">    1172 </span><span class="lineCov">          3 :         *code += OP_POSUPTO - OP_MINUPTO;</span></a>
+<a name="1173"><span class="lineNum">    1173 </span><span class="lineCov">          3 :         break;</span></a>
+<a name="1174"><span class="lineNum">    1174 </span>            :         }</a>
+<a name="1175"><span class="lineNum">    1175 </span><span class="lineCov">      47496 :       }</span></a>
+<a name="1176"><span class="lineNum">    1176 </span><span class="lineCov">      60270 :     c = *code;</span></a>
+<a name="1177"><span class="lineNum">    1177 </span>            :     }</a>
+<a name="1178"><span class="lineNum">    1178 </span><span class="lineCov">   27032000 :   else if (c == OP_CLASS || c == OP_NCLASS || c == OP_XCLASS)</span></a>
+<a name="1179"><span class="lineNum">    1179 </span>            :     {</a>
+<a name="1180"><span class="lineNum">    1180 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="1181"><span class="lineNum">    1181 </span><span class="lineCov">      51037 :     if (c == OP_XCLASS)</span></a>
+<a name="1182"><span class="lineNum">    1182 </span><span class="lineCov">       1782 :       repeat_opcode = code + GET(code, 1);</span></a>
+<a name="1183"><span class="lineNum">    1183 </span>            :     else</a>
+<a name="1184"><span class="lineNum">    1184 </span>            : #endif</a>
+<a name="1185"><span class="lineNum">    1185 </span><span class="lineCov">      49255 :       repeat_opcode = code + 1 + (32 / sizeof(PCRE2_UCHAR));</span></a>
+<a name="1186"><span class="lineNum">    1186 </span>            : </a>
+<a name="1187"><span class="lineNum">    1187 </span><span class="lineCov">      51037 :     c = *repeat_opcode;</span></a>
+<a name="1188"><span class="lineNum">    1188 </span><span class="lineCov">      51037 :     if (c &gt;= OP_CRSTAR &amp;&amp; c &lt;= OP_CRMINRANGE)</span></a>
+<a name="1189"><span class="lineNum">    1189 </span>            :       {</a>
+<a name="1190"><span class="lineNum">    1190 </span>            :       /* The return from get_chr_property_list() will never be NULL when</a>
+<a name="1191"><span class="lineNum">    1191 </span>            :       *code (aka c) is one of the three class opcodes. However, gcc with</a>
+<a name="1192"><span class="lineNum">    1192 </span>            :       -fanalyzer notes that a NULL return is possible, and grumbles. Hence we</a>
+<a name="1193"><span class="lineNum">    1193 </span>            :       put in a check. */</a>
+<a name="1194"><span class="lineNum">    1194 </span>            : </a>
+<a name="1195"><span class="lineNum">    1195 </span><span class="lineCov">      16291 :       end = get_chr_property_list(code, utf, ucp, cb-&gt;fcc, list);</span></a>
+<a name="1196"><span class="lineNum">    1196 </span><span class="lineCov">      16291 :       list[1] = (c &amp; 1) == 0;</span></a>
+<a name="1197"><span class="lineNum">    1197 </span>            : </a>
+<a name="1198"><span class="lineNum">    1198 </span><span class="lineCov">      32582 :       if (end != NULL &amp;&amp;</span></a>
+<a name="1199"><span class="lineNum">    1199 </span><span class="lineCov">      16291 :           compare_opcodes(end, utf, ucp, cb, list, end, &amp;rec_limit))</span></a>
+<a name="1200"><span class="lineNum">    1200 </span>            :         {</a>
+<a name="1201"><span class="lineNum">    1201 </span><span class="lineCov">       7276 :         switch (c)</span></a>
+<a name="1202"><span class="lineNum">    1202 </span>            :           {</a>
+<a name="1203"><span class="lineNum">    1203 </span><span class="lineCov">       2277 :           case OP_CRSTAR:</span></a>
+<a name="1204"><span class="lineNum">    1204 </span>            :           case OP_CRMINSTAR:</a>
+<a name="1205"><span class="lineNum">    1205 </span><span class="lineCov">       2277 :           *repeat_opcode = OP_CRPOSSTAR;</span></a>
+<a name="1206"><span class="lineNum">    1206 </span><span class="lineCov">       2277 :           break;</span></a>
+<a name="1207"><span class="lineNum">    1207 </span>            : </a>
+<a name="1208"><span class="lineNum">    1208 </span><span class="lineCov">       2668 :           case OP_CRPLUS:</span></a>
+<a name="1209"><span class="lineNum">    1209 </span>            :           case OP_CRMINPLUS:</a>
+<a name="1210"><span class="lineNum">    1210 </span><span class="lineCov">       2668 :           *repeat_opcode = OP_CRPOSPLUS;</span></a>
+<a name="1211"><span class="lineNum">    1211 </span><span class="lineCov">       2668 :           break;</span></a>
+<a name="1212"><span class="lineNum">    1212 </span>            : </a>
+<a name="1213"><span class="lineNum">    1213 </span><span class="lineCov">         48 :           case OP_CRQUERY:</span></a>
+<a name="1214"><span class="lineNum">    1214 </span>            :           case OP_CRMINQUERY:</a>
+<a name="1215"><span class="lineNum">    1215 </span><span class="lineCov">         48 :           *repeat_opcode = OP_CRPOSQUERY;</span></a>
+<a name="1216"><span class="lineNum">    1216 </span><span class="lineCov">         48 :           break;</span></a>
+<a name="1217"><span class="lineNum">    1217 </span>            : </a>
+<a name="1218"><span class="lineNum">    1218 </span><span class="lineCov">       2283 :           case OP_CRRANGE:</span></a>
+<a name="1219"><span class="lineNum">    1219 </span>            :           case OP_CRMINRANGE:</a>
+<a name="1220"><span class="lineNum">    1220 </span><span class="lineCov">       2283 :           *repeat_opcode = OP_CRPOSRANGE;</span></a>
+<a name="1221"><span class="lineNum">    1221 </span><span class="lineCov">       2283 :           break;</span></a>
+<a name="1222"><span class="lineNum">    1222 </span>            :           }</a>
+<a name="1223"><span class="lineNum">    1223 </span><span class="lineCov">      43761 :         }</span></a>
+<a name="1224"><span class="lineNum">    1224 </span>            :       }</a>
+<a name="1225"><span class="lineNum">    1225 </span><span class="lineCov">      51037 :     c = *code;</span></a>
+<a name="1226"><span class="lineNum">    1226 </span>            :     }</a>
+<a name="1227"><span class="lineNum">    1227 </span>            : </a>
+<a name="1228"><span class="lineNum">    1228 </span><span class="lineCov">   27092200 :   switch(c)</span></a>
+<a name="1229"><span class="lineNum">    1229 </span>            :     {</a>
+<a name="1230"><span class="lineNum">    1230 </span><span class="lineCov">     125026 :     case OP_END:</span></a>
+<a name="1231"><span class="lineNum">    1231 </span><span class="lineCov">     125026 :     return 0;</span></a>
+<a name="1232"><span class="lineNum">    1232 </span>            : </a>
+<a name="1233"><span class="lineNum">    1233 </span><span class="lineCov">      18294 :     case OP_TYPESTAR:</span></a>
+<a name="1234"><span class="lineNum">    1234 </span>            :     case OP_TYPEMINSTAR:</a>
+<a name="1235"><span class="lineNum">    1235 </span>            :     case OP_TYPEPLUS:</a>
+<a name="1236"><span class="lineNum">    1236 </span>            :     case OP_TYPEMINPLUS:</a>
+<a name="1237"><span class="lineNum">    1237 </span>            :     case OP_TYPEQUERY:</a>
+<a name="1238"><span class="lineNum">    1238 </span>            :     case OP_TYPEMINQUERY:</a>
+<a name="1239"><span class="lineNum">    1239 </span>            :     case OP_TYPEPOSSTAR:</a>
+<a name="1240"><span class="lineNum">    1240 </span>            :     case OP_TYPEPOSPLUS:</a>
+<a name="1241"><span class="lineNum">    1241 </span>            :     case OP_TYPEPOSQUERY:</a>
+<a name="1242"><span class="lineNum">    1242 </span><span class="lineCov">      18294 :     if (code[1] == OP_PROP || code[1] == OP_NOTPROP) code += 2;</span></a>
+<a name="1243"><span class="lineNum">    1243 </span><span class="lineCov">      18294 :     break;</span></a>
+<a name="1244"><span class="lineNum">    1244 </span>            : </a>
+<a name="1245"><span class="lineNum">    1245 </span><span class="lineCov">        237 :     case OP_TYPEUPTO:</span></a>
+<a name="1246"><span class="lineNum">    1246 </span>            :     case OP_TYPEMINUPTO:</a>
+<a name="1247"><span class="lineNum">    1247 </span>            :     case OP_TYPEEXACT:</a>
+<a name="1248"><span class="lineNum">    1248 </span>            :     case OP_TYPEPOSUPTO:</a>
+<a name="1249"><span class="lineNum">    1249 </span><span class="lineCov">        237 :     if (code[1 + IMM2_SIZE] == OP_PROP || code[1 + IMM2_SIZE] == OP_NOTPROP)</span></a>
+<a name="1250"><span class="lineNum">    1250 </span><span class="lineCov">          6 :       code += 2;</span></a>
+<a name="1251"><span class="lineNum">    1251 </span><span class="lineCov">        237 :     break;</span></a>
+<a name="1252"><span class="lineNum">    1252 </span>            : </a>
+<a name="1253"><span class="lineNum">    1253 </span><span class="lineNoCov">          0 :     case OP_CALLOUT_STR:</span></a>
+<a name="1254"><span class="lineNum">    1254 </span><span class="lineNoCov">          0 :     code += GET(code, 1 + 2*LINK_SIZE);</span></a>
+<a name="1255"><span class="lineNum">    1255 </span><span class="lineNoCov">          0 :     break;</span></a>
+<a name="1256"><span class="lineNum">    1256 </span>            : </a>
+<a name="1257"><span class="lineNum">    1257 </span>            : #ifdef SUPPORT_WIDE_CHARS</a>
+<a name="1258"><span class="lineNum">    1258 </span><span class="lineCov">       1782 :     case OP_XCLASS:</span></a>
+<a name="1259"><span class="lineNum">    1259 </span><span class="lineCov">       1782 :     code += GET(code, 1);</span></a>
+<a name="1260"><span class="lineNum">    1260 </span><span class="lineCov">       1782 :     break;</span></a>
+<a name="1261"><span class="lineNum">    1261 </span>            : #endif</a>
+<a name="1262"><span class="lineNum">    1262 </span>            : </a>
+<a name="1263"><span class="lineNum">    1263 </span><span class="lineCov">          6 :     case OP_MARK:</span></a>
+<a name="1264"><span class="lineNum">    1264 </span>            :     case OP_COMMIT_ARG:</a>
+<a name="1265"><span class="lineNum">    1265 </span>            :     case OP_PRUNE_ARG:</a>
+<a name="1266"><span class="lineNum">    1266 </span>            :     case OP_SKIP_ARG:</a>
+<a name="1267"><span class="lineNum">    1267 </span>            :     case OP_THEN_ARG:</a>
+<a name="1268"><span class="lineNum">    1268 </span><span class="lineCov">          6 :     code += code[1];</span></a>
+<a name="1269"><span class="lineNum">    1269 </span><span class="lineCov">          6 :     break;</span></a>
+<a name="1270"><span class="lineNum">    1270 </span>            :     }</a>
+<a name="1271"><span class="lineNum">    1271 </span>            : </a>
+<a name="1272"><span class="lineNum">    1272 </span>            :   /* Add in the fixed length from the table */</a>
+<a name="1273"><span class="lineNum">    1273 </span>            : </a>
+<a name="1274"><span class="lineNum">    1274 </span><span class="lineCov">   26967200 :   code += PRIV(OP_lengths)[c];</span></a>
+<a name="1275"><span class="lineNum">    1275 </span>            : </a>
+<a name="1276"><span class="lineNum">    1276 </span>            :   /* In UTF-8 and UTF-16 modes, opcodes that are followed by a character may be</a>
+<a name="1277"><span class="lineNum">    1277 </span>            :   followed by a multi-byte character. The length in the table is a minimum, so</a>
+<a name="1278"><span class="lineNum">    1278 </span>            :   we have to arrange to skip the extra code units. */</a>
+<a name="1279"><span class="lineNum">    1279 </span>            : </a>
+<a name="1280"><span class="lineNum">    1280 </span>            : #ifdef MAYBE_UTF_MULTI</a>
+<a name="1281"><span class="lineNum">    1281 </span><span class="lineCov">   26967200 :   if (utf) switch(c)</span></a>
+<a name="1282"><span class="lineNum">    1282 </span>            :     {</a>
+<a name="1283"><span class="lineNum">    1283 </span><span class="lineCov">       9750 :     case OP_CHAR:</span></a>
+<a name="1284"><span class="lineNum">    1284 </span>            :     case OP_CHARI:</a>
+<a name="1285"><span class="lineNum">    1285 </span>            :     case OP_NOT:</a>
+<a name="1286"><span class="lineNum">    1286 </span>            :     case OP_NOTI:</a>
+<a name="1287"><span class="lineNum">    1287 </span>            :     case OP_STAR:</a>
+<a name="1288"><span class="lineNum">    1288 </span>            :     case OP_MINSTAR:</a>
+<a name="1289"><span class="lineNum">    1289 </span>            :     case OP_PLUS:</a>
+<a name="1290"><span class="lineNum">    1290 </span>            :     case OP_MINPLUS:</a>
+<a name="1291"><span class="lineNum">    1291 </span>            :     case OP_QUERY:</a>
+<a name="1292"><span class="lineNum">    1292 </span>            :     case OP_MINQUERY:</a>
+<a name="1293"><span class="lineNum">    1293 </span>            :     case OP_UPTO:</a>
+<a name="1294"><span class="lineNum">    1294 </span>            :     case OP_MINUPTO:</a>
+<a name="1295"><span class="lineNum">    1295 </span>            :     case OP_EXACT:</a>
+<a name="1296"><span class="lineNum">    1296 </span>            :     case OP_POSSTAR:</a>
+<a name="1297"><span class="lineNum">    1297 </span>            :     case OP_POSPLUS:</a>
+<a name="1298"><span class="lineNum">    1298 </span>            :     case OP_POSQUERY:</a>
+<a name="1299"><span class="lineNum">    1299 </span>            :     case OP_POSUPTO:</a>
+<a name="1300"><span class="lineNum">    1300 </span>            :     case OP_STARI:</a>
+<a name="1301"><span class="lineNum">    1301 </span>            :     case OP_MINSTARI:</a>
+<a name="1302"><span class="lineNum">    1302 </span>            :     case OP_PLUSI:</a>
+<a name="1303"><span class="lineNum">    1303 </span>            :     case OP_MINPLUSI:</a>
+<a name="1304"><span class="lineNum">    1304 </span>            :     case OP_QUERYI:</a>
+<a name="1305"><span class="lineNum">    1305 </span>            :     case OP_MINQUERYI:</a>
+<a name="1306"><span class="lineNum">    1306 </span>            :     case OP_UPTOI:</a>
+<a name="1307"><span class="lineNum">    1307 </span>            :     case OP_MINUPTOI:</a>
+<a name="1308"><span class="lineNum">    1308 </span>            :     case OP_EXACTI:</a>
+<a name="1309"><span class="lineNum">    1309 </span>            :     case OP_POSSTARI:</a>
+<a name="1310"><span class="lineNum">    1310 </span>            :     case OP_POSPLUSI:</a>
+<a name="1311"><span class="lineNum">    1311 </span>            :     case OP_POSQUERYI:</a>
+<a name="1312"><span class="lineNum">    1312 </span>            :     case OP_POSUPTOI:</a>
+<a name="1313"><span class="lineNum">    1313 </span>            :     case OP_NOTSTAR:</a>
+<a name="1314"><span class="lineNum">    1314 </span>            :     case OP_NOTMINSTAR:</a>
+<a name="1315"><span class="lineNum">    1315 </span>            :     case OP_NOTPLUS:</a>
+<a name="1316"><span class="lineNum">    1316 </span>            :     case OP_NOTMINPLUS:</a>
+<a name="1317"><span class="lineNum">    1317 </span>            :     case OP_NOTQUERY:</a>
+<a name="1318"><span class="lineNum">    1318 </span>            :     case OP_NOTMINQUERY:</a>
+<a name="1319"><span class="lineNum">    1319 </span>            :     case OP_NOTUPTO:</a>
+<a name="1320"><span class="lineNum">    1320 </span>            :     case OP_NOTMINUPTO:</a>
+<a name="1321"><span class="lineNum">    1321 </span>            :     case OP_NOTEXACT:</a>
+<a name="1322"><span class="lineNum">    1322 </span>            :     case OP_NOTPOSSTAR:</a>
+<a name="1323"><span class="lineNum">    1323 </span>            :     case OP_NOTPOSPLUS:</a>
+<a name="1324"><span class="lineNum">    1324 </span>            :     case OP_NOTPOSQUERY:</a>
+<a name="1325"><span class="lineNum">    1325 </span>            :     case OP_NOTPOSUPTO:</a>
+<a name="1326"><span class="lineNum">    1326 </span>            :     case OP_NOTSTARI:</a>
+<a name="1327"><span class="lineNum">    1327 </span>            :     case OP_NOTMINSTARI:</a>
+<a name="1328"><span class="lineNum">    1328 </span>            :     case OP_NOTPLUSI:</a>
+<a name="1329"><span class="lineNum">    1329 </span>            :     case OP_NOTMINPLUSI:</a>
+<a name="1330"><span class="lineNum">    1330 </span>            :     case OP_NOTQUERYI:</a>
+<a name="1331"><span class="lineNum">    1331 </span>            :     case OP_NOTMINQUERYI:</a>
+<a name="1332"><span class="lineNum">    1332 </span>            :     case OP_NOTUPTOI:</a>
+<a name="1333"><span class="lineNum">    1333 </span>            :     case OP_NOTMINUPTOI:</a>
+<a name="1334"><span class="lineNum">    1334 </span>            :     case OP_NOTEXACTI:</a>
+<a name="1335"><span class="lineNum">    1335 </span>            :     case OP_NOTPOSSTARI:</a>
+<a name="1336"><span class="lineNum">    1336 </span>            :     case OP_NOTPOSPLUSI:</a>
+<a name="1337"><span class="lineNum">    1337 </span>            :     case OP_NOTPOSQUERYI:</a>
+<a name="1338"><span class="lineNum">    1338 </span>            :     case OP_NOTPOSUPTOI:</a>
+<a name="1339"><span class="lineNum">    1339 </span><span class="lineCov">       9750 :     if (HAS_EXTRALEN(code[-1])) code += GET_EXTRALEN(code[-1]);</span></a>
+<a name="1340"><span class="lineNum">    1340 </span><span class="lineCov">       9750 :     break;</span></a>
+<a name="1341"><span class="lineNum">    1341 </span>            :     }</a>
+<a name="1342"><span class="lineNum">    1342 </span>            : #else</a>
+<a name="1343"><span class="lineNum">    1343 </span>            :   (void)(utf);  /* Keep compiler happy by referencing function argument */</a>
+<a name="1344"><span class="lineNum">    1344 </span>            : #endif  /* SUPPORT_WIDE_CHARS */</a>
+<a name="1345"><span class="lineNum">    1345 </span><span class="lineCov">   26967200 :   }</span></a>
+<a name="1346"><span class="lineNum">    1346 </span>            : }</a>
+<a name="1347"><span class="lineNum">    1347 </span>            : </a>
+<a name="1348"><span class="lineNum">    1348 </span>            : /* End of pcre2_auto_possess.c */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

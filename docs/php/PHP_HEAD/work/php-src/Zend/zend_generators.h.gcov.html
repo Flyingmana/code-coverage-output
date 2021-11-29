@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - tests.info - /work/php-src/Zend/zend_generators.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">work/php-src/Zend</a> - zend_generators.h<span style="font-size: 80%;"> (source / <a href="zend_generators.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">tests.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-11-29 14:13:02</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="3"><span class="lineNum">       3 </span>            :    | Zend Engine                                                          |</a>
+<a name="4"><span class="lineNum">       4 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="5"><span class="lineNum">       5 </span>            :    | Copyright (c) Zend Technologies Ltd. (http://www.zend.com)           |</a>
+<a name="6"><span class="lineNum">       6 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="7"><span class="lineNum">       7 </span>            :    | This source file is subject to version 2.00 of the Zend license,     |</a>
+<a name="8"><span class="lineNum">       8 </span>            :    | that is bundled with this package in the file LICENSE, and is        |</a>
+<a name="9"><span class="lineNum">       9 </span>            :    | available through the world-wide-web at the following url:           |</a>
+<a name="10"><span class="lineNum">      10 </span>            :    | http://www.zend.com/license/2_00.txt.                                |</a>
+<a name="11"><span class="lineNum">      11 </span>            :    | If you did not receive a copy of the Zend license and are unable to  |</a>
+<a name="12"><span class="lineNum">      12 </span>            :    | obtain it through the world-wide-web, please send a note to          |</a>
+<a name="13"><span class="lineNum">      13 </span>            :    | license@zend.com so we can mail you a copy immediately.              |</a>
+<a name="14"><span class="lineNum">      14 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="15"><span class="lineNum">      15 </span>            :    | Authors: Nikita Popov &lt;nikic@php.net&gt;                                |</a>
+<a name="16"><span class="lineNum">      16 </span>            :    |          Bob Weinand &lt;bobwei9@hotmail.com&gt;                           |</a>
+<a name="17"><span class="lineNum">      17 </span>            :    +----------------------------------------------------------------------+</a>
+<a name="18"><span class="lineNum">      18 </span>            : */</a>
+<a name="19"><span class="lineNum">      19 </span>            : </a>
+<a name="20"><span class="lineNum">      20 </span>            : #ifndef ZEND_GENERATORS_H</a>
+<a name="21"><span class="lineNum">      21 </span>            : #define ZEND_GENERATORS_H</a>
+<a name="22"><span class="lineNum">      22 </span>            : </a>
+<a name="23"><span class="lineNum">      23 </span>            : BEGIN_EXTERN_C()</a>
+<a name="24"><span class="lineNum">      24 </span>            : </a>
+<a name="25"><span class="lineNum">      25 </span>            : extern ZEND_API zend_class_entry *zend_ce_generator;</a>
+<a name="26"><span class="lineNum">      26 </span>            : extern ZEND_API zend_class_entry *zend_ce_ClosedGeneratorException;</a>
+<a name="27"><span class="lineNum">      27 </span>            : </a>
+<a name="28"><span class="lineNum">      28 </span>            : typedef struct _zend_generator_node zend_generator_node;</a>
+<a name="29"><span class="lineNum">      29 </span>            : typedef struct _zend_generator zend_generator;</a>
+<a name="30"><span class="lineNum">      30 </span>            : </a>
+<a name="31"><span class="lineNum">      31 </span>            : /* The concept of `yield from` exposes problems when accessed at different levels of the chain of delegated generators. We need to be able to reference the currently executed Generator in all cases and still being able to access the return values of finished Generators.</a>
+<a name="32"><span class="lineNum">      32 </span>            :  * The solution to this problem is a doubly-linked tree, which all Generators referenced in maintain a reference to. It should be impossible to avoid walking the tree in all cases. This way, we only need tree walks from leaf to root in case where some part of the `yield from` chain is passed to another `yield from`. (Update of leaf node pointer and list of multi-children nodes needed when leaf gets a child in direct path from leaf to root node.) But only in that case, which should be a fairly rare case (which is then possible, but not totally cheap).</a>
+<a name="33"><span class="lineNum">      33 </span>            :  * The root of the tree is then the currently executed Generator. The subnodes of the tree (all except the root node) are all Generators which do `yield from`. Each node of the tree knows a pointer to one leaf descendant node. Each node with multiple children needs a list of all leaf descendant nodes paired with pointers to their respective child node. (The stack is determined by leaf node pointers) Nodes with only one child just don't need a list, there it is enough to just have a pointer to the child node. Further, leaf nodes store a pointer to the root node.</a>
+<a name="34"><span class="lineNum">      34 </span>            :  * That way, when we advance any generator, we just need to look up a leaf node (which all have a reference to a root node). Then we can see at the root node whether current Generator is finished. If it isn't, all is fine and we can just continue. If the Generator finished, there will be two cases. Either it is a simple node with just one child, then go down to child node. Or it has multiple children and we now will remove the current leaf node from the list of nodes (unnecessary, is microoptimization) and go down to the child node whose reference was paired with current leaf node. Child node is then removed its parent reference and becomes new top node. Or the current node references the Generator we're currently executing, then we can continue from the YIELD_FROM opcode. When a node referenced as root node in a leaf node has a parent, then we go the way up until we find a root node without parent.</a>
+<a name="35"><span class="lineNum">      35 </span>            :  * In case we go into a new `yield from` level, a node is created on top of current root and becomes the new root. Leaf node needs to be updated with new root node then.</a>
+<a name="36"><span class="lineNum">      36 </span>            :  * When a Generator referenced by a node of the tree is added to `yield from`, that node now gets a list of children (we need to walk the descendants of that node and nodes of the tree of the other Generator down to the first multi-children node and copy all the leaf node pointers from there). In case there was no multi-children node (linear tree), we just add a pair (pointer to leaf node, pointer to child node), with the child node being in a direct path from leaf to this node.</a>
+<a name="37"><span class="lineNum">      37 </span>            :  */</a>
+<a name="38"><span class="lineNum">      38 </span>            : </a>
+<a name="39"><span class="lineNum">      39 </span>            : struct _zend_generator_node {</a>
+<a name="40"><span class="lineNum">      40 </span>            :         zend_generator *parent; /* NULL for root */</a>
+<a name="41"><span class="lineNum">      41 </span>            :         uint32_t children;</a>
+<a name="42"><span class="lineNum">      42 </span>            :         union {</a>
+<a name="43"><span class="lineNum">      43 </span>            :                 HashTable *ht; /* if multiple children */</a>
+<a name="44"><span class="lineNum">      44 </span>            :                 zend_generator *single; /* if one child */</a>
+<a name="45"><span class="lineNum">      45 </span>            :         } child;</a>
+<a name="46"><span class="lineNum">      46 </span>            :         /* One generator can cache a direct pointer to the current root.</a>
+<a name="47"><span class="lineNum">      47 </span>            :          * The leaf member points back to the generator using the root cache. */</a>
+<a name="48"><span class="lineNum">      48 </span>            :         union {</a>
+<a name="49"><span class="lineNum">      49 </span>            :                 zend_generator *leaf; /* if parent != NULL */</a>
+<a name="50"><span class="lineNum">      50 </span>            :                 zend_generator *root; /* if parent == NULL */</a>
+<a name="51"><span class="lineNum">      51 </span>            :         } ptr;</a>
+<a name="52"><span class="lineNum">      52 </span>            : };</a>
+<a name="53"><span class="lineNum">      53 </span>            : </a>
+<a name="54"><span class="lineNum">      54 </span>            : struct _zend_generator {</a>
+<a name="55"><span class="lineNum">      55 </span>            :         zend_object std;</a>
+<a name="56"><span class="lineNum">      56 </span>            : </a>
+<a name="57"><span class="lineNum">      57 </span>            :         /* The suspended execution context. */</a>
+<a name="58"><span class="lineNum">      58 </span>            :         zend_execute_data *execute_data;</a>
+<a name="59"><span class="lineNum">      59 </span>            : </a>
+<a name="60"><span class="lineNum">      60 </span>            :         /* Frozen call stack for &quot;yield&quot; used in context of other calls */</a>
+<a name="61"><span class="lineNum">      61 </span>            :         zend_execute_data *frozen_call_stack;</a>
+<a name="62"><span class="lineNum">      62 </span>            : </a>
+<a name="63"><span class="lineNum">      63 </span>            :         /* Current value */</a>
+<a name="64"><span class="lineNum">      64 </span>            :         zval value;</a>
+<a name="65"><span class="lineNum">      65 </span>            :         /* Current key */</a>
+<a name="66"><span class="lineNum">      66 </span>            :         zval key;</a>
+<a name="67"><span class="lineNum">      67 </span>            :         /* Return value */</a>
+<a name="68"><span class="lineNum">      68 </span>            :         zval retval;</a>
+<a name="69"><span class="lineNum">      69 </span>            :         /* Variable to put sent value into */</a>
+<a name="70"><span class="lineNum">      70 </span>            :         zval *send_target;</a>
+<a name="71"><span class="lineNum">      71 </span>            :         /* Largest used integer key for auto-incrementing keys */</a>
+<a name="72"><span class="lineNum">      72 </span>            :         zend_long largest_used_integer_key;</a>
+<a name="73"><span class="lineNum">      73 </span>            : </a>
+<a name="74"><span class="lineNum">      74 </span>            :         /* Values specified by &quot;yield from&quot; to yield from this generator.</a>
+<a name="75"><span class="lineNum">      75 </span>            :          * This is only used for arrays or non-generator Traversables.</a>
+<a name="76"><span class="lineNum">      76 </span>            :          * This zval also uses the u2 structure in the same way as</a>
+<a name="77"><span class="lineNum">      77 </span>            :          * by-value foreach. */</a>
+<a name="78"><span class="lineNum">      78 </span>            :         zval values;</a>
+<a name="79"><span class="lineNum">      79 </span>            : </a>
+<a name="80"><span class="lineNum">      80 </span>            :         /* Node of waiting generators when multiple &quot;yield from&quot; expressions</a>
+<a name="81"><span class="lineNum">      81 </span>            :          * are nested. */</a>
+<a name="82"><span class="lineNum">      82 </span>            :         zend_generator_node node;</a>
+<a name="83"><span class="lineNum">      83 </span>            : </a>
+<a name="84"><span class="lineNum">      84 </span>            :         /* Fake execute_data for stacktraces */</a>
+<a name="85"><span class="lineNum">      85 </span>            :         zend_execute_data execute_fake;</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            :         /* ZEND_GENERATOR_* flags */</a>
+<a name="88"><span class="lineNum">      88 </span>            :         zend_uchar flags;</a>
+<a name="89"><span class="lineNum">      89 </span>            : };</a>
+<a name="90"><span class="lineNum">      90 </span>            : </a>
+<a name="91"><span class="lineNum">      91 </span>            : static const zend_uchar ZEND_GENERATOR_CURRENTLY_RUNNING = 0x1;</a>
+<a name="92"><span class="lineNum">      92 </span>            : static const zend_uchar ZEND_GENERATOR_FORCED_CLOSE      = 0x2;</a>
+<a name="93"><span class="lineNum">      93 </span>            : static const zend_uchar ZEND_GENERATOR_AT_FIRST_YIELD    = 0x4;</a>
+<a name="94"><span class="lineNum">      94 </span>            : static const zend_uchar ZEND_GENERATOR_DO_INIT           = 0x8;</a>
+<a name="95"><span class="lineNum">      95 </span>            : </a>
+<a name="96"><span class="lineNum">      96 </span>            : void zend_register_generator_ce(void);</a>
+<a name="97"><span class="lineNum">      97 </span>            : ZEND_API void zend_generator_close(zend_generator *generator, bool finished_execution);</a>
+<a name="98"><span class="lineNum">      98 </span>            : ZEND_API void zend_generator_resume(zend_generator *generator);</a>
+<a name="99"><span class="lineNum">      99 </span>            : </a>
+<a name="100"><span class="lineNum">     100 </span>            : ZEND_API void zend_generator_restore_call_stack(zend_generator *generator);</a>
+<a name="101"><span class="lineNum">     101 </span>            : ZEND_API zend_execute_data* zend_generator_freeze_call_stack(zend_execute_data *execute_data);</a>
+<a name="102"><span class="lineNum">     102 </span>            : </a>
+<a name="103"><span class="lineNum">     103 </span>            : void zend_generator_yield_from(zend_generator *generator, zend_generator *from);</a>
+<a name="104"><span class="lineNum">     104 </span>            : ZEND_API zend_execute_data *zend_generator_check_placeholder_frame(zend_execute_data *ptr);</a>
+<a name="105"><span class="lineNum">     105 </span>            : </a>
+<a name="106"><span class="lineNum">     106 </span>            : ZEND_API zend_generator *zend_generator_update_current(zend_generator *generator);</a>
+<a name="107"><span class="lineNum">     107 </span>            : ZEND_API zend_generator *zend_generator_update_root(zend_generator *generator);</a>
+<a name="108"><span class="lineNum">     108 </span>            : static zend_always_inline zend_generator *zend_generator_get_current(zend_generator *generator)</a>
+<a name="109"><span class="lineNum">     109 </span>            : {</a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">     612501 :         if (EXPECTED(generator-&gt;node.parent == NULL)) {</span></a>
+<a name="111"><span class="lineNum">     111 </span>            :                 /* we're not in yield from mode */</a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">     305514 :                 return generator;</span></a>
+<a name="113"><span class="lineNum">     113 </span>            :         }</a>
+<a name="114"><span class="lineNum">     114 </span>            : </a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">     306987 :         zend_generator *root = generator-&gt;node.ptr.root;</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">     306987 :         if (!root) {</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">       2631 :                 root = zend_generator_update_root(generator);</span></a>
+<a name="118"><span class="lineNum">     118 </span>            :         }</a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">     306987 :         if (EXPECTED(root-&gt;execute_data)) {</span></a>
+<a name="121"><span class="lineNum">     121 </span>            :                 /* generator still running */</a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">     156813 :                 return root;</span></a>
+<a name="123"><span class="lineNum">     123 </span>            :         }</a>
+<a name="124"><span class="lineNum">     124 </span>            : </a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">     150174 :         return zend_generator_update_current(generator);</span></a>
+<a name="126"><span class="lineNum">     126 </span>            : }</a>
+<a name="127"><span class="lineNum">     127 </span>            : </a>
+<a name="128"><span class="lineNum">     128 </span>            : END_EXTERN_C()</a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span>            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
